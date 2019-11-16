@@ -58,6 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:fitsSystemWindows="true"
         app:headerLayout="@layout/activity_main_header_drawer"
         app:menu="@menu/activity_main_menu_drawer"
         android:background="@color/colorPrimaryLight"/>

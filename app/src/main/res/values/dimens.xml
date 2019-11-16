@@ -10,6 +10,7 @@
 
     <!-- MARGIN -->
     <dimen name="margin_normal">16dp</dimen>
+    <dimen name="margin_big">48dp</dimen>
 
     <!-- PADDING -->
     <dimen name="padding_normal">16dp</dimen>

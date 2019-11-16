@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- Max lines of TextView into NavigationView Header -->
+    <integer name="max_lines_text_view_header_drawer">1</integer>
+
+</resources>

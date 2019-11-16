@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- Default NavigationView Header height -->
+    <dimen name="navigation_header_height">250dp</dimen>
+
+    <!-- Size of ImageView (user) into NavigationView Header -->
+    <dimen name="image_view_header_size">50dp</dimen>
+
+    <!-- MARGIN -->
+    <dimen name="margin_normal">16dp</dimen>
+
+    <!-- PADDING -->
+    <dimen name="padding_normal">16dp</dimen>
+
+    <!-- ELEVATION -->
+    <dimen name="elevation_toolbar">4dp</dimen>
+
+</resources>

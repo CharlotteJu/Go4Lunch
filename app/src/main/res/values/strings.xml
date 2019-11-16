@@ -1,0 +1,22 @@
+<resources>
+
+    <string name="app_name" translatable="false">Go4Lunch</string>
+
+    <!-- activity_main_menu_drawer.xml -->
+    <string name="menu_drawer_your_lunch">YOUR LUNCH</string>
+    <string name="menu_drawer_settings">SETTINGS</string>
+    <string name="menu_drawer_logout">LOGOUT</string>
+
+    <!-- activity_main_header_drawer.xml -->
+    <string name="header_drawer_username" translatable="false">John Smith</string>
+    <string name="header_drawer_email" translatable="false">jsmith.1337@gmail.com</string>
+    <string name="content_description_header_drawer_user_image">header_drawer_user_image</string>
+    <string name="content_description_header_drawer_image_background">header_drawer_image_background</string>
+
+    <!-- activity_main.xml -->
+    <string name="bottom_navigation_menu_map">Map View</string>
+    <string name="bottom_navigation_menu_list">List View</string>
+    <string name="bottom_navigation_menu_workmate">Workmates</string>
+    <string name="toolbar_menu_search">Search</string>
+
+</resources>

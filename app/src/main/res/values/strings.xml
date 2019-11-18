@@ -18,5 +18,10 @@
     <string name="bottom_navigation_menu_list">List View</string>
     <string name="bottom_navigation_menu_workmate">Workmates</string>
     <string name="toolbar_menu_search">Search</string>
+    <string name="title_toolbar">I\'m Hungry!</string>
+
+    <!-- MainActivity.java -->
+    <string name="navigation_drawer_open" translatable="false">"Open navigation drawer"</string>
+    <string name="navigation_drawer_close" translatable="false">"Close navigation drawer"</string>
 
 </resources>

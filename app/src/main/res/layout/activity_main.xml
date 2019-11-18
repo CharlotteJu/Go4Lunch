@@ -11,7 +11,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="start"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".views.activities.MainActivity">
 
     <!-- ConstraintLayout -->
     <android.support.constraint.ConstraintLayout
@@ -26,6 +26,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:title="@string/title_toolbar"
+            app:titleTextColor="@android:color/white"
             android:background="@color/colorPrimary"/>
 
         <!-- FrameLayout: Fragment -->
@@ -61,6 +63,8 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/activity_main_header_drawer"
         app:menu="@menu/activity_main_menu_drawer"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
         android:background="@color/colorPrimaryLight"/>
 
 </android.support.v4.widget.DrawerLayout>

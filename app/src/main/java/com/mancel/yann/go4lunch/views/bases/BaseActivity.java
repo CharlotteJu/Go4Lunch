@@ -2,6 +2,7 @@ package com.mancel.yann.go4lunch.views.bases;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -48,6 +49,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         // If ToolBar exists
         if (this.getToolbar() != null) {
             setSupportActionBar(this.getToolbar());
+        }
+    }
+
+    // -- Fragment --
+
+    /**
+     * Replaces the fragment
+     * @param fragment      a {@link Fragment}
+     * @param idFrameLayout an integer that contains the id of the {@link android.widget.FrameLayout}
+     */
+    protected void replaceFragment(final Fragment fragment, final int idFrameLayout) {
+        if (!fragment.isVisible()) {
+            getSupportFragmentManager().beginTransaction()
+                                       .replace(idFrameLayout, fragment)
+                                       .commit();
         }
     }
 }

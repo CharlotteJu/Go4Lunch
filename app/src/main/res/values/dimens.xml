@@ -3,10 +3,13 @@
 <resources>
 
     <!-- Default NavigationView Header height -->
-    <dimen name="navigation_header_height">250dp</dimen>
+    <dimen name="navigation_header_height">200dp</dimen>
 
     <!-- Size of ImageView (user) into NavigationView Header -->
     <dimen name="image_view_header_size">50dp</dimen>
+
+    <!-- Size of ImageView (logo) into NavigationView menu -->
+    <dimen name="image_view_menu_size">100dp</dimen>
 
     <!-- MARGIN -->
     <dimen name="margin_normal">16dp</dimen>

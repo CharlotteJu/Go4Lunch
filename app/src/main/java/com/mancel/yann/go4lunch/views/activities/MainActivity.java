@@ -2,6 +2,7 @@ package com.mancel.yann.go4lunch.views.activities;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +14,9 @@ import android.view.MenuItem;
 
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
+import com.mancel.yann.go4lunch.views.fragments.LunchListFragment;
+import com.mancel.yann.go4lunch.views.fragments.LunchMapFragment;
+import com.mancel.yann.go4lunch.views.fragments.WorkmateFragment;
 
 import butterknife.BindView;
 
@@ -21,10 +25,9 @@ import butterknife.BindView;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.views.activities
  *
- * A {@link BaseActivity} subclass which
- * implements {@link NavigationView.OnNavigationItemSelectedListener} interface.
+ * A {@link BaseActivity} subclass.
  */
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -34,6 +37,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     DrawerLayout mDrawerLayout;
     @BindView(R.id.activity_main_navigation_view)
     NavigationView mNavigationView;
+    @BindView(R.id.activity_main_bottom_navigation_view)
+    BottomNavigationView mBottomNavigationView;
+
+    private LunchMapFragment mLunchMapFragment;
+    private LunchListFragment mLunchListFragment;
+    private WorkmateFragment mWorkmateFragment;
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -55,6 +64,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         this.configureToolBar();
         this.configureDrawerLayout();
         this.configureNavigationView();
+        this.configureBottomNavigationView();
+        this.configureLunchMapFragment();
     }
 
     // -- Activity --
@@ -88,11 +99,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
-    // Interface: NavigationView.OnNavigationItemSelectedListener
+    // -- Actions --
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+    private boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
+            // NavigationView
             case R.id.menu_drawer_lunch:
                 Log.e(this.getClass().getSimpleName(), "Lunch");
                 break;
@@ -102,12 +113,26 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.menu_drawer_logout:
                 Log.e(this.getClass().getSimpleName(), "Logout");
                 break;
+
+            // BottomNavigationView
+            case R.id.bottom_navigation_menu_map:
+                this.configureLunchMapFragment();
+                break;
+            case R.id.bottom_navigation_menu_list:
+                this.configureLunchListFragment();
+                break;
+            case R.id.bottom_navigation_menu_workmate:
+                this.configureWorkmateFragment();
+                break;
+
             default:
                 Log.e(this.getClass().getSimpleName(), "onNavigationItemSelected: none of ids selected among the list");
         }
 
         // Closes the NavigationView at the end of the user action
-        this.mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (this.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
 
         return true;
     }
@@ -138,9 +163,50 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      * Configures the {@link NavigationView}
      */
     private void configureNavigationView() {
-        // Add the listener to each item selected
-        // MainActivity class implements the NavigationView.OnNavigationItemSelectedListener interface
-        this.mNavigationView.setNavigationItemSelectedListener(this);
+        this.mNavigationView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
     }
 
+    // -- BottomNavigationView --
+
+    /**
+     * Configures the {@link BottomNavigationView}
+     */
+    private void configureBottomNavigationView() {
+        this.mBottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+    }
+
+    // -- Fragment --
+
+    /**
+     * Configures the {@link LunchMapFragment}
+     */
+    private void configureLunchMapFragment() {
+        if (this.mLunchMapFragment == null) {
+            this.mLunchMapFragment = LunchMapFragment.newInstance();
+        }
+
+        this.replaceFragment(this.mLunchMapFragment, R.id.activity_main_frame_layout);
+    }
+
+    /**
+     * Configures the {@link LunchListFragment}
+     */
+    private void configureLunchListFragment() {
+        if (this.mLunchListFragment == null) {
+            this.mLunchListFragment = LunchListFragment.newInstance();
+        }
+
+        this.replaceFragment(this.mLunchListFragment, R.id.activity_main_frame_layout);
+    }
+
+    /**
+     * Configures the {@link WorkmateFragment}
+     */
+    private void configureWorkmateFragment() {
+        if (this.mWorkmateFragment == null) {
+            this.mWorkmateFragment = WorkmateFragment.newInstance();
+        }
+
+        this.replaceFragment(this.mWorkmateFragment, R.id.activity_main_frame_layout);
+    }
 }

@@ -65,6 +65,25 @@
         app:menu="@menu/activity_main_menu_drawer"
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
-        android:background="@color/colorPrimaryLight"/>
+        android:background="@color/colorPrimaryLight">
+
+        <!-- ConstraintLayout -->
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- ImageView -->
+            <ImageView
+                android:layout_width="@dimen/image_view_menu_size"
+                android:layout_height="@dimen/image_view_menu_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:contentDescription="@string/content_description_logo_image"
+                android:background="@android:color/holo_green_dark"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

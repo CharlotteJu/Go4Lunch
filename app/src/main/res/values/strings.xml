@@ -10,8 +10,8 @@
     <!-- activity_main_header_drawer.xml -->
     <string name="header_drawer_username" translatable="false">John Smith</string>
     <string name="header_drawer_email" translatable="false">jsmith.1337@gmail.com</string>
-    <string name="content_description_header_drawer_user_image">header_drawer_user_image</string>
-    <string name="content_description_header_drawer_image_background">header_drawer_image_background</string>
+    <string name="content_description_header_drawer_user_image" translatable="false">header_drawer_user_image</string>
+    <string name="content_description_header_drawer_image_background" translatable="false">header_drawer_image_background</string>
 
     <!-- activity_main.xml -->
     <string name="bottom_navigation_menu_map">Map View</string>
@@ -19,6 +19,13 @@
     <string name="bottom_navigation_menu_workmate">Workmates</string>
     <string name="toolbar_menu_search">Search</string>
     <string name="title_toolbar">I\'m Hungry!</string>
+    <string name="content_description_logo_image" translatable="false">menu_drawer_logo_image</string>
+
+    <!-- fragment_lunch_list.xml -->
+    <string name="message_if_no_restaurant">No restaurant in the area!</string>
+
+    <!-- fragment_workmate.xml -->
+    <string name="message_if_no_workmate">No workmate!</string>
 
     <!-- MainActivity.java -->
     <string name="navigation_drawer_open" translatable="false">"Open navigation drawer"</string>

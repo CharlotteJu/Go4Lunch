@@ -26,9 +26,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:title="@string/title_toolbar"
-            app:titleTextColor="@android:color/white"
-            android:background="@color/colorPrimary"/>
+            style="@style/ToolbarStyle"/>
 
         <!-- FrameLayout: Fragment -->
         <FrameLayout
@@ -48,9 +46,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:menu="@menu/bottom_navigation_menu"
-            app:itemIconTint="@drawable/bottom_navigation_color"
-            app:itemTextColor="@drawable/bottom_navigation_color"/>
+            style="@style/BottomNavigationViewStyle"/>
 
     </android.support.constraint.ConstraintLayout>
 
@@ -61,11 +57,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/activity_main_header_drawer"
-        app:menu="@menu/activity_main_menu_drawer"
-        app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"
-        android:background="@color/colorPrimaryLight">
+        style="@style/NavigationViewStyle">
 
         <!-- ConstraintLayout -->
         <android.support.constraint.ConstraintLayout

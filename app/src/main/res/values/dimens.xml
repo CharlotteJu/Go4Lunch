@@ -2,16 +2,21 @@
 
 <resources>
 
-    <!-- Default NavigationView Header height -->
-    <dimen name="navigation_header_height">200dp</dimen>
+    <!-- NavigationView Header height -->
+    <dimen name="navigation_header_height">220dp</dimen>
 
-    <!-- Size of ImageView (user) into NavigationView Header -->
+    <!-- Vertical Guideline for item_restaurant.xml -->
+    <dimen name="guideline_vertical_item_restaurant">150dp</dimen>
+
+    <!-- ImageView Size -->
     <dimen name="image_view_header_size">50dp</dimen>
-
-    <!-- Size of ImageView (logo) into NavigationView menu -->
     <dimen name="image_view_menu_size">100dp</dimen>
+    <dimen name="image_view_item_workmate_size">80dp</dimen>
+    <dimen name="image_view_item_restaurant_size">80dp</dimen>
 
     <!-- MARGIN -->
+    <dimen name="margin_tiny">4dp</dimen>
+    <dimen name="margin_little">8dp</dimen>
     <dimen name="margin_normal">16dp</dimen>
     <dimen name="margin_big">48dp</dimen>
 
@@ -19,6 +24,7 @@
     <dimen name="padding_normal">16dp</dimen>
 
     <!-- ELEVATION -->
-    <dimen name="elevation_toolbar">4dp</dimen>
+    <dimen name="elevation_toolbar">6dp</dimen>
+    <dimen name="elevation_bottom_navigation_view">4dp</dimen>
 
 </resources>

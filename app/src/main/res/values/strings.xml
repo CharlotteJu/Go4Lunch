@@ -27,6 +27,20 @@
     <!-- fragment_workmate.xml -->
     <string name="message_if_no_workmate">No workmate!</string>
 
+    <!-- item_workmate.xml -->
+    <string name="content_description_item_logo_user" translatable="false">item_logo_user</string>
+    <string name="text_item_workmate_no_choice">%s hasn\'t decided yet</string>
+    <string name="text_item_workmate_choice">%s is eating %s (%s)</string>
+
+    <!-- item_restaurant.xml -->
+    <string name="content_description_item_restaurant_image" translatable="false">restaurant_image</string>
+    <string name="content_description_item_person_image" translatable="false">person_icon</string>
+    <string name="name_item_restaurant" translatable="false">Le Zinc</string>
+    <string name="type_and_address_item_restaurant" translatable="false">French - 12 rue du Faubourg Poissonnière</string>
+    <string name="opening_hours_item_restaurant" translatable="false">Open until 7pm</string>
+    <string name="distance_item_restaurant" translatable="false">120m</string>
+    <string name="people_item_restaurant" translatable="false">(2)</string>
+
     <!-- MainActivity.java -->
     <string name="navigation_drawer_open" translatable="false">"Open navigation drawer"</string>
     <string name="navigation_drawer_close" translatable="false">"Close navigation drawer"</string>

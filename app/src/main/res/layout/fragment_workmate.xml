@@ -18,7 +18,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_workmate"/>
 
     <!-- TextView: No workmate -->
     <TextView
@@ -30,6 +31,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/message_if_no_workmate"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        style="@style/TextViewStyle1"/>
 
 </android.support.constraint.ConstraintLayout>

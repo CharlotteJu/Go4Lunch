@@ -2,7 +2,10 @@
 
 <resources>
 
-    <!-- Max lines of TextView into NavigationView Header -->
-    <integer name="max_lines_text_view_header_drawer">1</integer>
+    <!-- TextView -->
+    <integer name="max_lines_text_view">1</integer>
+
+    <!-- RatingBar -->
+    <integer name="max_stars_rating_bar">3</integer>
 
 </resources>

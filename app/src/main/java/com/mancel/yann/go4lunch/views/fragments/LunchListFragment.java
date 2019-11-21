@@ -1,9 +1,16 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.views.adapters.LunchAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
+
+import butterknife.BindView;
 
 /**
  * Created by Yann MANCEL on 19/11/2019.
@@ -16,6 +23,14 @@ public class LunchListFragment extends BaseFragment {
 
     // FIELDS --------------------------------------------------------------------------------------
 
+    @BindView(R.id.fragment_lunch_list_recycler_view)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.fragment_lunch_list_no_restaurant)
+    TextView mNoRestaurant;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private LunchAdapter mAdapter;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -32,7 +47,7 @@ public class LunchListFragment extends BaseFragment {
 
     @Override
     protected void configureDesign() {
-
+        this.configureRecyclerView();
     }
 
     // -- Instances --
@@ -44,5 +59,21 @@ public class LunchListFragment extends BaseFragment {
     @NonNull
     public static LunchListFragment newInstance() {
         return new LunchListFragment();
+    }
+
+    // -- RecyclerView --
+
+    /**
+     * Configures the {@link RecyclerView}
+     */
+    private void configureRecyclerView() {
+        // Adapter
+        this.mAdapter = new LunchAdapter();
+
+        // RecyclerView
+        this.mRecyclerView.setAdapter(this.mAdapter);
+        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                                                                       DividerItemDecoration.VERTICAL));
     }
 }

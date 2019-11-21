@@ -1,9 +1,16 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.views.adapters.WorkmateAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
+
+import butterknife.BindView;
 
 /**
  * Created by Yann MANCEL on 19/11/2019.
@@ -16,6 +23,14 @@ public class WorkmateFragment extends BaseFragment {
 
     // FIELDS --------------------------------------------------------------------------------------
 
+    @BindView(R.id.fragment_workmate_recycler_view)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.fragment_workmate_no_people)
+    TextView mNoPeople;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private WorkmateAdapter mAdapter;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -32,17 +47,34 @@ public class WorkmateFragment extends BaseFragment {
 
     @Override
     protected void configureDesign() {
-
+        this.configureRecyclerView();
     }
 
     // -- Instances --
 
     /**
      * Gets a new instance of {@link WorkmateFragment}
+     *
      * @return a {@link WorkmateFragment}
      */
     @NonNull
     public static WorkmateFragment newInstance() {
         return new WorkmateFragment();
+    }
+
+    // -- RecyclerView --
+
+    /**
+     * Configures the {@link RecyclerView}
+     */
+    private void configureRecyclerView() {
+        // Adapter
+        this.mAdapter = new WorkmateAdapter();
+
+        // RecyclerView
+        this.mRecyclerView.setAdapter(this.mAdapter);
+        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                                                                       DividerItemDecoration.VERTICAL));
     }
 }

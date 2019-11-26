@@ -1,8 +1,8 @@
 package com.mancel.yann.go4lunch.utils;
 
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * Created by Yann MANCEL on 18/11/2019.

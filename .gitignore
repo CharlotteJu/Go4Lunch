@@ -21,3 +21,6 @@
 
 # API Keys
 /gradle.properties
+
+# Firebase file
+/app/google-services.json

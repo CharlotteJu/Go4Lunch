@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- ImageView -->
+            <!-- ImageView: Logo -->
             <ImageView
                 android:layout_width="@dimen/image_view_menu_size"
                 android:layout_height="@dimen/image_view_menu_size"

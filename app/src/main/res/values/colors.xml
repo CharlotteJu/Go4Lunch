@@ -8,6 +8,10 @@
     <color name="colorAccent">#1DE9B6</color>
 
     <!-- Status bar -->
-    <color name="colorPrimaryTranslucent">#80FF5722</color>
+    <color name="statusBarColor_MainActivity">#80FF5722</color>
+    <color name="statusBarColor_AuthActivity">#4D000000</color>
+
+    <!-- Filter -->
+    <color name="ColorFilter">#90585858</color>
 
 </resources>

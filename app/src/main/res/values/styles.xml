@@ -9,13 +9,21 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <!-- Status bar -->
-        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
-        <item name="android:statusBarColor" tools:targetApi="21">@color/colorPrimaryTranslucent</item>
-
         <!-- Drawer arrow -->
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
 
+    </style>
+
+    <!-- AuthActivity theme -->
+    <style name="AppTheme.AuthActivity">
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
+        <item name="android:statusBarColor" tools:targetApi="21">@color/statusBarColor_AuthActivity</item>
+    </style>
+
+    <!-- MainActivity theme -->
+    <style name="AppTheme.MainActivity">
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
+        <item name="android:statusBarColor" tools:targetApi="21">@color/statusBarColor_MainActivity</item>
     </style>
 
     <!-- *********************************** Toolbar ******************************************* -->
@@ -91,6 +99,18 @@
     <style name="TextViewStyle9" parent="TextViewStyle7">
         <item name="android:textSize">40sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- TextView style (level 1, white, normal, bold) -->
+    <style name="TextViewStyle10" parent="TextViewStyle9">
+        <item name="android:textSize">70sp</item>
+    </style>
+
+    <!-- TextView style (level 1, white, italic) -->
+    <style name="TextViewStyle11" parent="TextViewStyle7">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">italic</item>
         <item name="android:gravity">center</item>
     </style>
 

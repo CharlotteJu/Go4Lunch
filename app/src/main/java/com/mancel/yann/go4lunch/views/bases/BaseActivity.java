@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import butterknife.ButterKnife;
 
 /**
@@ -16,6 +18,10 @@ import butterknife.ButterKnife;
  * A {@link AppCompatActivity} subclass.
  */
 public abstract class BaseActivity extends AppCompatActivity {
+
+    // FIELDS --------------------------------------------------------------------------------------
+
+    protected FirebaseAuth mFirebaseAuth;
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -36,6 +42,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Using the ButterKnife library
         ButterKnife.bind(this);
 
+        // Configure the Firebase authentication
+        this.configureFirebaseAuth();
+
         // Configures the design of the activity
         this.configureDesign();
     }
@@ -50,6 +59,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (this.getToolbar() != null) {
             setSupportActionBar(this.getToolbar());
         }
+    }
+
+    // -- Firebase --
+
+    /**
+     * Configures the {@link FirebaseAuth}
+     */
+    private void configureFirebaseAuth() {
+        this.mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
     // -- Fragment --

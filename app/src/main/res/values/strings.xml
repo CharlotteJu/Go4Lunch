@@ -21,6 +21,11 @@
     <string name="title_toolbar">I\'m Hungry!</string>
     <string name="content_description_logo_image" translatable="false">menu_drawer_logo_image</string>
 
+    <!-- activity_auth.xml -->
+    <string name="content_description_authentication_image_background" translatable="false">authentication_image_background</string>
+    <string name="content_description_authentication_logo_image" translatable="false">authentication_logo_image</string>
+    <string name="subtitle_authentication">Find a nice restaurant and invite your co-workers for lunch!</string>
+
     <!-- fragment_lunch_list.xml -->
     <string name="message_if_no_restaurant">No restaurant in the area!</string>
 
@@ -40,6 +45,10 @@
     <string name="opening_hours_item_restaurant" translatable="false">Open until 7pm</string>
     <string name="distance_item_restaurant" translatable="false">120m</string>
     <string name="people_item_restaurant" translatable="false">(2)</string>
+
+    <!-- AuthActivity.java -->
+    <string name="google_sign_in_success">Google sign in success</string>
+    <string name="google_sign_in_failed">Google sign in failed</string>
 
     <!-- MainActivity.java -->
     <string name="navigation_drawer_open" translatable="false">"Open navigation drawer"</string>

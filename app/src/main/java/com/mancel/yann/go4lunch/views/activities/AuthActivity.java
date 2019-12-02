@@ -1,11 +1,9 @@
 package com.mancel.yann.go4lunch.views.activities;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -13,16 +11,21 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -49,13 +52,14 @@ public class AuthActivity extends BaseActivity {
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.activity_auth_image_background)
     ImageView mBackgroundImage;
+    @BindView(R.id.activity_auth_Facebook_Button)
+    LoginButton mFacebookButton;
 
-    //private FirebaseAuth mFirebaseAuth;
     private GoogleSignInClient mGoogleSignInClient;
+    private CallbackManager mFacebookCallbackManager;
 
     public static final int RC_GOOGLE_SIGN_IN = 100;
-
-    private static final String TAG = AuthActivity.class.getSimpleName();
+    public static int RC_FACEBOOK_SIGN_IN;
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -76,6 +80,7 @@ public class AuthActivity extends BaseActivity {
     protected void configureDesign() {
         this.configureBackgroundImage();
         this.configureGoogleSignIn();
+        this.configureFacebookSignIn();
     }
 
     // -- Activity --
@@ -92,7 +97,10 @@ public class AuthActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_FACEBOOK_SIGN_IN) {
+            this.mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+
         if (requestCode == RC_GOOGLE_SIGN_IN) {
             this.handleSignInResultWithGoogle(data);
         }
@@ -101,7 +109,8 @@ public class AuthActivity extends BaseActivity {
     // -- Actions --
 
     @OnClick({R.id.activity_auth_Google_Button,
-              R.id.activity_auth_Facebook_Button})
+              R.id.activity_auth_Facebook_Button,
+              R.id.activity_auth_Sign_Out_Button})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             // Google
@@ -111,6 +120,11 @@ public class AuthActivity extends BaseActivity {
 
             // Facebook
             case R.id.activity_auth_Facebook_Button:
+                // See the configureFacebookSignIn method
+                break;
+
+            // Sign Out
+            case R.id.activity_auth_Sign_Out_Button:
                 this.signOutCurrentUser();
                 break;
         }
@@ -166,15 +180,12 @@ public class AuthActivity extends BaseActivity {
      * Deletes the current user account
      */
     private void deleteCurrentUserAccount() {
-        Log.d(TAG, "delete account");
         this.mFirebaseAuth.getCurrentUser()
                           .delete()
-                          .addOnCompleteListener(new OnCompleteListener<Void>() {
-                              @Override
-                              public void onComplete(@NonNull Task<Void> task) {
-                                  if (task.isSuccessful()) {
-                                      Log.d(TAG, "User account deleted.");
-                                  }
+                          .addOnCompleteListener((task) -> {
+                              if (task.isSuccessful()) {
+                                  ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
+                                          "Deleted account");
                               }
                           });
     }
@@ -225,29 +236,80 @@ public class AuthActivity extends BaseActivity {
      * @param account a {@link GoogleSignInAccount}
      */
     private void retrieveFirebaseAuthWithGoogle(GoogleSignInAccount account) {
-        //Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+
         this.mFirebaseAuth.signInWithCredential(credential)
-                          .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                              @Override
-                              public void onComplete(@NonNull Task<AuthResult> task) {
-                                  if (task.isSuccessful()) {
+                          .addOnCompleteListener(this, (task) -> {
+                              if (task.isSuccessful()) {
+                                  // Google Sign In was successful
+                                  ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
+                                                                      getString(R.string.google_sign_in_success));
 
-                                      // Google Sign In was successful
-                                      ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
-                                              getString(R.string.google_sign_in_success));
+                                  //FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                              }
+                              else {
+                                  // Google Sign In failed
+                                  ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
+                                                                      getString(R.string.google_sign_in_failed));
+                              }
+                          });
+    }
 
-                                      // Sign in success, update UI with the signed-in user's information
-                                      Log.d(TAG, "signInWithCredential:success");
-                                      //FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                                      //updateUI(user);
-                                  } else {
-                                      // If sign in fails, display a message to the user.
-                                      Log.w(TAG, "signInWithCredential:failure", task.getException());
-                                      //Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                                      //updateUI(null);
-                                  }
+    // -- Facebook Sign In --
+
+    /**
+     * Configures the Facebook {@link CallbackManager} and {@link LoginButton}
+     */
+    private void configureFacebookSignIn() {
+        // Configure Facebook Sign In
+        this.mFacebookCallbackManager = CallbackManager.Factory.create();
+
+        // Request code of Facebook Button
+        RC_FACEBOOK_SIGN_IN = this.mFacebookButton.getRequestCode();
+
+        // Configure Facebook Button
+        this.mFacebookButton.setReadPermissions("email", "public_profile");
+        this.mFacebookButton.registerCallback(this.mFacebookCallbackManager,
+                                              new FacebookCallback<LoginResult>() {
+                                                  @Override
+                                                  public void onSuccess(LoginResult loginResult) {
+                                                      handleFacebookAccessToken(loginResult.getAccessToken());
+                                                  }
+
+                                                  @Override
+                                                  public void onCancel() {
+                                                      ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
+                                                                                          getString(R.string.facebook_sign_in_cancelled));
+                                                  }
+
+                                                  @Override
+                                                  public void onError(FacebookException error) {
+                                                      ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
+                                                                                          getString(R.string.facebook_sign_in_error));
+                                                  }
+                                              });
+    }
+
+    /**
+     * Handles the Facebook access token
+     * @param accessToken a {@link AccessToken}
+     */
+    private void handleFacebookAccessToken(AccessToken accessToken) {
+        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+
+        this.mFirebaseAuth.signInWithCredential(credential)
+                          .addOnCompleteListener(this, (task) -> {
+                              if (task.isSuccessful()) {
+                                  // Facebook Sign In was successful
+                                  ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
+                                          getString(R.string.facebook_sign_in_success));
+
+                                  //FirebaseUser user = mAuth.getCurrentUser();
+                              }
+                              else {
+                                  // Facebook Sign In failed
+                                  ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
+                                          getString(R.string.facebook_sign_in_failed));
                               }
                           });
     }

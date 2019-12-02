@@ -2,6 +2,10 @@
 
     <string name="app_name" translatable="false">Go4Lunch</string>
 
+    <!-- Facebook login -->
+    <string name="facebook_app_id" translatable="false">502655490336716</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb502655490336716</string>
+
     <!-- activity_main_menu_drawer.xml -->
     <string name="menu_drawer_your_lunch">YOUR LUNCH</string>
     <string name="menu_drawer_settings">SETTINGS</string>
@@ -49,6 +53,10 @@
     <!-- AuthActivity.java -->
     <string name="google_sign_in_success">Google sign in success</string>
     <string name="google_sign_in_failed">Google sign in failed</string>
+    <string name="facebook_sign_in_success">Facebook sign in success</string>
+    <string name="facebook_sign_in_failed">Facebook sign in failed</string>
+    <string name="facebook_sign_in_cancelled">Facebook sign in cancelled</string>
+    <string name="facebook_sign_in_error">Facebook sign in error</string>
 
     <!-- MainActivity.java -->
     <string name="navigation_drawer_open" translatable="false">"Open navigation drawer"</string>

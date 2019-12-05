@@ -9,7 +9,7 @@
     <dimen name="guideline_vertical_item_restaurant">150dp</dimen>
 
     <!-- ImageView Size -->
-    <dimen name="image_view_header_size">50dp</dimen>
+    <dimen name="image_view_header_size">70dp</dimen>
     <dimen name="image_view_menu_size">100dp</dimen>
     <dimen name="image_view_item_workmate_size">80dp</dimen>
     <dimen name="image_view_item_restaurant_size">80dp</dimen>
@@ -22,9 +22,13 @@
 
     <!-- PADDING -->
     <dimen name="padding_normal">16dp</dimen>
+    <dimen name="padding_little">8dp</dimen>
 
     <!-- ELEVATION -->
     <dimen name="elevation_toolbar">6dp</dimen>
-    <dimen name="elevation_bottom_navigation_view">4dp</dimen>
+    <dimen name="elevation_bottom_navigation_view">6dp</dimen>
+
+    <!-- ELEVATION -->
+    <dimen name="radius_button">5dp</dimen>
 
 </resources>

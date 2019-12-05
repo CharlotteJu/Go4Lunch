@@ -51,8 +51,10 @@
     <string name="people_item_restaurant" translatable="false">(2)</string>
 
     <!-- AuthActivity.java -->
+    <string name="google_sign_in">Sign in with Google</string>
     <string name="google_sign_in_success">Google sign in success</string>
     <string name="google_sign_in_failed">Google sign in failed</string>
+    <string name="facebook_sign_in">Sign in with Facebook</string>
     <string name="facebook_sign_in_success">Facebook sign in success</string>
     <string name="facebook_sign_in_failed">Facebook sign in failed</string>
     <string name="facebook_sign_in_cancelled">Facebook sign in cancelled</string>
@@ -61,5 +63,7 @@
     <!-- MainActivity.java -->
     <string name="navigation_drawer_open" translatable="false">"Open navigation drawer"</string>
     <string name="navigation_drawer_close" translatable="false">"Close navigation drawer"</string>
+    <string name="info_no_username_found">"No username found"</string>
+    <string name="info_no_email_found">"No email found"</string>
 
 </resources>

@@ -1,18 +1,28 @@
 package com.mancel.yann.go4lunch.views.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseUser;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.utils.BlurTransformation;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
 import com.mancel.yann.go4lunch.views.fragments.LunchListFragment;
 import com.mancel.yann.go4lunch.views.fragments.LunchMapFragment;
@@ -40,6 +50,10 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.activity_main_bottom_navigation_view)
     BottomNavigationView mBottomNavigationView;
 
+    private ImageView mBackgroundImageFromHeader;
+    private ImageView mUserImageFromHeader;
+    private TextView mUsernameFromHeader;
+    private TextView mEmailFromHeader;
     private LunchMapFragment mLunchMapFragment;
     private LunchListFragment mLunchListFragment;
     private WorkmateFragment mWorkmateFragment;
@@ -111,7 +125,8 @@ public class MainActivity extends BaseActivity {
                 Log.e(this.getClass().getSimpleName(), "Setting");
                 break;
             case R.id.menu_drawer_logout:
-                Log.e(this.getClass().getSimpleName(), "Logout");
+                this.signOutCurrentUser();
+                this.startAnotherActivity(AuthActivity.class);
                 break;
 
             // BottomNavigationView
@@ -164,6 +179,55 @@ public class MainActivity extends BaseActivity {
      */
     private void configureNavigationView() {
         this.mNavigationView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
+
+        this.configureHeaderOfNavigationView();
+    }
+
+    /**
+     * Configures the header of {@link NavigationView}
+     */
+    private void configureHeaderOfNavigationView() {
+        // Gets the only header of NavigationView
+        final View headerView = this.mNavigationView.getHeaderView(0);
+
+        // Header of XML file
+        this.mBackgroundImageFromHeader = headerView.findViewById(R.id.activity_main_header_drawer_image_background);
+        this.mUserImageFromHeader = headerView.findViewById(R.id.activity_main_header_drawer_user_image);
+        this.mUsernameFromHeader = headerView.findViewById(R.id.activity_main_header_drawer_username);
+        this.mEmailFromHeader = headerView.findViewById(R.id.activity_main_header_drawer_email);
+
+        // Using to Glide library
+        Glide.with(this)
+             .load(R.drawable.background_image)
+             .transform(new MultiTransformation<>(new CenterCrop(),
+                                                  new BlurTransformation(this)))
+             .error(R.drawable.ic_close)
+             .into(this.mBackgroundImageFromHeader);
+
+        // From Firebase
+        final FirebaseUser user = this.getCurrentUser();
+
+        if (user != null) {
+            // ImageView: User image
+            if (user.getPhotoUrl() != null) {
+                Glide.with(this)
+                     .load(user.getPhotoUrl())
+                     .circleCrop()
+                     .fallback(R.drawable.ic_person)
+                     .error(R.drawable.ic_close)
+                     .into(this.mUserImageFromHeader);
+            }
+
+            // TextView: Username and email
+            final String username = TextUtils.isEmpty(user.getDisplayName()) ? getString(R.string.info_no_username_found) :
+                                                                               user.getDisplayName();
+
+            final String email = TextUtils.isEmpty(user.getEmail()) ? getString(R.string.info_no_email_found) :
+                                                                      user.getEmail();
+
+            this.mUsernameFromHeader.setText(username);
+            this.mEmailFromHeader.setText(email);
+        }
     }
 
     // -- BottomNavigationView --

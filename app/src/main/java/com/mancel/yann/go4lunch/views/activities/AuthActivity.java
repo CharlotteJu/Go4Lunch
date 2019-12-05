@@ -15,13 +15,13 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.internal.CallbackManagerImpl;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -52,14 +52,13 @@ public class AuthActivity extends BaseActivity {
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.activity_auth_image_background)
     ImageView mBackgroundImage;
-    @BindView(R.id.activity_auth_Facebook_Button)
-    LoginButton mFacebookButton;
 
     private GoogleSignInClient mGoogleSignInClient;
     private CallbackManager mFacebookCallbackManager;
+    private LoginButton mFacebookButton;
 
-    public static final int RC_GOOGLE_SIGN_IN = 100;
-    public static int RC_FACEBOOK_SIGN_IN;
+    public static final int RC_GOOGLE_SIGN_IN = 1000;
+    public static final int RC_FACEBOOK_SIGN_IN = CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode();
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -108,24 +107,16 @@ public class AuthActivity extends BaseActivity {
 
     // -- Actions --
 
-    @OnClick({R.id.activity_auth_Google_Button,
-              R.id.activity_auth_Facebook_Button,
-              R.id.activity_auth_Sign_Out_Button})
+    @OnClick({R.id.activity_auth_Button_Google,
+              R.id.activity_auth_Button_Facebook})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            // Google
-            case R.id.activity_auth_Google_Button:
+            case R.id.activity_auth_Button_Google:
                 this.signInWithGoogle();
                 break;
 
-            // Facebook
-            case R.id.activity_auth_Facebook_Button:
-                // See the configureFacebookSignIn method
-                break;
-
-            // Sign Out
-            case R.id.activity_auth_Sign_Out_Button:
-                this.signOutCurrentUser();
+            case R.id.activity_auth_Button_Facebook:
+                this.signInWithFacebook();
                 break;
         }
     }
@@ -155,52 +146,21 @@ public class AuthActivity extends BaseActivity {
         final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         if (currentUser != null) {
-            // User is signed in
-            ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
-                    "User is signed in");
+            this.startAnotherActivity(MainActivity.class);
         }
-        else {
-            // No user is signed in
-            ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
-                    "No user is signed in");
-        }
-    }
-
-    /**
-     * Signs out the current user of Firebase
-     */
-    private void signOutCurrentUser() {
-        ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
-                "sign out");
-
-        this.mFirebaseAuth.signOut();
-    }
-
-    /**
-     * Deletes the current user account
-     */
-    private void deleteCurrentUserAccount() {
-        this.mFirebaseAuth.getCurrentUser()
-                          .delete()
-                          .addOnCompleteListener((task) -> {
-                              if (task.isSuccessful()) {
-                                  ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
-                                          "Deleted account");
-                              }
-                          });
     }
 
     // -- Google Sign In --
 
     /**
-     * Configures the Google {@link SignInButton}
+     * Configures the Google sign in - {@link GoogleSignInClient}
      */
     private void configureGoogleSignIn() {
         // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                                         .requestIdToken(getString(R.string.default_web_client_id))
-                                                         .requestEmail()
-                                                         .build();
+        final GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                                               .requestIdToken(getString(R.string.default_web_client_id))
+                                                               .requestEmail()
+                                                               .build();
 
         this.mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
@@ -222,7 +182,10 @@ public class AuthActivity extends BaseActivity {
 
         try {
             final GoogleSignInAccount account = task.getResult(ApiException.class);
-            this.retrieveFirebaseAuthWithGoogle(account);
+
+            if (account != null) {
+                this.retrieveFirebaseAuthWithGoogle(account);
+            }
         }
         catch (ApiException e) {
             // Google Sign In failed
@@ -236,20 +199,15 @@ public class AuthActivity extends BaseActivity {
      * @param account a {@link GoogleSignInAccount}
      */
     private void retrieveFirebaseAuthWithGoogle(GoogleSignInAccount account) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        final AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
 
         this.mFirebaseAuth.signInWithCredential(credential)
                           .addOnCompleteListener(this, (task) -> {
                               if (task.isSuccessful()) {
-                                  // Google Sign In was successful
-                                  ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
-                                                                      getString(R.string.google_sign_in_success));
-
-                                  //FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                                  this.startAnotherActivity(MainActivity.class);
                               }
                               else {
-                                  // Google Sign In failed
-                                  ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
+                                  ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
                                                                       getString(R.string.google_sign_in_failed));
                               }
                           });
@@ -258,16 +216,14 @@ public class AuthActivity extends BaseActivity {
     // -- Facebook Sign In --
 
     /**
-     * Configures the Facebook {@link CallbackManager} and {@link LoginButton}
+     * Configures the Facebook sign in - {@link CallbackManager} and {@link LoginButton}
      */
     private void configureFacebookSignIn() {
         // Configure Facebook Sign In
         this.mFacebookCallbackManager = CallbackManager.Factory.create();
 
-        // Request code of Facebook Button
-        RC_FACEBOOK_SIGN_IN = this.mFacebookButton.getRequestCode();
-
         // Configure Facebook Button
+        this.mFacebookButton = new LoginButton(this);
         this.mFacebookButton.setReadPermissions("email", "public_profile");
         this.mFacebookButton.registerCallback(this.mFacebookCallbackManager,
                                               new FacebookCallback<LoginResult>() {
@@ -291,6 +247,13 @@ public class AuthActivity extends BaseActivity {
     }
 
     /**
+     * Signs in with Facebook
+     */
+    private void signInWithFacebook() {
+        this.mFacebookButton.performClick();
+    }
+
+    /**
      * Handles the Facebook access token
      * @param accessToken a {@link AccessToken}
      */
@@ -300,16 +263,11 @@ public class AuthActivity extends BaseActivity {
         this.mFirebaseAuth.signInWithCredential(credential)
                           .addOnCompleteListener(this, (task) -> {
                               if (task.isSuccessful()) {
-                                  // Facebook Sign In was successful
-                                  ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
-                                          getString(R.string.facebook_sign_in_success));
-
-                                  //FirebaseUser user = mAuth.getCurrentUser();
+                                  this.startAnotherActivity(MainActivity.class);
                               }
                               else {
-                                  // Facebook Sign In failed
-                                  ShowMessage.showMessageWithSnackbar(mCoordinatorLayout,
-                                          getString(R.string.facebook_sign_in_failed));
+                                  ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
+                                                                      getString(R.string.facebook_sign_in_failed));
                               }
                           });
     }

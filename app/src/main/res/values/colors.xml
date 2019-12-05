@@ -12,6 +12,10 @@
     <color name="statusBarColor_AuthActivity">#4D000000</color>
 
     <!-- Filter -->
-    <color name="ColorFilter">#90585858</color>
+    <color name="ColorFilter">#9A3A3A3A</color>
+
+    <!-- Authentication Buttons -->
+    <color name="ColorGoogle">#FA1400</color>
+    <color name="ColorFacebook">#0056FF</color>
 
 </resources>

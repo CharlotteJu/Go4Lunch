@@ -1,5 +1,7 @@
 package com.mancel.yann.go4lunch.views.activities;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -110,6 +112,31 @@ public class MainActivity extends BaseActivity {
         }
         else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            // Access update location
+            case LunchMapFragment.RC_PERMISSION_LOCATION_UPDATE_LOCATION:
+                // No permission
+                if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    Log.e("MainActivity", "No permission to access fine location");
+                }
+
+                this.mLunchMapFragment.startLocationUpdate();
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check settings to location
+        if (requestCode == LunchMapFragment.RC_CHECK_SETTINGS_TO_LOCATION && resultCode == RESULT_OK) {
+            this.mLunchMapFragment.startLocationUpdate();
         }
     }
 

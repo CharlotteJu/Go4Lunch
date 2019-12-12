@@ -160,13 +160,13 @@
     <!-- Google Button style -->
     <style name="GoogleButtonStyle" parent="BaseButtonStyle">
         <item name="android:background">@drawable/button_google</item>
-        <item name="android:drawableStart">@drawable/ic_facebook_box</item>
+        <item name="android:drawableStart">@drawable/ic_google</item>
     </style>
 
     <!-- Facebook Button style -->
     <style name="FacebookButtonStyle" parent="BaseButtonStyle">
         <item name="android:background">@drawable/button_facebook</item>
-        <item name="android:drawableStart">@drawable/ic_google_plus_box</item>
+        <item name="android:drawableStart">@drawable/ic_facebook</item>
     </style>
 
 </resources>

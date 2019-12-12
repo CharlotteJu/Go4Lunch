@@ -72,7 +72,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:contentDescription="@string/content_description_logo_image"
-                android:background="@android:color/holo_green_dark"/>
+                android:src="@drawable/ic_go4lunch_white"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

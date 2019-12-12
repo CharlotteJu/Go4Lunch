@@ -58,7 +58,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_bias="1.0"
             android:contentDescription="@string/content_description_authentication_logo_image"
-            android:background="@color/colorPrimary"/>
+            android:src="@drawable/ic_go4lunch_white"/>
 
         <!-- TextView: App name -->
         <TextView

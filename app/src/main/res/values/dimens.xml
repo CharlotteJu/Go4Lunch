@@ -10,7 +10,7 @@
 
     <!-- ImageView Size -->
     <dimen name="image_view_header_size">70dp</dimen>
-    <dimen name="image_view_menu_size">100dp</dimen>
+    <dimen name="image_view_menu_size">150dp</dimen>
     <dimen name="image_view_item_workmate_size">80dp</dimen>
     <dimen name="image_view_item_restaurant_size">80dp</dimen>
 

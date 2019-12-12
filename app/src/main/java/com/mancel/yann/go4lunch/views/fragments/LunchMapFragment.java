@@ -9,16 +9,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
+import com.mancel.yann.go4lunch.viewModels.MapViewModel;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
 /**
@@ -35,6 +38,11 @@ public class LunchMapFragment extends BaseFragment {
     @Nullable
     private SupportMapFragment mMapFragment;
 
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private MapViewModel mMapViewModel;
+
+    private GoogleMap mGoogleMap;
     private LocationLiveData mLocationLiveData;
 
     public static final int RC_PERMISSION_LOCATION_UPDATE_LOCATION = 100;
@@ -55,8 +63,19 @@ public class LunchMapFragment extends BaseFragment {
 
     @Override
     protected void configureDesign() {
+        this.configureMapViewModel();
         this.configureLocationLiveData();
         this.configureSupportMapFragment();
+    }
+
+    // -- MapViewModel --
+
+    /**
+     * Configures the {@link }
+     */
+    private void configureMapViewModel() {
+        this.mMapViewModel = ViewModelProviders.of(this.getActivity())
+                                               .get(MapViewModel.class);
     }
 
     // -- LocationLiveData --
@@ -78,7 +97,20 @@ public class LunchMapFragment extends BaseFragment {
             return;
         }
 
-        Log.e("LunchMapFragment", "[LiveData] onChangedLocationData: " + locationData.getLocation());
+        if (locationData.getLocation() == null) {
+            return;
+        }
+
+        if (this.mGoogleMap != null) {
+            LatLng sydney = new LatLng(locationData.getLocation().getLatitude(),
+                                       locationData.getLocation().getLongitude());
+
+            this.mGoogleMap.addMarker(new MarkerOptions().position(sydney)
+                           .title("Home"));
+            this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        }
+
+        //Log.e("LunchMapFragment", "[LiveData] onChangedLocationData: " + locationData.getLocation());
     }
 
     /**
@@ -154,7 +186,7 @@ public class LunchMapFragment extends BaseFragment {
         this.mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_lunch_map_fragment);
 
         if (this.mMapFragment == null) {
-            this.mMapFragment = SupportMapFragment.newInstance();
+            this.mMapFragment = SupportMapFragment.newInstance(this.getGoogleMapOptions());
 
             getFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_lunch_map_fragment, this.mMapFragment)
@@ -165,16 +197,27 @@ public class LunchMapFragment extends BaseFragment {
     }
 
     /**
+     * Gets the {@link GoogleMapOptions}
+     * @return a {@link GoogleMapOptions}
+     */
+    private GoogleMapOptions getGoogleMapOptions() {
+        return new GoogleMapOptions().mapType(GoogleMap.MAP_TYPE_NORMAL)
+                                     .zoomControlsEnabled(true)
+                                     .zoomGesturesEnabled(true);
+    }
+
+    /**
      * Updates the {@link GoogleMap}
      * @param googleMap a {@link GoogleMap}
      */
-    public void onMapReady(GoogleMap googleMap) {
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
-        LatLng sydney = new LatLng(-33.852, 151.211);
-        googleMap.addMarker(new MarkerOptions().position(sydney)
-                                               .title("Marker in Sydney"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    private void onMapReady(GoogleMap googleMap) {
+        this.mGoogleMap = googleMap;
+//        // Add a marker in Sydney, Australia,
+//        // and move the map's camera to the same location.
+//        LatLng sydney = new LatLng(-33.852, 151.211);
+//        googleMap.addMarker(new MarkerOptions().position(sydney)
+//                                               .title("Marker in Sydney"));
+//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     // -- Instances --

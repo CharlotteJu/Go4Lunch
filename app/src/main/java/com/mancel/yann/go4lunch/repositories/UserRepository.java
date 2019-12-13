@@ -24,12 +24,12 @@ public class UserRepository implements Repository.UserRepositoryInterface {
 
         users
         |
-        +--- user1 (uid)
+        +--- user1 (its uid value)
              |
              +--- uid
              +--- username
-             +--- urlPicture
-             +--- selectedRestaurant
+             +--- url_picture
+             +--- selected_restaurant
      */
 
     // FIELDS --------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ public class UserRepository implements Repository.UserRepositoryInterface {
     @Override
     public Task<Void> updateRestaurant(@NonNull String uid, @Nullable String restaurant) {
         return this.getUsersCollection().document(uid)
-                                        .update("selectedRestaurant", restaurant);
+                                        .update("selected_restaurant", restaurant);
     }
 
     // -- Delete --

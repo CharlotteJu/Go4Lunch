@@ -3,27 +3,42 @@ package com.mancel.yann.go4lunch.models;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.firestore.PropertyName;
+
 import java.util.Objects;
 
 /**
  * Created by Yann MANCEL on 12/12/2019.
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.models
+ *
+ * Pojo class to Firebase Firestore.
  */
 public class User {
 
     // FIELDS --------------------------------------------------------------------------------------
 
     @NonNull
-    private String uid;
+    private String mUid;
     @NonNull
-    private String username;
+    private String mUsername;
     @Nullable
-    private String urlPicture;
+    private String mUrlPicture;
     @Nullable
-    private String selectedRestaurant;
+    private String mSelectedRestaurant;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
+
+    /**
+     * Constructor by default
+     * It is this constructor that Firebase Firestore uses.
+     */
+    public User() {
+        this.mUid = "";
+        this.mUsername = "";
+        this.mUrlPicture = null;
+        this.mSelectedRestaurant = null;
+    }
 
     /**
      * Constructor
@@ -34,52 +49,60 @@ public class User {
     public User(@NonNull String uid,
                 @NonNull String username,
                 @Nullable String urlPicture) {
-        this.uid = uid;
-        this.username = username;
-        this.urlPicture = urlPicture;
-        this.selectedRestaurant = null;
+        this.mUid = uid;
+        this.mUsername = username;
+        this.mUrlPicture = urlPicture;
+        this.mSelectedRestaurant = null;
     }
 
     // METHODS -------------------------------------------------------------------------------------
 
     // -- Getter --
 
+    @PropertyName("uid")
     @NonNull
     public String getUid() {
-        return this.uid;
+        return this.mUid;
     }
 
+    @PropertyName("username")
     @NonNull
     public String getUsername() {
-        return this.username;
+        return this.mUsername;
     }
 
+    @PropertyName("url_picture")
     @Nullable
     public String getUrlPicture() {
-        return this.urlPicture;
+        return this.mUrlPicture;
     }
 
+    @PropertyName("selected_restaurant")
     @Nullable
     public String getSelectedRestaurant() {
-        return this.selectedRestaurant;
+        return this.mSelectedRestaurant;
     }
 
     // -- Setter --
 
+    @PropertyName("uid")
     public void setUid(@NonNull String uid) {
-        this.uid = uid;
+        this.mUid = uid;
     }
 
+    @PropertyName("username")
     public void setUsername(@NonNull String username) {
-        this.username = username;
+        this.mUsername = username;
     }
 
+    @PropertyName("url_picture")
     public void setUrlPicture(@Nullable String urlPicture) {
-        this.urlPicture = urlPicture;
+        this.mUrlPicture = urlPicture;
     }
 
+    @PropertyName("selected_restaurant")
     public void setSelectedRestaurant(@Nullable String selectedRestaurant) {
-        this.selectedRestaurant = selectedRestaurant;
+        this.mSelectedRestaurant = selectedRestaurant;
     }
 
     // -- Comparison --
@@ -95,11 +118,21 @@ public class User {
         // Cast Object to Meeting
         final User user = (User) obj;
 
-        return Objects.equals(this.uid, user.uid);
+        return Objects.equals(this.mUid, user.mUid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.uid);
+        return Objects.hash(this.mUid);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "User [" + "mUid=" + this.mUid +
+                          ", mUsername=" + this.mUsername +
+                          ", mUrlPicture=" + this.mUrlPicture +
+                          ", mSelectedRestaurant=" + this.mSelectedRestaurant +
+                "]";
     }
 }

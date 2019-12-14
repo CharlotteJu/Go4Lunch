@@ -17,7 +17,7 @@ public interface Repository {
 
     // INTERFACES ----------------------------------------------------------------------------------
 
-    interface UserRepositoryInterface {
+    interface UserRepository {
 
         // METHODS ---------------------------------------------------------------------------------
 

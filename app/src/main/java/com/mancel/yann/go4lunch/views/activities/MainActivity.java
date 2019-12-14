@@ -20,17 +20,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.mancel.yann.go4lunch.R;
-import com.mancel.yann.go4lunch.models.User;
-import com.mancel.yann.go4lunch.repositories.UserRepository;
 import com.mancel.yann.go4lunch.utils.BlurTransformation;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
 import com.mancel.yann.go4lunch.views.fragments.LunchListFragment;
@@ -154,74 +147,9 @@ public class MainActivity extends BaseActivity {
             // NavigationView
             case R.id.menu_drawer_lunch:
                 Log.e(this.getClass().getSimpleName(), "Lunch");
-
-                Log.e("Repo", "create user: uid = " + this.getCurrentUser().getUid());
-                final UserRepository repo = new UserRepository();
-                repo.getUser(this.getCurrentUser().getUid())
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                Log.e("Repo", "getUser onSuccess");
-
-                                final User user = documentSnapshot.toObject(User.class);
-
-                                if (user != null) {
-                                    Log.e("Repo", "user is already present");
-
-                                    Log.e("Repo", user.toString());
-
-                                } else {
-                                    Log.e("Repo", "user is not present");
-
-                                    repo.createUser(getCurrentUser().getUid(),
-                                                    getCurrentUser().getDisplayName(),
-                                                    getCurrentUser().getPhotoUrl().toString())
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.e("Repo", "createUser onSuccess");
-                                            }
-                                        })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.e("Repo", "createUser onFailure");
-                                            Log.e("Repo", e.getMessage());
-                                        }
-                                    });
-                                }
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e("Repo", "getUser onFailure");
-                                Log.e("Repo", e.getMessage());
-                            }
-                        });
-
                 break;
             case R.id.menu_drawer_setting:
                 Log.e(this.getClass().getSimpleName(), "Setting");
-
-                Log.e(this.getClass().getSimpleName(), "delete user");
-                final UserRepository repo1 = new UserRepository();
-                repo1.deleteUser(this.getCurrentUser().getUid())
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.e(this.getClass().getSimpleName(), "user is deleted");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e(this.getClass().getSimpleName(), e.getMessage());
-                                Log.e(this.getClass().getSimpleName(), "delete user impossible");
-                            }
-                        });
-
-
                 break;
             case R.id.menu_drawer_logout:
                 this.signOutCurrentUser();

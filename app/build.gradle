@@ -61,9 +61,11 @@ dependencies {
     def firebase_analytics_version = "17.2.1"
     def firebase_auth_version = "19.2.0"
     def firebase_firestore_version = "21.3.1"
+    def firebase_ui_firestore_version = "5.0.0"
     implementation "com.google.firebase:firebase-analytics:$firebase_analytics_version"
     implementation "com.google.firebase:firebase-auth:$firebase_auth_version"
     implementation "com.google.firebase:firebase-firestore:$firebase_firestore_version"
+    implementation "com.firebaseui:firebase-ui-firestore:$firebase_ui_firestore_version"
 
     // GOOGLE LOGIN
     def google_login_version = "17.0.0"

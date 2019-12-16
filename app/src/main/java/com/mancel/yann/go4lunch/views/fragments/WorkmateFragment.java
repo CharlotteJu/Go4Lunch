@@ -4,9 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.Query;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.models.User;
+import com.mancel.yann.go4lunch.repositories.Repository;
+import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.views.adapters.WorkmateAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
@@ -17,9 +26,9 @@ import butterknife.BindView;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.views.fragments
  *
- * A {@link BaseFragment} subclass.
+ * A {@link BaseFragment} subclass which implements {@link WorkmateAdapter.WorkmateAdapterListener}.
  */
-public class WorkmateFragment extends BaseFragment {
+public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.WorkmateAdapterListener {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -31,6 +40,8 @@ public class WorkmateFragment extends BaseFragment {
     @SuppressWarnings("NullableProblems")
     @NonNull
     private WorkmateAdapter mAdapter;
+
+    private static final String TAG = WorkmateFragment.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -48,6 +59,15 @@ public class WorkmateFragment extends BaseFragment {
     @Override
     protected void configureDesign() {
         this.configureRecyclerView();
+    }
+
+    // -- WorkmateAdapter.WorkmateAdapterListener interface --
+
+    @Override
+    public void onDataChanged() {
+        Log.d(TAG, "onDataChanged:");
+        this.mNoPeople.setVisibility( (this.mAdapter.getItemCount() == 0) ? View.VISIBLE :
+                                                                            View.GONE);
     }
 
     // -- Instances --
@@ -68,13 +88,31 @@ public class WorkmateFragment extends BaseFragment {
      * Configures the {@link RecyclerView}
      */
     private void configureRecyclerView() {
+        // TODO: 16/12/2019 Update this method. Userrepository is just to test
+        final Repository.UserRepository repo = new UserRepositoryImpl();
+
         // Adapter
-        this.mAdapter = new WorkmateAdapter();
+        this.mAdapter = new WorkmateAdapter(this.generateOptionsForAdapter(repo.getAllUsers()),
+                                            this,
+                                            Glide.with(this));
 
         // RecyclerView
         this.mRecyclerView.setAdapter(this.mAdapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                                                                        DividerItemDecoration.VERTICAL));
+    }
+
+    /**
+     * Generates the {@link FirestoreRecyclerOptions} thanks to the {@link Query} in argument
+     * @param query a {@link Query}
+     * @return a {@link FirestoreRecyclerOptions} of {@link User}
+     */
+    @NonNull
+    private FirestoreRecyclerOptions<User> generateOptionsForAdapter(final Query query) {
+        return new FirestoreRecyclerOptions.Builder<User>()
+                                           .setQuery(query, User.class)
+                                           .setLifecycleOwner(this.getActivity())
+                                           .build();
     }
 }

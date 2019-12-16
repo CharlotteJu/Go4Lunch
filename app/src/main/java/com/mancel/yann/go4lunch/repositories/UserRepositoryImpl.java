@@ -69,11 +69,24 @@ public class UserRepositoryImpl implements Repository.UserRepository {
     @NonNull
     @Override
     public Query getAllUsers() {
-        return this.getUsersCollection().orderBy("username")
+        return this.getUsersCollection().orderBy("username", Query.Direction.DESCENDING)
                                         .limit(50);
     }
 
+    @NonNull
+    @Override
+    public Query getAllUsersFromThisRestaurant(@Nullable String placeIdOfRestaurant) {
+        return this.getUsersCollection().whereEqualTo("selected_restaurant", placeIdOfRestaurant);
+    }
+
     // -- Update --
+
+    @NonNull
+    @Override
+    public Task<Void> updateUsername(@NonNull String uid, @NonNull String username) {
+        return this.getUsersCollection().document(uid)
+                                        .update("username", username);
+    }
 
     @NonNull
     @Override

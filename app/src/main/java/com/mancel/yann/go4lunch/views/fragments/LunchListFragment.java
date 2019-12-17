@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.widget.TextView;
 
 import com.mancel.yann.go4lunch.R;
@@ -11,6 +13,9 @@ import com.mancel.yann.go4lunch.views.adapters.LunchAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
 import butterknife.BindView;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by Yann MANCEL on 19/11/2019.
@@ -32,6 +37,10 @@ public class LunchListFragment extends BaseFragment {
     @NonNull
     private LunchAdapter mAdapter;
 
+    private Disposable mDisposable;
+
+    private static final String TAG = LunchListFragment.class.getSimpleName();
+
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     public LunchListFragment() {}
@@ -48,6 +57,57 @@ public class LunchListFragment extends BaseFragment {
     @Override
     protected void configureDesign() {
         this.configureRecyclerView();
+        this.testJavaRX();
+    }
+
+    // -- Fragment --
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.disposeWhenDestroy();
+    }
+
+    // -- Observable --
+
+    private Observable<String> getObservable() {
+        return Observable.just("Reactive X is cool!");
+    }
+
+    // -- Observer --
+
+    private DisposableObserver<String> getObserver() {
+        return new DisposableObserver<String>() {
+            @Override
+            public void onNext(String text) {
+                Log.e(TAG, "OnNext: " + text);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: " + e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete");
+            }
+        };
+    }
+
+    private void disposeWhenDestroy() {
+        Log.e(TAG, "disposeWhenDestroy");
+
+        if (this.mDisposable != null && !this.mDisposable.isDisposed()) {
+            this.mDisposable.dispose();
+        }
+    }
+
+    // -- Stream --
+
+    private void testJavaRX() {
+        Log.e(TAG, "testJavaRX");
+        this.mDisposable = this.getObservable().subscribeWith(this.getObserver());
     }
 
     // -- Instances --

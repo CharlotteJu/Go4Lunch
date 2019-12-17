@@ -1,5 +1,7 @@
 package com.mancel.yann.go4lunch.views.adapters;
 
+import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -59,10 +61,13 @@ class WorkmateViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * Updates the item
-     * @param user  a {@link User} that allows to update the item
-     * @param glide a {@link RequestManager}
+     * @param user      a {@link User} that allows to update the item
+     * @param glide     a {@link RequestManager}
+     * @param context   a {@link Context} (just to retrieve the resources)
      */
-    void updateWorkmate(@NonNull User user, @NonNull final RequestManager glide) {
+    void updateWorkmate(@NonNull final User user,
+                        @NonNull final RequestManager glide,
+                        @NonNull final Context context) {
         // ImageView (using to Glide library)
         glide.load(user.getUrlPicture())
              .circleCrop()
@@ -70,11 +75,33 @@ class WorkmateViewHolder extends RecyclerView.ViewHolder {
              .error(R.drawable.ic_close)
              .into(this.mImage);
 
-        // TextView
-        // TODO: 16/12/2019 Change style and text according to user.getSelectedRestaurant() method
-        final String text = (user.getSelectedRestaurant() == null) ? user.getUsername() + ": no restaurant" :
-                                                                     user.getUsername() + ": restaurant";
+        // TextView: Text
+        String text;
+
+        if (user.getSelectedRestaurant() == null) {
+            // User has't decided yet
+            text = context.getString(R.string.text_item_workmate_no_choice,
+                                     user.getUsername());
+        }
+        else {
+            // User is eating ()
+            text = context.getString(R.string.text_item_workmate_choice,
+                                    user.getUsername(),
+                                                "type",
+                                                user.getSelectedRestaurant());
+        }
 
         this.mText.setText(text);
+
+        // TextView: Style
+        if (Build.VERSION.SDK_INT < 23) {
+            this.mText.setTextAppearance(context,
+                                         (user.getSelectedRestaurant() == null) ? R.style.TextViewStyle2 :
+                                                                                  R.style.TextViewStyle1);
+        }
+        else {
+            this.mText.setTextAppearance( (user.getSelectedRestaurant() == null) ? R.style.TextViewStyle2 :
+                                                                                   R.style.TextViewStyle1);
+        }
     }
 }

@@ -37,6 +37,8 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateView
     private final RequestManager mGlide;
     @NonNull
     private final WorkmateAdapterListener mCallback;
+    @NonNull
+    private final Context mContext;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -46,14 +48,17 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateView
      * @param options   a {@link FirestoreRecyclerOptions} of {@link User}
      * @param callback  a {@link WorkmateAdapterListener} for the callback system
      * @param glide     a {@link RequestManager}
+     * @param context   a {@link Context} (just to retrieve the resources)
      */
     public WorkmateAdapter(@NonNull final FirestoreRecyclerOptions<User> options,
                            @NonNull final WorkmateAdapterListener callback,
-                           @NonNull final RequestManager glide) {
+                           @NonNull final RequestManager glide,
+                           @NonNull final Context context) {
         super(options);
 
         this.mCallback = callback;
         this.mGlide = glide;
+        this.mContext = context;
     }
 
     // METHODS -------------------------------------------------------------------------------------
@@ -75,7 +80,7 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateView
 
     @Override
     protected void onBindViewHolder(@NonNull WorkmateViewHolder workmateViewHolder, int i, @NonNull User user) {
-        workmateViewHolder.updateWorkmate(user, this.mGlide);
+        workmateViewHolder.updateWorkmate(user, this.mGlide, this.mContext);
     }
 
     @Override

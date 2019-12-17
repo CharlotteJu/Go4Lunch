@@ -94,7 +94,8 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
         // Adapter
         this.mAdapter = new WorkmateAdapter(this.generateOptionsForAdapter(repo.getAllUsers()),
                                             this,
-                                            Glide.with(this));
+                                            Glide.with(this),
+                                            this.getContext());
 
         // RecyclerView
         this.mRecyclerView.setAdapter(this.mAdapter);

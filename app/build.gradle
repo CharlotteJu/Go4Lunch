@@ -50,8 +50,9 @@ dependencies {
     def retrofit_version = "2.7.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
 
-    // RXJAVA + RXANDROID
+    // RX JAVA + RX ANDROID
     def rx_android_version = "2.1.1"
     def rx_java_version = "2.2.16"
     implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"

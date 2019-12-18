@@ -7,6 +7,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.mancel.yann.go4lunch.models.Follower;
+import com.mancel.yann.go4lunch.models.UserInfos;
+
+import java.util.List;
+
+import io.reactivex.Observable;
 
 /**
  * Created by Yann MANCEL on 12/12/2019.
@@ -97,5 +103,31 @@ public interface Repository {
          */
         @NonNull
         Task<Void> deleteUser(@NonNull String uid);
+    }
+
+    interface PlaceRepository {
+
+        // METHODS ---------------------------------------------------------------------------------
+
+        /**
+         * Get stream to Fetch the user infos
+         * @param username a {@link String}
+         * @return an {@link Observable} of {@link UserInfos}
+         */
+        Observable<UserInfos> getStreamToFetchUserInfos(final String username);
+
+        /**
+         * Get stream to Fetch the user following
+         * @param username a {@link String}
+         * @return an {@link Observable} of {@link List<Follower>}
+         */
+        Observable<List<Follower>> getStreamToFetchUserFollowing(final String username);
+
+        /**
+         * Get stream to Fetch the user infos from the first following
+         * @param username a {@link String}
+         * @return an {@link Observable} of {@link UserInfos}
+         */
+        Observable<UserInfos> getStreamToFetchUserInfosFromFirstFollowing(final String username);
     }
 }

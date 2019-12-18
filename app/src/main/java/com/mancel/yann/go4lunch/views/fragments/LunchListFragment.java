@@ -9,11 +9,18 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.models.Follower;
+import com.mancel.yann.go4lunch.models.UserInfos;
+import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
+import com.mancel.yann.go4lunch.repositories.Repository;
 import com.mancel.yann.go4lunch.views.adapters.LunchAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
+import java.util.List;
+
 import butterknife.BindView;
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
@@ -107,7 +114,52 @@ public class LunchListFragment extends BaseFragment {
 
     private void testJavaRX() {
         Log.e(TAG, "testJavaRX");
-        this.mDisposable = this.getObservable().subscribeWith(this.getObserver());
+        //this.mDisposable = this.getObservable().subscribeWith(this.getObserver());
+
+        Repository.PlaceRepository placeRepository = new PlaceRepositoryImpl();
+
+//        this.mDisposable = placeRepository.getStreamToFetchUserFollowing("JakeWharton")
+//                                          .subscribeWith(new DisposableObserver<List<Follower>>() {
+//                                              @Override
+//                                              public void onNext(List<Follower> followers) {
+//
+//                                                  StringBuilder builder = new StringBuilder();
+//
+//                                                  for (Follower follower : followers) {
+//                                                      builder.append(follower.getLogin() + " ");
+//                                                  }
+//
+//                                                  Log.e(TAG, "OnNext: " + builder.toString());
+//                                              }
+//
+//                                              @Override
+//                                              public void onError(Throwable e) {
+//                                                  Log.e(TAG, "onError: " + e.getMessage());
+//                                              }
+//
+//                                              @Override
+//                                              public void onComplete() {
+//                                                  Log.e(TAG, "onComplete");
+//                                              }
+//                                          });
+
+        this.mDisposable = placeRepository.getStreamToFetchUserInfosFromFirstFollowing("JakeWharton")
+                                          .subscribeWith(new DisposableObserver<UserInfos>() {
+                                              @Override
+                                              public void onNext(UserInfos userInfos) {
+                                                  Log.e(TAG, "OnNext: " + userInfos.getLogin());
+                                              }
+
+                                              @Override
+                                              public void onError(Throwable e) {
+                                                  Log.e(TAG, "onError: " + e.getMessage());
+                                              }
+
+                                              @Override
+                                              public void onComplete() {
+                                                  Log.e(TAG, "onComplete");
+                                              }
+                                          });
     }
 
     // -- Instances --

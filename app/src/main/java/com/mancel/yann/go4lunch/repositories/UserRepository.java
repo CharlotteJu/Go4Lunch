@@ -50,16 +50,16 @@ public interface UserRepository {
 
     /**
      * Gets all users into the collection
-     * @return a {@link Query} taht contains the users
+     * @return a {@link Query} that contains the users
      */
     @NonNull
     Query getAllUsers();
 
     /**
      * Gets all users  who have selected the same restaurant
-     * If the argument is null, {@link Query} return the users that do not selected a restaurant
+     * If the argument is null, {@link Query} returns the users that do not selected a restaurant
      * @param placeIdOfRestaurant a {@link String} that contains the place_id of the restaurant
-     * @return a {@link Query} taht contains the users
+     * @return a {@link Query} that contains the users
      */
     @NonNull
     Query getAllUsersFromThisRestaurant(@Nullable String placeIdOfRestaurant);
@@ -68,8 +68,8 @@ public interface UserRepository {
 
     /**
      * Update the username field of a {@link com.mancel.yann.go4lunch.models.User} with its uid field
-     * @param uid           a {@link String} that contains the uid
-     * @param username    a {@link String} that contains the username
+     * @param uid       a {@link String} that contains the uid
+     * @param username  a {@link String} that contains the username
      * @return a {@link Task} of {@link Void}
      */
     @NonNull

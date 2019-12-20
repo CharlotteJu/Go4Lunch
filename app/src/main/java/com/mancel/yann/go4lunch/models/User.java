@@ -115,7 +115,7 @@ public class User {
         // Null or the class is different
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        // Cast Object to Meeting
+        // Cast Object to User
         final User user = (User) obj;
 
         return Objects.equals(this.mUid, user.mUid);
@@ -136,5 +136,31 @@ public class User {
                           ", mUrlPicture=" + this.mUrlPicture +
                           ", mSelectedRestaurant=" + this.mSelectedRestaurant +
                 "]";
+    }
+
+    // -- Copy --
+
+    /**
+     * Copies the fields of the {@link Object} in argument
+     * @param obj a {@link Object}
+     * @return a boolean that is true if the copy is performed
+     */
+    public boolean copy(@Nullable Object obj) {
+        // Same address
+        if (this == obj) return false;
+
+        // Null or the class is different
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        // Cast Object to User
+        final User user = (User) obj;
+
+        // Copy
+        this.mUid = user.mUid;
+        this.mUsername = user.mUsername;
+        this.mUrlPicture = user.mUrlPicture;
+        this.mSelectedRestaurant = user.mSelectedRestaurant;
+
+        return true;
     }
 }

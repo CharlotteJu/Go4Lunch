@@ -17,9 +17,9 @@ import io.reactivex.schedulers.Schedulers;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.repositories
  *
- * A classs which implements {@link Repository.PlaceRepository}.
+ * A classs which implements {@link PlaceRepository}.
  */
-public class PlaceRepositoryImpl implements Repository.PlaceRepository {
+public class PlaceRepositoryImpl implements PlaceRepository {
 
     // METHODS -------------------------------------------------------------------------------------
 

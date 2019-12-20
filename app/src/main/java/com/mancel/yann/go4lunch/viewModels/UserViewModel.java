@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.mancel.yann.go4lunch.models.User;
-import com.mancel.yann.go4lunch.repositories.Repository;
+import com.mancel.yann.go4lunch.repositories.UserRepository;
 
 /**
  * Created by Yann MANCEL on 10/12/2019.
@@ -22,7 +22,7 @@ public class UserViewModel extends ViewModel {
     // FIELDS --------------------------------------------------------------------------------------
 
     @NonNull
-    private Repository.UserRepository mUserRepository;
+    private UserRepository mUserRepository;
 
     private static final String TAG = UserViewModel.class.getSimpleName();
 
@@ -30,9 +30,9 @@ public class UserViewModel extends ViewModel {
 
     /**
      * Constructor with an argument
-     * @param userRepository a {@link com.mancel.yann.go4lunch.repositories.Repository.UserRepository}
+     * @param userRepository a {@link UserRepository}
      */
-    public UserViewModel(@NonNull Repository.UserRepository userRepository) {
+    public UserViewModel(@NonNull UserRepository userRepository) {
         Log.d(TAG, "UserViewModel");
 
         this.mUserRepository = userRepository;
@@ -48,11 +48,11 @@ public class UserViewModel extends ViewModel {
         Log.d(TAG, "onCleared");
     }
 
-    // -- User --
+    // -- Create (User) --
 
     /**
      * Creates the current user (authenticated) of Firebase Firestore
-     * thanks to {@link com.mancel.yann.go4lunch.repositories.Repository.UserRepository}
+     * thanks to {@link UserRepository}
      * @param currentUser a {@link FirebaseUser} that contains the data of the last authenticated
      * @throws Exception if the {@link FirebaseUser} is null
      */
@@ -92,9 +92,13 @@ public class UserViewModel extends ViewModel {
                             );
     }
 
+    // -- Read (User) --
+
+    // -- Delete (User) --
+
     /**
      * Delete the current user (authenticated) of Firebase Firestore
-     * thanks to {@link com.mancel.yann.go4lunch.repositories.Repository.UserRepository}
+     * thanks to {@link UserRepository}
      * @param currentUser a {@link FirebaseUser} that contains the data of the last authenticated
      * @throws Exception if the {@link FirebaseUser} is null
      */

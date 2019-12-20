@@ -6,27 +6,28 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.mancel.yann.go4lunch.models.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Yann MANCEL on 21/11/2019.
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.views.adapters
  *
- * A {@link FirestoreRecyclerAdapter} subclass.
+ * A {@link RecyclerView.Adapter} subclass.
  */
-public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateViewHolder> {
+public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateViewHolder> {
 
     // INTERFACES ----------------------------------------------------------------------------------
 
     public interface WorkmateAdapterListener {
         /**
-         * the callback method is activated when the {@link FirestoreRecyclerAdapter} calls
-         * its onDataChanged method.
+         * the callback method is activated with the updateData method
          */
         void onDataChanged();
     }
@@ -39,31 +40,29 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateView
     private final WorkmateAdapterListener mCallback;
     @NonNull
     private final Context mContext;
+    @NonNull
+    private List<User> mUsers;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.
-     * See {@link FirestoreRecyclerOptions} for configuration options.
-     * @param options   a {@link FirestoreRecyclerOptions} of {@link User}
      * @param callback  a {@link WorkmateAdapterListener} for the callback system
      * @param glide     a {@link RequestManager}
      * @param context   a {@link Context} (just to retrieve the resources)
      */
-    public WorkmateAdapter(@NonNull final FirestoreRecyclerOptions<User> options,
-                           @NonNull final WorkmateAdapterListener callback,
+    public WorkmateAdapter(@NonNull final WorkmateAdapterListener callback,
                            @NonNull final RequestManager glide,
                            @NonNull final Context context) {
-        super(options);
-
         this.mCallback = callback;
         this.mGlide = glide;
         this.mContext = context;
+        this.mUsers = new ArrayList<>();
     }
 
     // METHODS -------------------------------------------------------------------------------------
 
-    // -- FirestoreRecyclerAdapter --
+    // -- RecyclerView.Adapter --
 
     @NonNull
     @Override
@@ -79,13 +78,26 @@ public class WorkmateAdapter extends FirestoreRecyclerAdapter<User, WorkmateView
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull WorkmateViewHolder workmateViewHolder, int i, @NonNull User user) {
-        workmateViewHolder.updateWorkmate(user, this.mGlide, this.mContext);
+    public void onBindViewHolder(@NonNull WorkmateViewHolder holder, int position) {
+        holder.updateWorkmate(this.mUsers.get(position), this.mGlide, this.mContext);
     }
 
     @Override
-    public void onDataChanged() {
-        super.onDataChanged();
+    public int getItemCount() {
+        return this.mUsers.size();
+    }
+
+    // -- User --
+
+    /**
+     * Updates the data thanks to the {@link List<User>} in argument
+     * @param newUsers a {@link List<User>} that contains the new data
+     */
+    public void updateData(@NonNull final List<User> newUsers) {
+        this.mUsers = newUsers;
+        this.notifyDataSetChanged();
+
+        // Callback to update UI
         this.mCallback.onDataChanged();
     }
 }

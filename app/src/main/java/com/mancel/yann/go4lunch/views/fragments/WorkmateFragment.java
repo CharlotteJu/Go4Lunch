@@ -1,23 +1,30 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.User;
-import com.mancel.yann.go4lunch.repositories.Repository;
+import com.mancel.yann.go4lunch.repositories.UserRepository;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.views.adapters.WorkmateAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -41,6 +48,10 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
     @NonNull
     private WorkmateAdapter mAdapter;
 
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private ListenerRegistration mListenerRegistration;
+
     private static final String TAG = WorkmateFragment.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
@@ -59,6 +70,14 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
     @Override
     protected void configureDesign() {
         this.configureRecyclerView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Stop listening to changes
+        this.mListenerRegistration.remove();
     }
 
     // -- WorkmateAdapter.WorkmateAdapterListener interface --
@@ -88,32 +107,39 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
      * Configures the {@link RecyclerView}
      */
     private void configureRecyclerView() {
-        // TODO: 16/12/2019 Update this method. Userrepository is just to test
-        final Repository.UserRepository repo = new UserRepositoryImpl();
-
         // Adapter
-        this.mAdapter = new WorkmateAdapter(this.generateOptionsForAdapter(repo.getAllUsers()),
-                                            this,
+        this.mAdapter = new WorkmateAdapter(this,
                                             Glide.with(this),
                                             this.getContext());
+
+        // ListenerRegistration: SnapshotListener of Query
+        // TODO: 16/12/2019 Update this method. Userrepository is just to test
+        final UserRepository repo = new UserRepositoryImpl();
+        this.mListenerRegistration = repo.getAllUsers()
+                                         .addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "When addSnapshotListener to query (Update WorkmateAdapter): Listen failed.", e);
+                    return;
+                }
+
+                List<User> users = new ArrayList<>();
+
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    if (doc != null) {
+                        users.add(doc.toObject(User.class));
+                    }
+                }
+
+                mAdapter.updateData(users);
+            }
+        });
 
         // RecyclerView
         this.mRecyclerView.setAdapter(this.mAdapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                                                                        DividerItemDecoration.VERTICAL));
-    }
-
-    /**
-     * Generates the {@link FirestoreRecyclerOptions} thanks to the {@link Query} in argument
-     * @param query a {@link Query}
-     * @return a {@link FirestoreRecyclerOptions} of {@link User}
-     */
-    @NonNull
-    private FirestoreRecyclerOptions<User> generateOptionsForAdapter(final Query query) {
-        return new FirestoreRecyclerOptions.Builder<User>()
-                                           .setQuery(query, User.class)
-                                           .setLifecycleOwner(this.getActivity())
-                                           .build();
     }
 }

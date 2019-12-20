@@ -1,26 +1,22 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
+import android.util.Log;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.widget.TextView;
-
 import com.mancel.yann.go4lunch.R;
-import com.mancel.yann.go4lunch.models.Follower;
 import com.mancel.yann.go4lunch.models.UserInfos;
+import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.Repository;
 import com.mancel.yann.go4lunch.views.adapters.LunchAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
-import java.util.List;
-
 import butterknife.BindView;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
@@ -116,7 +112,7 @@ public class LunchListFragment extends BaseFragment {
         Log.e(TAG, "testJavaRX");
         //this.mDisposable = this.getObservable().subscribeWith(this.getObserver());
 
-        Repository.PlaceRepository placeRepository = new PlaceRepositoryImpl();
+        PlaceRepository placeRepository = new PlaceRepositoryImpl();
 
 //        this.mDisposable = placeRepository.getStreamToFetchUserFollowing("JakeWharton")
 //                                          .subscribeWith(new DisposableObserver<List<Follower>>() {

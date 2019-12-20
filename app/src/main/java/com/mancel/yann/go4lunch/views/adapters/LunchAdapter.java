@@ -18,7 +18,7 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
 
     // METHODS -------------------------------------------------------------------------------------
 
-    // -- Adapter --
+    // -- RecyclerView.Adapter --
 
     @NonNull
     @Override

@@ -126,6 +126,8 @@ public class User {
         return Objects.hash(this.mUid);
     }
 
+    // -- Display --
+
     @NonNull
     @Override
     public String toString() {

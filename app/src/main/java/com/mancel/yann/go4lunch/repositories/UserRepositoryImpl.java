@@ -15,9 +15,9 @@ import com.mancel.yann.go4lunch.models.User;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.repositories
  *
- * A class which implements {@link Repository.UserRepository}.
+ * A class which implements {@link UserRepository}.
  */
-public class UserRepositoryImpl implements Repository.UserRepository {
+public class UserRepositoryImpl implements UserRepository {
 
     /*
         Firestore structure:

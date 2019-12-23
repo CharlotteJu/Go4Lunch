@@ -87,7 +87,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-auth:$google_login_version"
 
     // FACEBOOK LOGIN
-    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    def facebook_login_version = "5.13.0"
+    implementation "com.facebook.android:facebook-android-sdk:$facebook_login_version"
 
     // TESTS ---------------------------------------------------------------------------------------
 

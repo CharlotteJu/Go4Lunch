@@ -5,21 +5,20 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.repositories.UserRepository;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
+import com.mancel.yann.go4lunch.viewModels.UserViewModel;
+import com.mancel.yann.go4lunch.viewModels.UserViewModelFactory;
 import com.mancel.yann.go4lunch.views.adapters.WorkmateAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
@@ -46,6 +45,10 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
 
     @SuppressWarnings("NullableProblems")
     @NonNull
+    private UserViewModel mUserViewModel;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
     private WorkmateAdapter mAdapter;
 
     @SuppressWarnings("NullableProblems")
@@ -69,6 +72,7 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
 
     @Override
     protected void configureDesign() {
+        this.configureUserViewModel();
         this.configureRecyclerView();
     }
 
@@ -101,6 +105,18 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
         return new WorkmateFragment();
     }
 
+    // -- UserViewModel --
+
+    private void configureUserViewModel() {
+        // TODO: 23/12/2019 UserRepository must be removed thanks to Dagger 2
+        final UserRepository userRepository = new UserRepositoryImpl();
+
+        final UserViewModelFactory factory = new UserViewModelFactory(userRepository);
+
+        this.mUserViewModel = ViewModelProviders.of(this.getActivity(), factory)
+                                                .get(UserViewModel.class);
+    }
+
     // -- RecyclerView --
 
     /**
@@ -113,28 +129,25 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
                                             this.getContext());
 
         // ListenerRegistration: SnapshotListener of Query
-        // TODO: 16/12/2019 Update this method. Userrepository is just to test
-        final UserRepository repo = new UserRepositoryImpl();
-        this.mListenerRegistration = repo.getAllUsers()
-                                         .addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w(TAG, "When addSnapshotListener to query (Update WorkmateAdapter): Listen failed.", e);
-                    return;
-                }
+        this.mListenerRegistration = this.mUserViewModel.getAllUsers()
+                                                        .addSnapshotListener( (queryDocumentSnapshots, e) -> {
+                                                            if (e != null) {
+                                                                Log.e(TAG, "When addSnapshotListener to query (Update WorkmateAdapter): Listen failed.", e);
+                                                                return;
+                                                            }
 
-                List<User> users = new ArrayList<>();
+                                                            List<User> users = new ArrayList<>();
 
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    if (doc != null) {
-                        users.add(doc.toObject(User.class));
-                    }
-                }
+                                                            if (queryDocumentSnapshots != null) {
+                                                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                                                    if (doc != null) {
+                                                                        users.add(doc.toObject(User.class));
+                                                                    }
+                                                                }
+                                                            }
 
-                mAdapter.updateData(users);
-            }
-        });
+                                                            mAdapter.updateData(users);
+                                                        });
 
         // RecyclerView
         this.mRecyclerView.setAdapter(this.mAdapter);

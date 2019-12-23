@@ -3,6 +3,7 @@ package com.mancel.yann.go4lunch.views.fragments;
 import android.Manifest;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,7 +17,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
@@ -47,6 +50,8 @@ public class LunchMapFragment extends BaseFragment {
 
     public static final int RC_PERMISSION_LOCATION_UPDATE_LOCATION = 100;
     public static final int RC_CHECK_SETTINGS_TO_LOCATION = 1000;
+
+    private static final String TAG = LunchMapFragment.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -102,12 +107,16 @@ public class LunchMapFragment extends BaseFragment {
         }
 
         if (this.mGoogleMap != null) {
-            LatLng sydney = new LatLng(locationData.getLocation().getLatitude(),
-                                       locationData.getLocation().getLongitude());
+            LatLng currentPlace = new LatLng(locationData.getLocation().getLatitude(),
+                                             locationData.getLocation().getLongitude());
 
-            this.mGoogleMap.addMarker(new MarkerOptions().position(sydney)
+            this.mGoogleMap.addMarker(new MarkerOptions().position(currentPlace)
                            .title("Home"));
-            this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+            //this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPlace));
+            this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPlace, 18));
+
+            //this.mGoogleMap.getProjection().getVisibleRegion().latLngBounds.northeast;
         }
 
         //Log.e("LunchMapFragment", "[LiveData] onChangedLocationData: " + locationData.getLocation());
@@ -186,24 +195,14 @@ public class LunchMapFragment extends BaseFragment {
         this.mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_lunch_map_fragment);
 
         if (this.mMapFragment == null) {
-            this.mMapFragment = SupportMapFragment.newInstance(this.getGoogleMapOptions());
+            this.mMapFragment = SupportMapFragment.newInstance();
 
             getFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_lunch_map_fragment, this.mMapFragment)
+                                .add(R.id.fragment_lunch_map_fragment, this.mMapFragment)
                                 .commit();
         }
 
         this.mMapFragment.getMapAsync(this::onMapReady);
-    }
-
-    /**
-     * Gets the {@link GoogleMapOptions}
-     * @return a {@link GoogleMapOptions}
-     */
-    private GoogleMapOptions getGoogleMapOptions() {
-        return new GoogleMapOptions().mapType(GoogleMap.MAP_TYPE_NORMAL)
-                                     .zoomControlsEnabled(true)
-                                     .zoomGesturesEnabled(true);
     }
 
     /**
@@ -212,12 +211,43 @@ public class LunchMapFragment extends BaseFragment {
      */
     private void onMapReady(GoogleMap googleMap) {
         this.mGoogleMap = googleMap;
-//        // Add a marker in Sydney, Australia,
-//        // and move the map's camera to the same location.
-//        LatLng sydney = new LatLng(-33.852, 151.211);
-//        googleMap.addMarker(new MarkerOptions().position(sydney)
-//                                               .title("Marker in Sydney"));
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        // Configure the style of the GoogleMap
+        this.configureGoogleMapStyle();
+    }
+
+    /**
+     * Configures the style of the {@link GoogleMap}
+     */
+    private void configureGoogleMapStyle() {
+        // STYLE
+        try {
+            // Customises the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = this.mGoogleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this.getContext(),
+                                                                                               R.raw.google_maps_style_json));
+
+            if (!success) {
+                Log.e(TAG, "configureGoogleMapStyle: Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "configureGoogleMapStyle: Can't find style. Error: ", e);
+        }
+
+        // GESTURES
+        final UiSettings uiSettings = this.mGoogleMap.getUiSettings();
+        uiSettings.setZoomGesturesEnabled(true);
+        uiSettings.setZoomControlsEnabled(true);
+
+        // MIN ZOOM LEVELS
+        this.mGoogleMap.setMinZoomPreference( (this.mGoogleMap.getMinZoomLevel() > 10.0F) ? this.mGoogleMap.getMinZoomLevel() :
+                                                                                            10.0F);
+
+        // MAX ZOOM LEVELS
+        this.mGoogleMap.setMaxZoomPreference( (this.mGoogleMap.getMaxZoomLevel() < 25.0F) ? this.mGoogleMap.getMaxZoomLevel() :
+                                                                                            25.0F);
+
+        // TODO: 23/12/2019 Add a FAB or use this.mGoogleMap.setMyLocationEnabled(true);
     }
 
     // -- Instances --

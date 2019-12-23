@@ -97,7 +97,6 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
 
     /**
      * Gets a new instance of {@link WorkmateFragment}
-     *
      * @return a {@link WorkmateFragment}
      */
     @NonNull
@@ -107,6 +106,9 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
 
     // -- UserViewModel --
 
+    /**
+     * Configures the {@link UserViewModel}
+     */
     private void configureUserViewModel() {
         // TODO: 23/12/2019 UserRepository must be removed thanks to Dagger 2
         final UserRepository userRepository = new UserRepositoryImpl();

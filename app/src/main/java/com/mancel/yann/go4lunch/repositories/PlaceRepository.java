@@ -1,9 +1,6 @@
 package com.mancel.yann.go4lunch.repositories;
 
-import com.mancel.yann.go4lunch.models.Follower;
-import com.mancel.yann.go4lunch.models.UserInfos;
-
-import java.util.List;
+import com.mancel.yann.go4lunch.models.NearbySearch;
 
 import io.reactivex.Observable;
 
@@ -14,26 +11,18 @@ import io.reactivex.Observable;
  */
 public interface PlaceRepository {
 
-    // METHODS ---------------------------------------------------------------------------------
+    // METHODS -------------------------------------------------------------------------------------
 
     /**
-     * Get stream to Fetch the user infos
-     * @param username a {@link String}
-     * @return an {@link Observable} of {@link UserInfos}
+     * Get stream to Fetch the {@link NearbySearch}
+     * @param location  a {@link String} that contains the latitude/longitude around which to retrieve place information
+     * @param radius    a double that defines the distance (in meters) within which to return place results
+     * @param types      a {@link String} that restricts the results to places matching the specified type
+     * @param key       a {@link String} that contains your application's API key
+     * @return an {@link Observable<NearbySearch>}
      */
-    Observable<UserInfos> getStreamToFetchUserInfos(final String username);
-
-    /**
-     * Get stream to Fetch the user following
-     * @param username a {@link String}
-     * @return an {@link Observable} of {@link List<Follower>}
-     */
-    Observable<List<Follower>> getStreamToFetchUserFollowing(final String username);
-
-    /**
-     * Get stream to Fetch the user infos from the first following
-     * @param username a {@link String}
-     * @return an {@link Observable} of {@link UserInfos}
-     */
-    Observable<UserInfos> getStreamToFetchUserInfosFromFirstFollowing(final String username);
+    Observable<NearbySearch> getStreamToFetchNearbySearch(final String location,
+                                                          double radius,
+                                                          final String types,
+                                                          final String key);
 }

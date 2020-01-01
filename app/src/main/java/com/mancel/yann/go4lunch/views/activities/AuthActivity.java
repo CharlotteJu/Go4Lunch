@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.ContentLoadingProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
@@ -52,6 +53,8 @@ public class AuthActivity extends BaseActivity {
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.activity_auth_image_background)
     ImageView mBackgroundImage;
+    @BindView(R.id.activity_auth_ProgressBar)
+    ContentLoadingProgressBar mProgressBar;
 
     private GoogleSignInClient mGoogleSignInClient;
     private CallbackManager mFacebookCallbackManager;
@@ -199,6 +202,9 @@ public class AuthActivity extends BaseActivity {
      * @param account a {@link GoogleSignInAccount}
      */
     private void retrieveFirebaseAuthWithGoogle(GoogleSignInAccount account) {
+        // The action can take a long time
+        this.mProgressBar.show();
+
         final AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
 
         this.mFirebaseAuth.signInWithCredential(credential)
@@ -210,6 +216,9 @@ public class AuthActivity extends BaseActivity {
                                   ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
                                                                       getString(R.string.google_sign_in_failed));
                               }
+
+                              // The end of action
+                              this.mProgressBar.hide();
                           });
     }
 
@@ -224,7 +233,7 @@ public class AuthActivity extends BaseActivity {
 
         // Configure Facebook Button
         this.mFacebookButton = new LoginButton(this);
-        this.mFacebookButton.setReadPermissions("email", "public_profile");
+        this.mFacebookButton.setPermissions("email", "public_profile");
         this.mFacebookButton.registerCallback(this.mFacebookCallbackManager,
                                               new FacebookCallback<LoginResult>() {
                                                   @Override
@@ -258,7 +267,10 @@ public class AuthActivity extends BaseActivity {
      * @param accessToken a {@link AccessToken}
      */
     private void handleFacebookAccessToken(AccessToken accessToken) {
-        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        // The action can take a long time
+        this.mProgressBar.show();
+
+        final AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
 
         this.mFirebaseAuth.signInWithCredential(credential)
                           .addOnCompleteListener(this, (task) -> {
@@ -269,6 +281,9 @@ public class AuthActivity extends BaseActivity {
                                   ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
                                                                       getString(R.string.facebook_sign_in_failed));
                               }
+
+                              // The end of action
+                              this.mProgressBar.hide();
                           });
     }
 }

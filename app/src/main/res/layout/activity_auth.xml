@@ -116,6 +116,19 @@
             android:text="@string/facebook_sign_in"
             style="@style/FacebookButtonStyle"/>
 
+        <!-- ContentLoadingProgressBar: Progression -->
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/activity_auth_ProgressBar"
+            android:layout_width="@dimen/progress_bar_size"
+            android:layout_height="@dimen/progress_bar_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:indeterminate="true"
+            android:visibility="gone"
+            style="?android:attr/progressBarStyle"/>
+
     </com.mancel.yann.go4lunch.utils.CustomConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

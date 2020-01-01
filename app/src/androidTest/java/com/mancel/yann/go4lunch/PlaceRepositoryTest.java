@@ -2,22 +2,20 @@ package com.mancel.yann.go4lunch;
 
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.mancel.yann.go4lunch.models.Follower;
-import com.mancel.yann.go4lunch.models.UserInfos;
+import com.mancel.yann.go4lunch.models.NearbySearch;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Yann MANCEL on 18/12/2019.
@@ -31,54 +29,48 @@ public class PlaceRepositoryTest {
 
     // FIELDS --------------------------------------------------------------------------------------
 
-    private PlaceRepository mPlaceRepository;
+    private PlaceRepository mPlaceRepository = new PlaceRepositoryImpl();
 
     // METHODS -------------------------------------------------------------------------------------
 
-    @Before
-    public void setUp() {
-        this.mPlaceRepository = new PlaceRepositoryImpl();
-    }
-
     @Test
-    public void shouldFetchUserFollowing() {
+    public void should_Fetch_NearbySearch() {
+        // Retrieves Google Maps Key
+        final String key = InstrumentationRegistry.getInstrumentation()
+                                                  .getTargetContext()
+                                                  .getResources()
+                                                  .getString(R.string.google_maps_key);
+
         // Creates Observable
-        final Observable<List<Follower>> observable = this.mPlaceRepository.getStreamToFetchUserFollowing("JakeWharton");
+        final Observable<NearbySearch> observable = this.mPlaceRepository.getStreamToFetchNearbySearch("45.9922027,4.7176896",
+                                                                                                       200.0,
+                                                                                                       "restaurant",
+                                                                                                        key);
 
         // Creates Observer
-        final TestObserver<List<Follower>> observer = new TestObserver<>();
+        final TestObserver<NearbySearch> observer = new TestObserver<>();
 
-        // Create Stream
+        // Creates Stream
         observable.subscribeWith(observer)
                   .assertNoErrors()
                   .assertNoTimeout()
                   .awaitTerminalEvent();
 
         // Fetches the result
-        final List<Follower> followers = observer.values().get(0);
+        final NearbySearch nearbySearch = observer.values().get(0);
 
-        // TEST: List's size
-        assertThat("Jake Wharton follows only 12 users.", followers.size() == 12);
-    }
+        // TEST: Results's size
+        assertEquals("Results: Number of restaurant equals to 13", nearbySearch.getResults().size(), 13);
 
-    @Test
-    public void shouldFetchUserInfos() {
-        // Creates Observable
-        final Observable<UserInfos> observable = this.mPlaceRepository.getStreamToFetchUserInfos("JakeWharton");
+        // TEST: First item of Results
+        assertEquals("Results[0]: place_id equals to ChIJn_OajiGF9EcRQFJ9o2prZ3w", nearbySearch.getResults().get(0).getPlaceId(), "ChIJn_OajiGF9EcRQFJ9o2prZ3w");
+        assertEquals("Results[0]: name equals to Charcutier Traiteur Vigne", nearbySearch.getResults().get(0).getName(), "Charcutier Traiteur Vigne");
+        assertTrue("Results[0]: rating equals to 4", nearbySearch.getResults().get(0).getRating() == 4.0);
+        assertEquals("Results[0]: vicinity equals to 269 Rue nationale, Villefranche-sur-Saône", nearbySearch.getResults().get(0).getVicinity(), "269 Rue nationale, Villefranche-sur-Saône");
+        assertTrue("Results[0]: geometry > location > lat equals to 45.992902", nearbySearch.getResults().get(0).getGeometry().getLocation().getLat() == 45.992902);
+        assertTrue("Results[0]: geometry > location > lng equals to 4.718997", nearbySearch.getResults().get(0).getGeometry().getLocation().getLng() == 4.718997);
 
-        // Creates Observer
-        final TestObserver<UserInfos> observer = new TestObserver<>();
-
-        // Create Stream
-        observable.subscribeWith(observer)
-                  .assertNoErrors()
-                  .assertNoTimeout()
-                  .awaitTerminalEvent();
-
-        // Fetches the result
-        final UserInfos user = observer.values().get(0);
-
-        // TEST: List's size
-        assertThat("Jake Wharton GitHub's ID is 66577.", user.getId() == 66577);
+        // TEST: Status
+        assertEquals("Status: OK.", nearbySearch.getStatus(), "OK");
     }
 }

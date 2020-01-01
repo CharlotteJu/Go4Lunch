@@ -15,15 +15,18 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
+import com.mancel.yann.go4lunch.utils.GeneratorBitmap;
 import com.mancel.yann.go4lunch.viewModels.MapViewModel;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
@@ -32,9 +35,15 @@ import com.mancel.yann.go4lunch.views.bases.BaseFragment;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.views.fragments
  *
- * A {@link BaseFragment} subclass.
+ * A {@link BaseFragment} subclass which implements {@link OnMapReadyCallback},
+ * {@link GoogleMap.OnCameraMoveStartedListener}, {@link GoogleMap.OnCameraMoveListener},
+ * {@link GoogleMap.OnCameraMoveCanceledListener} and {@link GoogleMap.OnCameraIdleListener}.
  */
-public class LunchMapFragment extends BaseFragment {
+public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback,
+                                                              GoogleMap.OnCameraMoveStartedListener,
+                                                              GoogleMap.OnCameraMoveListener,
+                                                              GoogleMap.OnCameraMoveCanceledListener,
+                                                              GoogleMap.OnCameraIdleListener {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -47,6 +56,13 @@ public class LunchMapFragment extends BaseFragment {
 
     private GoogleMap mGoogleMap;
     private LocationLiveData mLocationLiveData;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private LatLng mCurrentLatLngUser;
+
+    private boolean mIsFirstLocation = true;
+    private boolean mIsLocatedOnUser = true;
 
     public static final int RC_PERMISSION_LOCATION_UPDATE_LOCATION = 100;
     public static final int RC_CHECK_SETTINGS_TO_LOCATION = 1000;
@@ -68,15 +84,121 @@ public class LunchMapFragment extends BaseFragment {
 
     @Override
     protected void configureDesign() {
+        this.configureSupportMapFragment();
         this.configureMapViewModel();
         this.configureLocationLiveData();
-        this.configureSupportMapFragment();
+    }
+
+    // -- OnMapReadyCallback interface --
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.mGoogleMap = googleMap;
+
+        // Camera
+        this.mGoogleMap.setOnCameraMoveStartedListener(this);
+        this.mGoogleMap.setOnCameraMoveListener(this);
+        this.mGoogleMap.setOnCameraMoveCanceledListener(this);
+        this.mGoogleMap.setOnCameraIdleListener(this);
+
+        // POIs
+//        this.mGoogleMap.setOnPoiClickListener(this);
+
+        // Configure the style of the GoogleMap
+        this.configureGoogleMapStyle();
+    }
+
+    // -- GoogleMap.OnCameraMoveStartedListener interface --
+
+    @Override
+    public void onCameraMoveStarted(int reason) {
+        Log.d(TAG, "onCameraMoveStarted: The camera move started.");
+    }
+
+    // -- GoogleMap.OnCameraMoveListener interface --
+
+    @Override
+    public void onCameraMove() {
+        Log.d(TAG, "onCameraMove: The camera is moving.");
+
+    }
+
+    // -- GoogleMap.OnCameraMoveCanceledListener interface --
+
+    @Override
+    public void onCameraMoveCanceled() {
+        Log.d(TAG, "onCameraMoveCanceled: Camera movement canceled.");
+    }
+
+    // -- GoogleMap.OnCameraIdleListener interface --
+
+    @Override
+    public void onCameraIdle() {
+        Log.d(TAG, "onCameraIdle: The camera has stopped moving.");
+
+        final CameraPosition camera = this.mGoogleMap.getCameraPosition();
+        Log.d(TAG, "zoom " + camera.zoom);
+        Log.d(TAG, "bearing " + camera.bearing);
+        Log.d(TAG, "tilt " + camera.tilt);
+    }
+
+    // -- Google Maps --
+
+    /**
+     * Configures the {@link SupportMapFragment}
+     */
+    private void configureSupportMapFragment() {
+        this.mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_lunch_map_fragment);
+
+        if (this.mMapFragment == null) {
+            this.mMapFragment = SupportMapFragment.newInstance();
+
+            getFragmentManager().beginTransaction()
+                    .add(R.id.fragment_lunch_map_fragment, this.mMapFragment)
+                    .commit();
+        }
+
+        this.mMapFragment.getMapAsync(this);
+    }
+
+    /**
+     * Configures the style of the {@link GoogleMap}
+     */
+    private void configureGoogleMapStyle() {
+        // STYLE
+        try {
+            // Customises the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = this.mGoogleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this.getContext(),
+                                                                                               R.raw.google_maps_style_json));
+
+            if (!success) {
+                Log.e(TAG, "configureGoogleMapStyle: Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "configureGoogleMapStyle: Can't find style. Error: ", e);
+        }
+
+        // GESTURES
+        final UiSettings uiSettings = this.mGoogleMap.getUiSettings();
+        uiSettings.setZoomGesturesEnabled(true);
+        uiSettings.setZoomControlsEnabled(true);
+
+        // MIN ZOOM LEVELS
+        this.mGoogleMap.setMinZoomPreference( (this.mGoogleMap.getMinZoomLevel() > 10.0F) ? this.mGoogleMap.getMinZoomLevel() :
+                                                                                            10.0F);
+
+        // MAX ZOOM LEVELS
+        this.mGoogleMap.setMaxZoomPreference( (this.mGoogleMap.getMaxZoomLevel() < 21.0F) ? this.mGoogleMap.getMaxZoomLevel() :
+                                                                                            21.0F);
+
+        // TODO: 23/12/2019 Add a FAB or use this.mGoogleMap.setMyLocationEnabled(true);
     }
 
     // -- MapViewModel --
 
     /**
-     * Configures the {@link }
+     * Configures the {@link MapViewModel}
      */
     private void configureMapViewModel() {
         this.mMapViewModel = ViewModelProviders.of(this.getActivity())
@@ -98,28 +220,53 @@ public class LunchMapFragment extends BaseFragment {
      * @param locationData a {@link LocationData}
      */
     private void onChangedLocationData (LocationData locationData) {
+        // Exception
         if (this.handleLocationException(locationData.getException())) {
             return;
         }
 
+        // No Location
         if (locationData.getLocation() == null) {
             return;
         }
 
         if (this.mGoogleMap != null) {
-            LatLng currentPlace = new LatLng(locationData.getLocation().getLatitude(),
-                                             locationData.getLocation().getLongitude());
+            // Current location
+            this.mCurrentLatLngUser = new LatLng(locationData.getLocation().getLatitude(),
+                                                 locationData.getLocation().getLongitude());
 
-            this.mGoogleMap.addMarker(new MarkerOptions().position(currentPlace)
-                           .title("Home"));
+            // First location
+            if (this.mIsFirstLocation) {
+                this.mIsFirstLocation = false;
 
-            //this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPlace));
-            this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPlace, 18));
+//                this.mMapViewModel.getPOIs(this.mCurrentLatLngUser.latitude,
+//                                           this.mCurrentLatLngUser.longitude);
 
-            //this.mGoogleMap.getProjection().getVisibleRegion().latLngBounds.northeast;
+                this.mGoogleMap.addMarker(new MarkerOptions().position(this.mCurrentLatLngUser)
+                                                             .title("Current position"));
+
+
+                final BitmapDescriptor bitmapDescriptor = GeneratorBitmap.bitmapDescriptorFromVector(this.getContext(), R.drawable.ic_star);
+
+                this.mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(this.mCurrentLatLngUser.latitude + 0.0002,
+                                                                                 this.mCurrentLatLngUser.longitude + 0.0002))
+                                                             .title("test1")
+                                                             .snippet("test to add marker")
+                                                             .icon(bitmapDescriptor));
+
+                //this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPlace));
+                this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.mCurrentLatLngUser, 17));
+
+                return;
+            }
+
+            if (this.mIsLocatedOnUser) {
+                // TODO: 29/12/2019 to follow user when none of gesture has been done
+            }
+
+            //final LatLngBounds lngBounds = this.mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
+            //Log.e(TAG, "[northeast]: " + lngBounds.northeast + " & [southwest]: " + lngBounds.southwest);
         }
-
-        //Log.e("LunchMapFragment", "[LiveData] onChangedLocationData: " + locationData.getLocation());
     }
 
     /**
@@ -184,70 +331,6 @@ public class LunchMapFragment extends BaseFragment {
         else {
             return true;
         }
-    }
-
-    // -- Google Maps --
-
-    /**
-     * Configures the {@link SupportMapFragment}
-     */
-    private void configureSupportMapFragment() {
-        this.mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_lunch_map_fragment);
-
-        if (this.mMapFragment == null) {
-            this.mMapFragment = SupportMapFragment.newInstance();
-
-            getFragmentManager().beginTransaction()
-                                .add(R.id.fragment_lunch_map_fragment, this.mMapFragment)
-                                .commit();
-        }
-
-        this.mMapFragment.getMapAsync(this::onMapReady);
-    }
-
-    /**
-     * Updates the {@link GoogleMap}
-     * @param googleMap a {@link GoogleMap}
-     */
-    private void onMapReady(GoogleMap googleMap) {
-        this.mGoogleMap = googleMap;
-
-        // Configure the style of the GoogleMap
-        this.configureGoogleMapStyle();
-    }
-
-    /**
-     * Configures the style of the {@link GoogleMap}
-     */
-    private void configureGoogleMapStyle() {
-        // STYLE
-        try {
-            // Customises the styling of the base map using a JSON object defined
-            // in a raw resource file.
-            boolean success = this.mGoogleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this.getContext(),
-                                                                                               R.raw.google_maps_style_json));
-
-            if (!success) {
-                Log.e(TAG, "configureGoogleMapStyle: Style parsing failed.");
-            }
-        } catch (Resources.NotFoundException e) {
-            Log.e(TAG, "configureGoogleMapStyle: Can't find style. Error: ", e);
-        }
-
-        // GESTURES
-        final UiSettings uiSettings = this.mGoogleMap.getUiSettings();
-        uiSettings.setZoomGesturesEnabled(true);
-        uiSettings.setZoomControlsEnabled(true);
-
-        // MIN ZOOM LEVELS
-        this.mGoogleMap.setMinZoomPreference( (this.mGoogleMap.getMinZoomLevel() > 10.0F) ? this.mGoogleMap.getMinZoomLevel() :
-                                                                                            10.0F);
-
-        // MAX ZOOM LEVELS
-        this.mGoogleMap.setMaxZoomPreference( (this.mGoogleMap.getMaxZoomLevel() < 25.0F) ? this.mGoogleMap.getMaxZoomLevel() :
-                                                                                            25.0F);
-
-        // TODO: 23/12/2019 Add a FAB or use this.mGoogleMap.setMyLocationEnabled(true);
     }
 
     // -- Instances --

@@ -139,23 +139,23 @@ public class LunchListFragment extends BaseFragment {
 //                                              }
 //                                          });
 
-        this.mDisposable = placeRepository.getStreamToFetchUserInfosFromFirstFollowing("JakeWharton")
-                                          .subscribeWith(new DisposableObserver<UserInfos>() {
-                                              @Override
-                                              public void onNext(UserInfos userInfos) {
-                                                  Log.e(TAG, "OnNext: " + userInfos.getLogin());
-                                              }
-
-                                              @Override
-                                              public void onError(Throwable e) {
-                                                  Log.e(TAG, "onError: " + e.getMessage());
-                                              }
-
-                                              @Override
-                                              public void onComplete() {
-                                                  Log.e(TAG, "onComplete");
-                                              }
-                                          });
+//        this.mDisposable = placeRepository.getStreamToFetchUserInfosFromFirstFollowing("JakeWharton")
+//                                          .subscribeWith(new DisposableObserver<UserInfos>() {
+//                                              @Override
+//                                              public void onNext(UserInfos userInfos) {
+//                                                  Log.e(TAG, "OnNext: " + userInfos.getLogin());
+//                                              }
+//
+//                                              @Override
+//                                              public void onError(Throwable e) {
+//                                                  Log.e(TAG, "onError: " + e.getMessage());
+//                                              }
+//
+//                                              @Override
+//                                              public void onComplete() {
+//                                                  Log.e(TAG, "onComplete");
+//                                              }
+//                                          });
     }
 
     // -- Instances --

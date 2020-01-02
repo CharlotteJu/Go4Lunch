@@ -1,6 +1,8 @@
 package com.mancel.yann.go4lunch.repositories;
 
 import com.mancel.yann.go4lunch.apis.PlaceService;
+import com.mancel.yann.go4lunch.models.Details;
+import com.mancel.yann.go4lunch.models.DistanceMatrix;
 import com.mancel.yann.go4lunch.models.NearbySearch;
 
 import java.util.concurrent.TimeUnit;
@@ -40,26 +42,23 @@ public class PlaceRepositoryImpl implements PlaceRepository {
                                  .timeout(10, TimeUnit.SECONDS);
     }
 
-//    @Override
-//    public Observable<UserInfos> getStreamToFetchUserInfos(String username) {
-//        PlaceService placeService = PlaceService.retrofit.create(PlaceService.class);
-//
-//        return placeService.getUserInfos(username)
-//                           .subscribeOn(Schedulers.io())
-//                           .observeOn(AndroidSchedulers.mainThread())
-//                           .timeout(10, TimeUnit.SECONDS);
-//    }
-//
-//    @Override
-//    public Observable<List<Follower>> getStreamToFetchUserFollowing(String username) {
-//        PlaceService placeService = PlaceService.retrofit.create(PlaceService.class);
-//
-//        return placeService.getFollowing(username)
-//                           .subscribeOn(Schedulers.io())
-//                           .observeOn(AndroidSchedulers.mainThread())
-//                           .timeout(10, TimeUnit.SECONDS);
-//    }
-//
+    @Override
+    public Observable<Details> getStreamToFetchDetails(String placeId, String key) {
+        return this.mPlaceService.getDetails(placeId, key)
+                                 .subscribeOn(Schedulers.io())
+                                 .observeOn(AndroidSchedulers.mainThread())
+                                 .timeout(10, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public Observable<DistanceMatrix> getStreamToFetchDistanceMatrix(String origins, String destinations, String mode, String units, String key) {
+        return this.mPlaceService.getDistanceMatrix(origins, destinations, mode, units, key)
+                                 .subscribeOn(Schedulers.io())
+                                 .observeOn(AndroidSchedulers.mainThread())
+                                 .timeout(10, TimeUnit.SECONDS);
+    }
+
+    //
 //    @Override
 //    public Observable<UserInfos> getStreamToFetchUserInfosFromFirstFollowing(String username) {
 //        return this.getStreamToFetchUserFollowing("JakeWharton")

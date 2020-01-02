@@ -26,8 +26,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
+import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.GeneratorBitmap;
 import com.mancel.yann.go4lunch.viewModels.MapViewModel;
+import com.mancel.yann.go4lunch.viewModels.MapViewModelFactory;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
 /**
@@ -201,7 +203,10 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
      * Configures the {@link MapViewModel}
      */
     private void configureMapViewModel() {
-        this.mMapViewModel = ViewModelProviders.of(this.getActivity())
+        // TODO: 02/01/2020 PlaceRepository must be removed thanks to dagger 2
+        final MapViewModelFactory factory = new MapViewModelFactory(new PlaceRepositoryImpl());
+
+        this.mMapViewModel = ViewModelProviders.of(this.getActivity(), factory)
                                                .get(MapViewModel.class);
     }
 

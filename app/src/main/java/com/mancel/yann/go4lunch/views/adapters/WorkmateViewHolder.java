@@ -78,17 +78,17 @@ class WorkmateViewHolder extends RecyclerView.ViewHolder {
         // TextView: Text
         String text;
 
-        if (user.getSelectedRestaurant() == null) {
-            // User has't decided yet
+        if (user.getPlaceIdOfRestaurant() == null) {
+            // [User] has't decided yet
             text = context.getString(R.string.text_item_workmate_no_choice,
                                      user.getUsername());
         }
         else {
-            // User is eating ()
+            // {User] is eating [food type] ([Name])
             text = context.getString(R.string.text_item_workmate_choice,
                                     user.getUsername(),
-                                                "type",
-                                                user.getSelectedRestaurant());
+                                                user.getFoodTypeOfRestaurant(),
+                                                user.getNameOfRestaurant());
         }
 
         this.mText.setText(text);
@@ -96,12 +96,12 @@ class WorkmateViewHolder extends RecyclerView.ViewHolder {
         // TextView: Style
         if (Build.VERSION.SDK_INT < 23) {
             this.mText.setTextAppearance(context,
-                                         (user.getSelectedRestaurant() == null) ? R.style.TextViewStyle2 :
-                                                                                  R.style.TextViewStyle1);
+                                         (user.getPlaceIdOfRestaurant() == null) ? R.style.TextViewStyle2 :
+                                                                                   R.style.TextViewStyle1);
         }
         else {
-            this.mText.setTextAppearance( (user.getSelectedRestaurant() == null) ? R.style.TextViewStyle2 :
-                                                                                   R.style.TextViewStyle1);
+            this.mText.setTextAppearance( (user.getPlaceIdOfRestaurant() == null) ? R.style.TextViewStyle2 :
+                                                                                    R.style.TextViewStyle1);
         }
     }
 }

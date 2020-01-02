@@ -2,9 +2,12 @@ package com.mancel.yann.go4lunch.viewModels;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 
 import java.util.List;
 
@@ -19,6 +22,9 @@ public class MapViewModel extends ViewModel {
 
     // FIELDS --------------------------------------------------------------------------------------
 
+    @NonNull
+    private PlaceRepository mPlaceRepository;
+
     private MutableLiveData<List<String>> mRestaurants;
 
     private static final String TAG = MapViewModel.class.getSimpleName();
@@ -26,10 +32,13 @@ public class MapViewModel extends ViewModel {
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
-     * Constructor by default
+     * Constructor with an argument
+     * @param placeRepository a {@link PlaceRepository}
      */
-    public MapViewModel() {
+    public MapViewModel(@NonNull PlaceRepository placeRepository) {
         Log.d(TAG, "MapViewModel");
+
+        this.mPlaceRepository = placeRepository;
     }
 
     // METHODS -------------------------------------------------------------------------------------

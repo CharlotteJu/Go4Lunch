@@ -15,7 +15,7 @@ import com.google.firebase.firestore.Query;
  */
 public interface UserRepository {
 
-    // METHODS ---------------------------------------------------------------------------------
+    // METHODS -------------------------------------------------------------------------------------
 
     // -- CollectionReference --
 
@@ -77,12 +77,15 @@ public interface UserRepository {
 
     /**
      * Update the restaurant field of a {@link com.mancel.yann.go4lunch.models.User} with its uid field
-     * @param uid           a {@link String} that contains the uid
-     * @param restaurant    a {@link String} that contains the restaurant
+     * @param uid                   a {@link String} that contains the uid
+     * @param placeIdOfRestaurant   a {@link String} that contains the place_id of the restaurant
+     * @param nameOfRestaurant      a {@link String} that contains the name of the restaurant
+     * @param foodTypeOfRestaurant  a {@link String} that contains the food type of the restaurant
      * @return a {@link Task} of {@link Void}
      */
     @NonNull
-    Task<Void> updateRestaurant(@NonNull String uid, @Nullable String restaurant);
+    Task<Void> updateRestaurant(@NonNull String uid, @Nullable String placeIdOfRestaurant,
+                                @Nullable String nameOfRestaurant,@Nullable String foodTypeOfRestaurant);
 
     // -- Delete --
 

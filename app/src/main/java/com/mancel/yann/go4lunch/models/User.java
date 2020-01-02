@@ -23,9 +23,13 @@ public class User {
     @NonNull
     private String mUsername;
     @Nullable
-    private String mUrlPicture;
+    private String mUrlPicture = null;
     @Nullable
-    private String mSelectedRestaurant;
+    private String mPlaceIdOfRestaurant = null;
+    @Nullable
+    private String mNameOfRestaurant = null;
+    @Nullable
+    private String mFoodTypeOfRestaurant = null;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -36,8 +40,6 @@ public class User {
     public User() {
         this.mUid = "";
         this.mUsername = "";
-        this.mUrlPicture = null;
-        this.mSelectedRestaurant = null;
     }
 
     /**
@@ -52,7 +54,6 @@ public class User {
         this.mUid = uid;
         this.mUsername = username;
         this.mUrlPicture = urlPicture;
-        this.mSelectedRestaurant = null;
     }
 
     // METHODS -------------------------------------------------------------------------------------
@@ -77,10 +78,22 @@ public class User {
         return this.mUrlPicture;
     }
 
-    @PropertyName("selected_restaurant")
+    @PropertyName("place_id_of_restaurant")
     @Nullable
-    public String getSelectedRestaurant() {
-        return this.mSelectedRestaurant;
+    public String getPlaceIdOfRestaurant() {
+        return this.mPlaceIdOfRestaurant;
+    }
+
+    @PropertyName("name_of_restaurant")
+    @Nullable
+    public String getNameOfRestaurant() {
+        return this.mNameOfRestaurant;
+    }
+
+    @PropertyName("food_type_of_restaurant")
+    @Nullable
+    public String getFoodTypeOfRestaurant() {
+        return this.mFoodTypeOfRestaurant;
     }
 
     // -- Setter --
@@ -100,9 +113,19 @@ public class User {
         this.mUrlPicture = urlPicture;
     }
 
-    @PropertyName("selected_restaurant")
-    public void setSelectedRestaurant(@Nullable String selectedRestaurant) {
-        this.mSelectedRestaurant = selectedRestaurant;
+    @PropertyName("place_id_of_restaurant")
+    public void setPlaceIdOfRestaurant(@Nullable String placeIdOfRestaurant) {
+        this.mPlaceIdOfRestaurant = placeIdOfRestaurant;
+    }
+
+    @PropertyName("name_of_restaurant")
+    public void setNameOfRestaurant(@Nullable String nameOfRestaurant) {
+        this.mNameOfRestaurant = nameOfRestaurant;
+    }
+
+    @PropertyName("food_type_of_restaurant")
+    public void setFoodTypeOfRestaurant(@Nullable String foodTypeOfRestaurant) {
+        this.mFoodTypeOfRestaurant = foodTypeOfRestaurant;
     }
 
     // -- Comparison --
@@ -134,7 +157,9 @@ public class User {
         return "User [" + "mUid=" + this.mUid +
                           ", mUsername=" + this.mUsername +
                           ", mUrlPicture=" + this.mUrlPicture +
-                          ", mSelectedRestaurant=" + this.mSelectedRestaurant +
+                          ", mPlaceIdOfRestaurant=" + this.mPlaceIdOfRestaurant +
+                          ", mNameOfRestaurant=" + this.mNameOfRestaurant +
+                          ", mFoodTypeOfRestaurant=" + this.mFoodTypeOfRestaurant +
                 "]";
     }
 
@@ -159,7 +184,9 @@ public class User {
         this.mUid = user.mUid;
         this.mUsername = user.mUsername;
         this.mUrlPicture = user.mUrlPicture;
-        this.mSelectedRestaurant = user.mSelectedRestaurant;
+        this.mPlaceIdOfRestaurant = user.mPlaceIdOfRestaurant;
+        this.mNameOfRestaurant = user.mNameOfRestaurant;
+        this.mFoodTypeOfRestaurant = user.mFoodTypeOfRestaurant;
 
         return true;
     }

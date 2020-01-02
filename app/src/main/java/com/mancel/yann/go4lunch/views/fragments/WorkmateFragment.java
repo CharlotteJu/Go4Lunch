@@ -88,7 +88,6 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
 
     @Override
     public void onDataChanged() {
-        Log.d(TAG, "onDataChanged:");
         this.mNoPeople.setVisibility( (this.mAdapter.getItemCount() == 0) ? View.VISIBLE :
                                                                             View.GONE);
     }
@@ -111,9 +110,7 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
      */
     private void configureUserViewModel() {
         // TODO: 23/12/2019 UserRepository must be removed thanks to Dagger 2
-        final UserRepository userRepository = new UserRepositoryImpl();
-
-        final UserViewModelFactory factory = new UserViewModelFactory(userRepository);
+        final UserViewModelFactory factory = new UserViewModelFactory(new UserRepositoryImpl());
 
         this.mUserViewModel = ViewModelProviders.of(this.getActivity(), factory)
                                                 .get(UserViewModel.class);
@@ -148,7 +145,7 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
                                                                 }
                                                             }
 
-                                                            mAdapter.updateData(users);
+                                                            this.mAdapter.updateData(users);
                                                         });
 
         // RecyclerView
@@ -156,5 +153,7 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                                                                        DividerItemDecoration.VERTICAL));
+
+        // TODO: 02/01/2020 Replace DividerItemDecoration by a new class (inset divider)
     }
 }

@@ -160,12 +160,15 @@ public class UserViewModel extends ViewModel {
 
     /**
      * Update the restaurant field of a {@link com.mancel.yann.go4lunch.models.User} with its uid field
-     * @param uid       a {@link String} that contains the uid
-     * @param restaurant  a {@link String} that contains the restaurant
+     * @param uid                   a {@link String} that contains the uid
+     * @param placeIdOfRestaurant   a {@link String} that contains the place_id of the restaurant
+     * @param nameOfRestaurant      a {@link String} that contains the name of the restaurant
+     * @param foodTypeOfRestaurant  a {@link String} that contains the food type of the restaurant
      */
-    public void updateRestaurant(@NonNull String uid, @NonNull String restaurant) {
+    public void updateRestaurant(@NonNull String uid, @Nullable String placeIdOfRestaurant,
+                                 @Nullable String nameOfRestaurant,@Nullable String foodTypeOfRestaurant) {
         Log.d(TAG, "updateRestaurant: " + uid);
-        this.mUserRepository.updateRestaurant(uid, restaurant)
+        this.mUserRepository.updateRestaurant(uid, placeIdOfRestaurant, nameOfRestaurant, foodTypeOfRestaurant)
                             .addOnSuccessListener( aVoid ->
                                     Log.d(TAG, "--> updateRestaurant (onSuccess)")
                             )

@@ -29,7 +29,9 @@ public class UserRepositoryImpl implements UserRepository {
              +--- uid
              +--- username
              +--- url_picture
-             +--- selected_restaurant
+             +--- place_id_of_restaurant
+             +--- name_of_restaurant
+             +--- food_type_of_restaurant
      */
 
     // FIELDS --------------------------------------------------------------------------------------
@@ -76,7 +78,7 @@ public class UserRepositoryImpl implements UserRepository {
     @NonNull
     @Override
     public Query getAllUsersFromThisRestaurant(@Nullable String placeIdOfRestaurant) {
-        return this.getUsersCollection().whereEqualTo("selected_restaurant", placeIdOfRestaurant);
+        return this.getUsersCollection().whereEqualTo("place_id_of_restaurant", placeIdOfRestaurant);
     }
 
     // -- Update --
@@ -90,9 +92,12 @@ public class UserRepositoryImpl implements UserRepository {
 
     @NonNull
     @Override
-    public Task<Void> updateRestaurant(@NonNull String uid, @Nullable String restaurant) {
+    public Task<Void> updateRestaurant(@NonNull String uid, @Nullable String placeIdOfRestaurant,
+                                       @Nullable String nameOfRestaurant,@Nullable String foodTypeOfRestaurant) {
         return this.getUsersCollection().document(uid)
-                                        .update("selected_restaurant", restaurant);
+                                        .update("place_id_of_restaurant", placeIdOfRestaurant,
+                                                "name_of_restaurant", nameOfRestaurant,
+                                                "food_type_of_restaurant", foodTypeOfRestaurant);
     }
 
     // -- Delete --

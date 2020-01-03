@@ -26,7 +26,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     // METHODS -------------------------------------------------------------------------------------
 
-    // -- Get --
+    // -- Simple streams --
 
     @Override
     public Observable<NearbySearch> getStreamToFetchNearbySearch(final String location,
@@ -43,7 +43,8 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public Observable<Details> getStreamToFetchDetails(String placeId, String key) {
+    public Observable<Details> getStreamToFetchDetails(final String placeId,
+                                                       final String key) {
         return this.mPlaceService.getDetails(placeId, key)
                                  .subscribeOn(Schedulers.io())
                                  .observeOn(AndroidSchedulers.mainThread())
@@ -51,28 +52,27 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public Observable<DistanceMatrix> getStreamToFetchDistanceMatrix(String origins, String destinations, String mode, String units, String key) {
+    public Observable<DistanceMatrix> getStreamToFetchDistanceMatrix(final String origins,
+                                                                     final String destinations,
+                                                                     final String mode,
+                                                                     final String units,
+                                                                     final String key) {
         return this.mPlaceService.getDistanceMatrix(origins, destinations, mode, units, key)
                                  .subscribeOn(Schedulers.io())
                                  .observeOn(AndroidSchedulers.mainThread())
                                  .timeout(10, TimeUnit.SECONDS);
     }
 
-    //
-//    @Override
-//    public Observable<UserInfos> getStreamToFetchUserInfosFromFirstFollowing(String username) {
-//        return this.getStreamToFetchUserFollowing("JakeWharton")
-//                   .map(new Function<List<Follower>, Follower>() {
-//                       @Override
-//                       public Follower apply(List<Follower> followers) throws Exception {
-//                           return followers.get(0);
-//                       }
-//                   })
-//                   .flatMap(new Function<Follower, Observable<UserInfos>>() {
-//                       @Override
-//                       public Observable<UserInfos> apply(Follower follower) throws Exception {
-//                           return getStreamToFetchUserInfos(follower.getLogin());
-//                       }
-//                   });
-//    }
+    // -- Complex streams --
+
+    @Override
+    public Observable<Details> getStreamToFetchNearbySearchThenToFetchDetailsForEachRestaurant(final String location,
+                                                                                               double radius,
+                                                                                               final String types,
+                                                                                               final String key) {
+        return this.getStreamToFetchNearbySearch(location, radius, types, key)
+                   .map( nearbySearch -> nearbySearch.getResults() )
+                   .flatMapIterable( result -> result)
+                   .flatMap( result -> this.getStreamToFetchDetails(result.getPlaceId(), key) );
+    }
 }

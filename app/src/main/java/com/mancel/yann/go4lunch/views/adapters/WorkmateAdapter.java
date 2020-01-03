@@ -23,23 +23,17 @@ import java.util.List;
  */
 public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateViewHolder> {
 
-    // INTERFACES ----------------------------------------------------------------------------------
-
-    public interface WorkmateAdapterListener {
-        /**
-         * the callback method is activated with the updateData method
-         */
-        void onDataChanged();
-    }
-
     // FIELDS --------------------------------------------------------------------------------------
 
     @NonNull
-    private final RequestManager mGlide;
+    private final AdapterListener mCallback;
+
     @NonNull
-    private final WorkmateAdapterListener mCallback;
+    private final RequestManager mGlide;
+
     @NonNull
     private final Context mContext;
+
     @NonNull
     private List<User> mUsers;
 
@@ -47,11 +41,11 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateViewHolder> {
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.
-     * @param callback  a {@link WorkmateAdapterListener} for the callback system
+     * @param callback  a {@link AdapterListener} for the callback system
      * @param glide     a {@link RequestManager}
      * @param context   a {@link Context} (just to retrieve the resources)
      */
-    public WorkmateAdapter(@NonNull final WorkmateAdapterListener callback,
+    public WorkmateAdapter(@NonNull final AdapterListener callback,
                            @NonNull final RequestManager glide,
                            @NonNull final Context context) {
         this.mCallback = callback;

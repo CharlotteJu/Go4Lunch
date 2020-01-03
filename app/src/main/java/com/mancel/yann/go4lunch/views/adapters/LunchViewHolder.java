@@ -7,7 +7,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.RequestManager;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.models.Details;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,8 +69,34 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * Updates the item
+     * @param details   a {@link Details}
+     * @param glide     a {@link RequestManager}
      */
-    void updateLunch() {
+    void updateLunch(@NonNull final Details details, @NonNull final RequestManager glide) {
+        // Name
+        this.mName.setText(details.getResult().getName());
 
+        // Food type & Address
+        final String foodTypeAndAddress = "Food" + " - " +
+                                          details.getResult().getAddressComponents().get(0).getShortName() + " " +
+                                          details.getResult().getAddressComponents().get(1).getShortName();
+        this.mTypeAndAddress.setText(foodTypeAndAddress);
+
+        // TODO: 03/01/2020 Finish the update
+        // Opening hours
+//        mOpeningHours;
+
+        // Distance
+//        mDistance;
+
+        // People
+//        mPeopleNumber;
+
+        // Rating
+//        mRatingBar;
+
+
+        // Image
+//        mImage;
     }
 }

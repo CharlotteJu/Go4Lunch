@@ -15,10 +15,10 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.User;
-import com.mancel.yann.go4lunch.repositories.UserRepository;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.viewModels.UserViewModel;
 import com.mancel.yann.go4lunch.viewModels.UserViewModelFactory;
+import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.WorkmateAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
@@ -32,9 +32,9 @@ import butterknife.BindView;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.views.fragments
  *
- * A {@link BaseFragment} subclass which implements {@link WorkmateAdapter.WorkmateAdapterListener}.
+ * A {@link BaseFragment} subclass which implements {@link AdapterListener}.
  */
-public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.WorkmateAdapterListener {
+public class WorkmateFragment extends BaseFragment implements AdapterListener {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ public class WorkmateFragment extends BaseFragment implements WorkmateAdapter.Wo
         this.mListenerRegistration.remove();
     }
 
-    // -- WorkmateAdapter.WorkmateAdapterListener interface --
+    // -- AdapterListener interface --
 
     @Override
     public void onDataChanged() {

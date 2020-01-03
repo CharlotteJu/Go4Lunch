@@ -54,6 +54,19 @@ public interface PlaceService {
     Observable<Details> getDetails(@Query("place_id") final String placeId,
                                    @Query("key") final String key);
 
+    // TODO: 03/01/2020 Add request to fetch photo 
+//    /**
+//     * Gets a Photo request is an HTTP URL
+//     * @param photoReference    a {@link String} that contains a string identifier that uniquely identifies a photo
+//     * @param maxWidth          a double that specifies the maximum desired width, in pixels, of the image
+//     * @param key               a {@link String} that contains your application's API key
+//     * @return
+//     */
+//    @GET("place/photo?")
+//    Observable<String> getPhoto(@Query("photoreference") final String photoReference,
+//                                @Query("maxwidth") double maxWidth,
+//                                @Query("key") final String key);
+
     /**
      * Gets a Distance Matrix request is an HTTP URL in Json format
      * @param origins       a {@link String} that contains the starting point for calculating travel distance and time

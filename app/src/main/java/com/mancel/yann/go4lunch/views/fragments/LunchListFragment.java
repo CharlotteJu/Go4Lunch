@@ -1,22 +1,29 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.mancel.yann.go4lunch.R;
-import com.mancel.yann.go4lunch.models.UserInfos;
+import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
+import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.LunchAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
-import io.reactivex.Observable;
+import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
@@ -25,9 +32,9 @@ import io.reactivex.observers.DisposableObserver;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.views.fragments
  *
- * A {@link BaseFragment} subclass.
+ * A {@link BaseFragment} subclass which implements {@link AdapterListener}.
  */
-public class LunchListFragment extends BaseFragment {
+public class LunchListFragment extends BaseFragment implements AdapterListener {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -40,7 +47,12 @@ public class LunchListFragment extends BaseFragment {
     @NonNull
     private LunchAdapter mAdapter;
 
-    private Disposable mDisposable;
+    @Nullable
+    private Disposable mDisposable = null;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private List<Details> mDetailsList;
 
     private static final String TAG = LunchListFragment.class.getSimpleName();
 
@@ -60,7 +72,7 @@ public class LunchListFragment extends BaseFragment {
     @Override
     protected void configureDesign() {
         this.configureRecyclerView();
-        this.testJavaRX();
+        this.configureDetailsList();
     }
 
     // -- Fragment --
@@ -71,91 +83,12 @@ public class LunchListFragment extends BaseFragment {
         this.disposeWhenDestroy();
     }
 
-    // -- Observable --
+    // -- AdapterListener interface --
 
-    private Observable<String> getObservable() {
-        return Observable.just("Reactive X is cool!");
-    }
-
-    // -- Observer --
-
-    private DisposableObserver<String> getObserver() {
-        return new DisposableObserver<String>() {
-            @Override
-            public void onNext(String text) {
-                Log.e(TAG, "OnNext: " + text);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, "onError: " + e.getMessage());
-            }
-
-            @Override
-            public void onComplete() {
-                Log.e(TAG, "onComplete");
-            }
-        };
-    }
-
-    private void disposeWhenDestroy() {
-        Log.e(TAG, "disposeWhenDestroy");
-
-        if (this.mDisposable != null && !this.mDisposable.isDisposed()) {
-            this.mDisposable.dispose();
-        }
-    }
-
-    // -- Stream --
-
-    private void testJavaRX() {
-        Log.e(TAG, "testJavaRX");
-        //this.mDisposable = this.getObservable().subscribeWith(this.getObserver());
-
-        PlaceRepository placeRepository = new PlaceRepositoryImpl();
-
-//        this.mDisposable = placeRepository.getStreamToFetchUserFollowing("JakeWharton")
-//                                          .subscribeWith(new DisposableObserver<List<Follower>>() {
-//                                              @Override
-//                                              public void onNext(List<Follower> followers) {
-//
-//                                                  StringBuilder builder = new StringBuilder();
-//
-//                                                  for (Follower follower : followers) {
-//                                                      builder.append(follower.getLogin() + " ");
-//                                                  }
-//
-//                                                  Log.e(TAG, "OnNext: " + builder.toString());
-//                                              }
-//
-//                                              @Override
-//                                              public void onError(Throwable e) {
-//                                                  Log.e(TAG, "onError: " + e.getMessage());
-//                                              }
-//
-//                                              @Override
-//                                              public void onComplete() {
-//                                                  Log.e(TAG, "onComplete");
-//                                              }
-//                                          });
-
-//        this.mDisposable = placeRepository.getStreamToFetchUserInfosFromFirstFollowing("JakeWharton")
-//                                          .subscribeWith(new DisposableObserver<UserInfos>() {
-//                                              @Override
-//                                              public void onNext(UserInfos userInfos) {
-//                                                  Log.e(TAG, "OnNext: " + userInfos.getLogin());
-//                                              }
-//
-//                                              @Override
-//                                              public void onError(Throwable e) {
-//                                                  Log.e(TAG, "onError: " + e.getMessage());
-//                                              }
-//
-//                                              @Override
-//                                              public void onComplete() {
-//                                                  Log.e(TAG, "onComplete");
-//                                              }
-//                                          });
+    @Override
+    public void onDataChanged() {
+        this.mNoRestaurant.setVisibility( (this.mAdapter.getItemCount() == 0) ? View.VISIBLE :
+                                                                                View.GONE);
     }
 
     // -- Instances --
@@ -176,12 +109,61 @@ public class LunchListFragment extends BaseFragment {
      */
     private void configureRecyclerView() {
         // Adapter
-        this.mAdapter = new LunchAdapter();
+        this.mAdapter = new LunchAdapter(this, Glide.with(this));
 
         // RecyclerView
         this.mRecyclerView.setAdapter(this.mAdapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                                                                        DividerItemDecoration.VERTICAL));
+    }
+
+    // -- Java Rx --
+
+    /**
+     * Disposes the {@link Disposable} when {@link Fragment#onDestroy()} method is called
+     */
+    private void disposeWhenDestroy() {
+        Log.e(TAG, "disposeWhenDestroy");
+
+        if (this.mDisposable != null && !this.mDisposable.isDisposed()) {
+            this.mDisposable.dispose();
+        }
+    }
+
+    private void configureDetailsList() {
+        // Initializes the list
+        this.mDetailsList = new ArrayList<>();
+
+        // TODO: 03/01/2020 PlaceRepository must be removed
+        PlaceRepository placeRepository = new PlaceRepositoryImpl();
+
+        // Retrieves Google Maps Key
+        final String key = getContext().getResources()
+                                       .getString(R.string.google_maps_key);
+
+        // Creates stream
+        this.mDisposable = placeRepository.getStreamToFetchNearbySearchThenToFetchDetailsForEachRestaurant("45.9922027,4.7176896",
+                                                                                                           200.0,
+                                                                                                           "restaurant",
+                                                                                                            key)
+                                          .subscribeWith(new DisposableObserver<Details>() {
+                                              @Override
+                                              public void onNext(Details details) {
+                                                  // Add item
+                                                  mDetailsList.add(details);
+                                              }
+
+                                              @Override
+                                              public void onError(Throwable e) {
+                                                  Log.e(TAG, "onError: " + e.getMessage());
+                                              }
+
+                                              @Override
+                                              public void onComplete() {
+                                                  // Update data of adapter
+                                                  mAdapter.updateData(mDetailsList);
+                                              }
+                                          });
     }
 }

@@ -16,7 +16,7 @@ import retrofit2.http.Query;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.apis
  */
-public interface PlaceService {
+public interface GoogleMapsService {
 
     // FIELDS --------------------------------------------------------------------------------------
 

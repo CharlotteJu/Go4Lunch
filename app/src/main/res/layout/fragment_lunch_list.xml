@@ -34,4 +34,17 @@
         android:visibility="visible"
         style="@style/TextViewStyle1"/>
 
+    <!-- ContentLoadingProgressBar: Progression -->
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/fragment_lunch_list_ProgressBar"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:indeterminate="true"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyle"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

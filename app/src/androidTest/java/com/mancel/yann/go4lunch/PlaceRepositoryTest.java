@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.DistanceMatrix;
 import com.mancel.yann.go4lunch.models.NearbySearch;
+import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 
@@ -34,21 +35,22 @@ public class PlaceRepositoryTest {
 
     private PlaceRepository mPlaceRepository = new PlaceRepositoryImpl();
 
+    private static final String KEY = InstrumentationRegistry.getInstrumentation()
+                                                             .getTargetContext()
+                                                             .getResources()
+                                                             .getString(R.string.google_maps_key);
+
     // METHODS -------------------------------------------------------------------------------------
+
+    // -- Simple streams --
 
     @Test
     public void should_Fetch_NearbySearch() {
-        // Retrieves Google Maps Key
-        final String key = InstrumentationRegistry.getInstrumentation()
-                                                  .getTargetContext()
-                                                  .getResources()
-                                                  .getString(R.string.google_maps_key);
-
         // Creates Observable
         final Observable<NearbySearch> observable = this.mPlaceRepository.getStreamToFetchNearbySearch("45.9922027,4.7176896",
                                                                                                        200.0,
                                                                                                        "restaurant",
-                                                                                                        key);
+                                                                                                        KEY);
 
         // Creates Observer
         final TestObserver<NearbySearch> observer = new TestObserver<>();
@@ -79,15 +81,9 @@ public class PlaceRepositoryTest {
 
     @Test
     public void should_Fetch_Details() {
-        // Retrieves Google Maps Key
-        final String key = InstrumentationRegistry.getInstrumentation()
-                                                  .getTargetContext()
-                                                  .getResources()
-                                                  .getString(R.string.google_maps_key);
-
         // Creates Observable
         final Observable<Details> observable = this.mPlaceRepository.getStreamToFetchDetails("ChIJp7JQEyKF9EcR72wJu3P1fUw",
-                                                                                              key);
+                                                                                              KEY);
 
         // Creates Observer
         final TestObserver<Details> observer = new TestObserver<>();
@@ -130,18 +126,12 @@ public class PlaceRepositoryTest {
 
     @Test
     public void should_Fetch_DistanceMatrix() {
-        // Retrieves Google Maps Key
-        final String key = InstrumentationRegistry.getInstrumentation()
-                                                  .getTargetContext()
-                                                  .getResources()
-                                                  .getString(R.string.google_maps_key);
-
         // Creates Observable
         final Observable<DistanceMatrix> observable = this.mPlaceRepository.getStreamToFetchDistanceMatrix("45.9922027,4.7176896",
                                                                                                            "45.99138300000001,4.718076",
                                                                                                            "walking",
                                                                                                            "metric",
-                                                                                                           key);
+                                                                                                            KEY);
 
         // Creates Observer
         final TestObserver<DistanceMatrix> observer = new TestObserver<>();
@@ -163,6 +153,41 @@ public class PlaceRepositoryTest {
 
         // TEST: [status]
         assertEquals("[status]", distanceMatrix.getStatus(), "OK");
+    }
+
+    // -- Complex streams --
+
+    @Test
+    public void should_Fetch_Details_And_DistanceMatrix() {
+        // Creates Observable
+        final Observable<Restaurant> observable;
+        observable= this.mPlaceRepository.getStreamToFetchDetailsAndDistanceMatrix("45.9922027,4.7176896",
+                                                                                   "ChIJp7JQEyKF9EcR72wJu3P1fUw",
+                                                                                   "walking",
+                                                                                   "metric",
+                                                                                    KEY);
+
+        // Creates Observer
+        final TestObserver<Restaurant> observer = new TestObserver<>();
+
+        // Creates Stream
+        observable.subscribeWith(observer)
+                  .assertNoErrors()
+                  .assertNoTimeout()
+                  .awaitTerminalEvent();
+
+        // Fetches the result
+        final Restaurant restaurant = observer.values().get(0);
+
+        // TEST: [Details] > results > [name]
+        assertEquals("results > [name]", restaurant.getDetails().getResult().getName(), "Pizzeria Al Dente");
+
+        // TEST: [DistanceMatrix] > results > rows[0] > elements[0] > distance > [text]
+        assertEquals("distance > [text]", restaurant.getDistanceMatrix().getRows().get(0).getElements().get(0).getDistance().getText(), "90 m");
+
+        // TEST: [Details] >[status]
+        assertEquals("[status]", restaurant.getDetails().getStatus(), "OK");
+        assertEquals("[status]", restaurant.getDistanceMatrix().getStatus(), "OK");
     }
 
     @Test

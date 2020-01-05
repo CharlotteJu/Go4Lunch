@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,6 +43,8 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
     RecyclerView mRecyclerView;
     @BindView(R.id.fragment_lunch_list_no_restaurant)
     TextView mNoRestaurant;
+    @BindView(R.id.fragment_lunch_list_ProgressBar)
+    ContentLoadingProgressBar mProgressBar;
 
     @SuppressWarnings("NullableProblems")
     @NonNull
@@ -131,7 +134,13 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
         }
     }
 
+    /**
+     * Configures the {@link List<Details>}
+     */
     private void configureDetailsList() {
+        // The action can take a long time
+        this.mProgressBar.show();
+
         // Initializes the list
         this.mDetailsList = new ArrayList<>();
 
@@ -163,6 +172,9 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
                                               public void onComplete() {
                                                   // Update data of adapter
                                                   mAdapter.updateData(mDetailsList);
+
+                                                  // The end of action
+                                                  mProgressBar.hide();
                                               }
                                           });
     }

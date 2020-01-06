@@ -87,4 +87,17 @@ public class PlaceRepositoryImpl implements PlaceRepository {
                    .flatMapIterable( result -> result )
                    .flatMap( result -> this.getStreamToFetchDetails(result.getPlaceId(), key) );
     }
+
+    @Override
+    public Observable<Restaurant> getStreamToFetchNearbySearchThenToFetchRestaurant(final String location,
+                                                                                    double radius,
+                                                                                    final String types,
+                                                                                    final String mode,
+                                                                                    final String units,
+                                                                                    final String key) {
+        return this.getStreamToFetchNearbySearch(location, radius, types, key)
+                   .map( nearbySearch -> nearbySearch.getResults() )
+                   .flatMapIterable( result -> result )
+                   .flatMap( result -> this.getStreamToFetchDetailsAndDistanceMatrix(location, result.getPlaceId(), mode, units, key));
+    }
 }

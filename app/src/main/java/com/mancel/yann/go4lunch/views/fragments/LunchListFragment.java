@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.mancel.yann.go4lunch.R;
-import com.mancel.yann.go4lunch.models.Details;
+import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
@@ -55,7 +55,7 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
 
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private List<Details> mDetailsList;
+    private List<Restaurant> mRestaurants;
 
     private static final String TAG = LunchListFragment.class.getSimpleName();
 
@@ -75,7 +75,7 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
     @Override
     protected void configureDesign() {
         this.configureRecyclerView();
-        this.configureDetailsList();
+        this.configureRestaurants();
     }
 
     // -- Fragment --
@@ -135,14 +135,14 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
     }
 
     /**
-     * Configures the {@link List<Details>}
+     * Configures the {@link List<Restaurant>}
      */
-    private void configureDetailsList() {
+    private void configureRestaurants() {
         // The action can take a long time
         this.mProgressBar.show();
 
         // Initializes the list
-        this.mDetailsList = new ArrayList<>();
+        this.mRestaurants = new ArrayList<>();
 
         // TODO: 03/01/2020 PlaceRepository must be removed
         PlaceRepository placeRepository = new PlaceRepositoryImpl();
@@ -152,15 +152,17 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
                                        .getString(R.string.google_maps_key);
 
         // Creates stream
-        this.mDisposable = placeRepository.getStreamToFetchNearbySearchThenToFetchDetailsForEachRestaurant("45.9922027,4.7176896",
-                                                                                                           200.0,
-                                                                                                           "restaurant",
-                                                                                                            key)
-                                          .subscribeWith(new DisposableObserver<Details>() {
+        this.mDisposable = placeRepository.getStreamToFetchNearbySearchThenToFetchRestaurant("45.9922027,4.7176896",
+                                                                                             200.0,
+                                                                                             "restaurant",
+                                                                                             "walking",
+                                                                                             "metric",
+                                                                                              key)
+                                          .subscribeWith(new DisposableObserver<Restaurant>() {
                                               @Override
-                                              public void onNext(Details details) {
+                                              public void onNext(Restaurant restaurant) {
                                                   // Add item
-                                                  mDetailsList.add(details);
+                                                  mRestaurants.add(restaurant);
                                               }
 
                                               @Override
@@ -171,7 +173,7 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
                                               @Override
                                               public void onComplete() {
                                                   // Update data of adapter
-                                                  mAdapter.updateData(mDetailsList);
+                                                  mAdapter.updateData(mRestaurants);
 
                                                   // The end of action
                                                   mProgressBar.hide();

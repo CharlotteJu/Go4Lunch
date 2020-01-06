@@ -66,4 +66,9 @@
     <string name="info_no_username_found">"No username found"</string>
     <string name="info_no_email_found">"No email found"</string>
 
+    <!-- LunchViewHolder.java -->
+    <string name="no_address">"No address"</string>
+    <string name="no_specific_address">"No specific address"</string>
+    <string name="no_data_on_the_opening_hours">"No data on the opening hours"</string>
+
 </resources>

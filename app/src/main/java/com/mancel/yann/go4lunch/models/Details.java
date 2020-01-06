@@ -12,6 +12,139 @@ import java.util.List;
  */
 public class Details {
 
+    /*
+        Pojo structure:
+
+        NearbySearch
+        |
+        +--- html_attributions: List<Object>
+        |
+        +--- result: Result
+        |    |
+        |    +--- address_components: List<AddressComponent>
+        |    |    |
+        |    |    +--- long_name: String
+        |    |    |
+        |    |    +--- short_name: String
+        |    |    |
+        |    |    +--- types: List<String>
+        |    |
+        |    +--- adr_address: String
+        |    |
+        |    +--- formatted_address: String
+        |    |
+        |    +--- formatted_phone_number: String
+        |    |
+        |    +--- geometry: Geometry
+        |    |    |
+        |    |    +--- location: Location
+        |    |    |    |
+        |    |    |    +--- lat: Double
+        |    |    |    |
+        |    |    |    +--- lng: Double
+        |    |    |
+        |    |    +--- viewport: ViewPort
+        |    |         |
+        |    |         +--- northeast: Northeast
+        |    |         |    |
+        |    |         |    +--- lat: Double
+        |    |         |    |
+        |    |         |    +--- lng: Double
+        |    |         |
+        |    |         +--- southwest: Southwest
+        |    |              |
+        |    |              +--- lat: Double
+        |    |              |
+        |    |              +--- lng: Double
+        |    |
+        |    +--- icon: String
+        |    |
+        |    +--- id: String
+        |    |
+        |    +--- international_phone_number: String
+        |    |
+        |    +--- name: String
+        |    |
+        |    +--- opening_hours: Opening_hours
+        |    |    |
+        |    |    +--- open_now: Boolean
+        |    |    |
+        |    |    +--- periods: List<Period>
+        |    |    |    |
+        |    |    |    +--- close: Close
+        |    |    |    |    |
+        |    |    |    |    +--- day: Integer
+        |    |    |    |    |
+        |    |    |    |    +--- time: String
+        |    |    |    |
+        |    |    |    +--- open: Open
+        |    |    |         |
+        |    |    |         +--- day: Integer
+        |    |    |         |
+        |    |    |         +--- time: String
+        |    |    |
+        |    |    +--- weekday_text: List<String>
+        |    |
+        |    +--- photos: List<Photo>
+        |    |    |
+        |    |    +--- height: Integer
+        |    |    |
+        |    |    +--- html_attributions: List<String>
+        |    |    |
+        |    |    +--- photo_reference: String
+        |    |    |
+        |    |    +--- width: Integer
+        |    |
+        |    +--- place_id: String
+        |    |
+        |    +--- plus_code: PlusCode
+        |    |    |
+        |    |    +--- compound_code: String
+        |    |    |
+        |    |    +--- global_code: String
+        |    |
+        |    +--- price_level: Integer
+        |    |
+        |    +--- rating: Double
+        |    |
+        |    +--- reference: String
+        |    |
+        |    +--- reviews: List<Review>
+        |    |    |
+        |    |    +--- author_name: String
+        |    |    |
+        |    |    +--- author_url: String
+        |    |    |
+        |    |    +--- language: String
+        |    |    |
+        |    |    +--- profile_photo_url: String
+        |    |    |
+        |    |    +--- rating: Integer
+        |    |    |
+        |    |    +--- relative_time_description: String
+        |    |    |
+        |    |    +--- text: String
+        |    |    |
+        |    |    +--- time: Integer
+        |    |
+        |    +--- scope: String
+        |    |
+        |    +--- types: List<String>
+        |    |
+        |    +--- url: String
+        |    |
+        |    +--- user_ratings_total: Integer
+        |    |
+        |    +--- utc_offset: Integer
+        |    |
+        |    +--- vicinity: String
+        |    |
+        |    +--- website: String
+        |
+        +--- status: String
+
+    */
+
     // FIELDS --------------------------------------------------------------------------------------
 
     @SerializedName("html_attributions")

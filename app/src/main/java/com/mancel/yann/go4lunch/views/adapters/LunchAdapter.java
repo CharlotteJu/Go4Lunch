@@ -1,14 +1,15 @@
 package com.mancel.yann.go4lunch.views.adapters;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.RequestManager;
-import com.mancel.yann.go4lunch.models.Details;
+import com.mancel.yann.go4lunch.models.Restaurant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
     private final RequestManager mGlide;
 
     @NonNull
-    private List<Details> mDetailsList;
+    private List<Restaurant> mRestaurants;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -42,7 +43,7 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
                         @NonNull final RequestManager glide) {
         this.mCallback = callback;
         this.mGlide = glide;
-        this.mDetailsList = new ArrayList<>();
+        this.mRestaurants = new ArrayList<>();
     }
 
     // METHODS -------------------------------------------------------------------------------------
@@ -64,22 +65,22 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull LunchViewHolder lunchViewHolder, int position) {
-        lunchViewHolder.updateLunch(this.mDetailsList.get(position), this.mGlide);
+        lunchViewHolder.updateLunch(this.mRestaurants.get(position), this.mGlide);
     }
 
     @Override
     public int getItemCount() {
-        return this.mDetailsList.size();
+        return this.mRestaurants.size();
     }
 
     // -- Details --
 
     /**
-     * Updates the data thanks to the {@link List<Details>} in argument
-     * @param newDetailsList a {@link List<Details>} that contains the new data
+     * Updates the data thanks to the {@link List<Restaurant>} in argument
+     * @param newRestaurants a {@link List<Restaurant>} that contains the new data
      */
-    public void updateData(@NonNull final List<Details> newDetailsList) {
-        this.mDetailsList = newDetailsList;
+    public void updateData(@NonNull final List<Restaurant> newRestaurants) {
+        this.mRestaurants = newRestaurants;
         this.notifyDataSetChanged();
 
         // Callback to update UI

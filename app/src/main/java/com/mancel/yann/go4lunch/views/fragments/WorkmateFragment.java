@@ -124,8 +124,7 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
     private void configureRecyclerView() {
         // Adapter
         this.mAdapter = new WorkmateAdapter(this,
-                                            Glide.with(this),
-                                            this.getContext());
+                                            Glide.with(this));
 
         // ListenerRegistration: SnapshotListener of Query
         this.mListenerRegistration = this.mUserViewModel.getAllUsers()

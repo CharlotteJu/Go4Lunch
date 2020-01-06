@@ -1,6 +1,5 @@
 package com.mancel.yann.go4lunch.views.adapters;
 
-import android.content.Context;
 import android.os.Build;
 import android.view.View;
 import android.widget.ImageView;
@@ -61,13 +60,11 @@ class WorkmateViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * Updates the item
-     * @param user      a {@link User} that allows to update the item
-     * @param glide     a {@link RequestManager}
-     * @param context   a {@link Context} (just to retrieve the resources)
+     * @param user  a {@link User} that allows to update the item
+     * @param glide a {@link RequestManager}
      */
     void updateWorkmate(@NonNull final User user,
-                        @NonNull final RequestManager glide,
-                        @NonNull final Context context) {
+                        @NonNull final RequestManager glide) {
         // ImageView (using to Glide library)
         glide.load(user.getUrlPicture())
              .circleCrop()
@@ -80,22 +77,22 @@ class WorkmateViewHolder extends RecyclerView.ViewHolder {
 
         if (user.getPlaceIdOfRestaurant() == null) {
             // [User] has't decided yet
-            text = context.getString(R.string.text_item_workmate_no_choice,
-                                     user.getUsername());
+            text = itemView.getContext().getString(R.string.text_item_workmate_no_choice,
+                                                   user.getUsername());
         }
         else {
             // {User] is eating [food type] ([Name])
-            text = context.getString(R.string.text_item_workmate_choice,
-                                    user.getUsername(),
-                                                user.getFoodTypeOfRestaurant(),
-                                                user.getNameOfRestaurant());
+            text = itemView.getContext().getString(R.string.text_item_workmate_choice,
+                                                   user.getUsername(),
+                                                   user.getFoodTypeOfRestaurant(),
+                                                   user.getNameOfRestaurant());
         }
 
         this.mText.setText(text);
 
         // TextView: Style
         if (Build.VERSION.SDK_INT < 23) {
-            this.mText.setTextAppearance(context,
+            this.mText.setTextAppearance(itemView.getContext(),
                                          (user.getPlaceIdOfRestaurant() == null) ? R.style.TextViewStyle2 :
                                                                                    R.style.TextViewStyle1);
         }

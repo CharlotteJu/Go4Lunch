@@ -32,9 +32,6 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateViewHolder> {
     private final RequestManager mGlide;
 
     @NonNull
-    private final Context mContext;
-
-    @NonNull
     private List<User> mUsers;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
@@ -43,14 +40,11 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateViewHolder> {
      * Create a new RecyclerView adapter that listens to a Firestore Query.
      * @param callback  a {@link AdapterListener} for the callback system
      * @param glide     a {@link RequestManager}
-     * @param context   a {@link Context} (just to retrieve the resources)
      */
     public WorkmateAdapter(@NonNull final AdapterListener callback,
-                           @NonNull final RequestManager glide,
-                           @NonNull final Context context) {
+                           @NonNull final RequestManager glide) {
         this.mCallback = callback;
         this.mGlide = glide;
-        this.mContext = context;
         this.mUsers = new ArrayList<>();
     }
 
@@ -73,7 +67,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull WorkmateViewHolder holder, int position) {
-        holder.updateWorkmate(this.mUsers.get(position), this.mGlide, this.mContext);
+        holder.updateWorkmate(this.mUsers.get(position), this.mGlide);
     }
 
     @Override

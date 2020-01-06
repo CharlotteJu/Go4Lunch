@@ -12,6 +12,37 @@ import java.util.List;
  */
 public class DistanceMatrix {
 
+    /*
+        Pojo structure:
+
+        DistanceMatrix
+        |
+        +--- destination_addresses: List<String>
+        |
+        +--- origin_addresses: List<String>
+        |
+        +--- rows: List<Row>
+        |    |
+        |    +--- elements: List<Element>
+        |         |
+        |         +--- distance: Distance
+        |         |    |
+        |         |    +--- text: String
+        |         |    |
+        |         |    +--- value: Integer
+        |         |
+        |         +--- duration: Duration
+        |         |    |
+        |         |    +--- text: String
+        |         |    |
+        |         |    +--- value: Integer
+        |         |
+        |         +--- status: String
+        |
+        +--- status: String
+
+     */
+
     // FIELDS --------------------------------------------------------------------------------------
 
     @SerializedName("destination_addresses")

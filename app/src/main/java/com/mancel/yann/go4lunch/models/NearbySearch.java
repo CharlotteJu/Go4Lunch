@@ -12,6 +12,85 @@ import java.util.List;
  */
 public class NearbySearch {
 
+    /*
+        Pojo structure:
+
+        NearbySearch
+        |
+        +--- html_attributions: List<Object>
+        |
+        +--- next_page_token: String
+        |
+        +--- results: List<Result>
+        |    |
+        |    +--- geometry
+        |    |    |
+        |    |    +--- location: Location
+        |    |    |    |
+        |    |    |    +--- lat: Double
+        |    |    |    |
+        |    |    |    +--- lng: Double
+        |    |    |
+        |    |    +--- viewport: ViewPort
+        |    |         |
+        |    |         +--- northeast: Northeast
+        |    |         |    |
+        |    |         |    +--- lat: Double
+        |    |         |    |
+        |    |         |    +--- lng: Double
+        |    |         |
+        |    |         +--- southwest: Southwest
+        |    |              |
+        |    |              +--- lat: Double
+        |    |              |
+        |    |              +--- lng: Double
+        |    |
+        |    +--- icon: String
+        |    |
+        |    +--- id: String
+        |    |
+        |    +--- name: String
+        |    |
+        |    +--- opening_hours: Opening_hours
+        |    |    |
+        |    |    +--- open_now: Boolean
+        |    |
+        |    +--- photos: List<Photo>
+        |    |    |
+        |    |    +--- height: Integer
+        |    |    |
+        |    |    +--- html_attributions: List<String>
+        |    |    |
+        |    |    +--- photo_reference: String
+        |    |    |
+        |    |    +--- width: Integer
+        |    |
+        |    +--- place_id: String
+        |    |
+        |    +--- plus_code: PlusCode
+        |    |    |
+        |    |    +--- compound_code: String
+        |    |    |
+        |    |    +--- global_code: String
+        |    |
+        |    +--- rating: Double
+        |    |
+        |    +--- reference: String
+        |    |
+        |    +--- scope: String
+        |    |
+        |    +--- types: List<String>
+        |    |
+        |    +--- user_ratings_total: Integer
+        |    |
+        |    +--- vicinity: String
+        |    |
+        |    +--- price_level: Integer
+        |
+        +--- status: String
+
+    */
+
     // FIELDS --------------------------------------------------------------------------------------
 
     @SerializedName("html_attributions")

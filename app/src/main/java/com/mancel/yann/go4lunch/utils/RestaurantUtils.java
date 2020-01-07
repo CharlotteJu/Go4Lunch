@@ -2,7 +2,7 @@ package com.mancel.yann.go4lunch.utils;
 
 import androidx.annotation.NonNull;
 
-import com.mancel.yann.go4lunch.models.Details;
+import java.util.List;
 
 /**
  * Created by Yann MANCEL on 06/01/2020.
@@ -35,12 +35,29 @@ public abstract class RestaurantUtils {
 
     /**
      * Analyses the opening hours
-     * @param openingHours a {@link Details.OpeningHours}
+     * @param weekdayText a {@link List<String>}, each item corresponds to a day
+     * @param dayOfWeek an integer that contains the day of the week
      * @return a {@link String} that displays if the restaurant is open and for how long
      */
     @NonNull
-    public static String AnalyseOpeningHours(@NonNull final Details.OpeningHours openingHours) {
+    public static String analyseOpeningHours(@NonNull final List<String> weekdayText, int dayOfWeek) {
+        /*
+            "weekday_text": [
+                            "Monday: 12:00 – 1:30 PM",
+                            "Tuesday: 12:00 – 1:30 PM, 7:00 – 9:30 PM",
+                            "Wednesday: 12:00 – 1:30 PM, 7:00 – 9:30 PM",
+                            "Thursday: 12:00 – 1:30 PM, 7:00 – 9:30 PM",
+                            "Friday: 12:00 – 1:30 PM, 7:00 – 10:00 PM",
+                            "Saturday: 12:00 – 1:30 PM, 7:00 – 10:00 PM",
+                            "Sunday: Closed"
+                            ]
+         */
 
-        return "test";
+        // Get the opening hours for the current day
+        //final String dayText = weekdayText.get(dayOfWeek);
+
+        // TODO: 07/01/2020 to remove the day (ex Monday:)
+
+        return weekdayText.get(dayOfWeek);
     }
 }

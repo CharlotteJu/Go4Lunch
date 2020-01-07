@@ -116,6 +116,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/content_description_item_restaurant_image"
-        android:background="@color/colorPrimary"/>
+        style="@style/ImageViewStyle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

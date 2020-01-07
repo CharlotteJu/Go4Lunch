@@ -70,5 +70,7 @@
     <string name="no_address">"No address"</string>
     <string name="no_specific_address">"No specific address"</string>
     <string name="no_data_on_the_opening_hours">"No data on the opening hours"</string>
+    <string name="currently_open">"Currently open (No opening hours)"</string>
+    <string name="not_currently_open">"Not currently open (No opening hours)"</string>
 
 </resources>

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.apis.GoogleMapsService;
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.utils.RestaurantUtils;
@@ -101,7 +102,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         this.updateRating(restaurant.getDetails().getResult().getRating());
 
         // Image
-        //this.mImage;
+        this.updateImage(glide, restaurant.getDetails().getResult().getPhotos());
     }
 
     /**
@@ -173,35 +174,35 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
             return;
         }
 
-        // TODO: 06/01/2020 Finish this method 
-
+        // Retrieves the day of the week
+        int dayOfWeek = -1;
         switch (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
             case Calendar.MONDAY:
-                Log.d(LunchViewHolder.class.getSimpleName(), "updateOpeningHours: Day = MONDAY");
+                dayOfWeek = 0;
                 break;
 
             case Calendar.TUESDAY:
-                Log.d(LunchViewHolder.class.getSimpleName(), "updateOpeningHours: Day = TUESDAY");
+                dayOfWeek = 1;
                 break;
 
             case Calendar.WEDNESDAY:
-                Log.d(LunchViewHolder.class.getSimpleName(), "updateOpeningHours: Day = WEDNESDAY");
+                dayOfWeek = 2;
                 break;
 
             case Calendar.THURSDAY:
-                Log.d(LunchViewHolder.class.getSimpleName(), "updateOpeningHours: Day = THURSDAY");
+                dayOfWeek = 3;
                 break;
 
             case Calendar.FRIDAY:
-                Log.d(LunchViewHolder.class.getSimpleName(), "updateOpeningHours: Day = FRIDAY");
+                dayOfWeek = 4;
                 break;
 
             case Calendar.SATURDAY:
-                Log.d(LunchViewHolder.class.getSimpleName(), "updateOpeningHours: Day = SATURDAY");
+                dayOfWeek = 5;
                 break;
 
             case Calendar.SUNDAY:
-                Log.d(LunchViewHolder.class.getSimpleName(), "updateOpeningHours: Day = SUNDAY");
+                dayOfWeek = 6;
                 break;
 
             default:
@@ -210,50 +211,15 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
         // weekday_text
         if (openingHours.getWeekdayText() != null) {
-            // ...
-        }
+            final String openigHoursForThisDay = RestaurantUtils.analyseOpeningHours(openingHours.getWeekdayText(), dayOfWeek);
+            this.mOpeningHours.setText(openigHoursForThisDay);
 
-        // periods
-        if (openingHours.getPeriods() != null) {
-            // ...
+            return;
         }
 
         // open_now
-        if (openingHours.getOpenNow()) {
-            // ...
-        }
-        else {
-            // ...
-        }
-
-        /*
-        "opening_hours": {
-                    "open_now": false,
-                    "periods": [
-                        {
-                            "close": {
-                                "day": 1,
-                                "time": "1330"
-                            },
-                            "open": {
-                                "day": 1,
-                                "time": "1200"
-                            }
-                        }
-                    ],
-                    "weekday_text": [
-                        "Monday: 12:00 – 1:30 PM",
-                        "Tuesday: 12:00 – 1:30 PM, 7:00 – 9:30 PM",
-                        "Wednesday: 12:00 – 1:30 PM, 7:00 – 9:30 PM",
-                        "Thursday: 12:00 – 1:30 PM, 7:00 – 9:30 PM",
-                        "Friday: 12:00 – 1:30 PM, 7:00 – 10:00 PM",
-                        "Saturday: 12:00 – 1:30 PM, 7:00 – 10:00 PM",
-                        "Sunday: Closed"
-                    ]
-                },
-         */
-
-        this.mOpeningHours.setText(RestaurantUtils.AnalyseOpeningHours(openingHours));
+        this.mOpeningHours.setText(openingHours.getOpenNow() ? itemView.getContext().getString(R.string.currently_open) :
+                                                               itemView.getContext().getString(R.string.not_currently_open));
     }
 
     /**
@@ -272,5 +238,24 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         // TODO: 06/01/2020 Change the number stars of RatingBar 
         //this.mRatingBar.setNumStars((int) floatValue);
         this.mRatingBar.setRating(floatValue);
+    }
+
+    /**
+     * Updates the {@link ImageView}
+     * @param glide     a {@link RequestManager}
+     * @param photos    a {@link List<Details.Photo>}
+     */
+    private void updateImage(@NonNull final RequestManager glide, @Nullable final List<Details.Photo> photos) {
+        // Url Photo
+        final String urlPhoto = (photos == null) ? null :
+                                                   GoogleMapsService.getPhoto(photos.get(0).getPhotoReference(),
+                                                                             400,
+                                                                              itemView.getContext().getString(R.string.google_maps_key));
+
+        // Image (using to Glide library)
+        glide.load(urlPhoto)
+             .fallback(R.drawable.ic_restaurant)
+             .error(R.drawable.ic_close)
+             .into(this.mImage);
     }
 }

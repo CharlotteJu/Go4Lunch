@@ -1,5 +1,7 @@
 package com.mancel.yann.go4lunch.apis;
 
+import androidx.annotation.NonNull;
+
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.DistanceMatrix;
 import com.mancel.yann.go4lunch.models.NearbySearch;
@@ -20,8 +22,10 @@ public interface GoogleMapsService {
 
     // FIELDS --------------------------------------------------------------------------------------
 
+    String baseURL = "https://maps.googleapis.com/maps/api/";
+
     Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl("https://maps.googleapis.com/maps/api/")
+                                    .baseUrl(baseURL)
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                     .build();
@@ -32,10 +36,11 @@ public interface GoogleMapsService {
 
     /**
      * Gets a Nearby Search request is an HTTP URL in Json format
-     * @param location  a {@link String} that contains the latitude/longitude around which to retrieve place information
-     * @param radius    a double that defines the distance (in meters) within which to return place results
-     * @param types     a {@link String} that restricts the results to places matching the specified type
-     * @param key       a {@link String} that contains your application's API key
+     *
+     * @param location a {@link String} that contains the latitude/longitude around which to retrieve place information
+     * @param radius   a double that defines the distance (in meters) within which to return place results
+     * @param types    a {@link String} that restricts the results to places matching the specified type
+     * @param key      a {@link String} that contains your application's API key
      * @return an {@link Observable<NearbySearch>}
      */
     @GET("place/nearbysearch/json?")
@@ -46,34 +51,23 @@ public interface GoogleMapsService {
 
     /**
      * Gets a Details request is an HTTP URL in Json format
-     * @param placeId   a {@link String} that contains the textual identifier that uniquely identifies a place
-     * @param key       a {@link String} that contains your application's API key
+     *
+     * @param placeId a {@link String} that contains the textual identifier that uniquely identifies a place
+     * @param key     a {@link String} that contains your application's API key
      * @return an {@link Observable<Details>}
      */
     @GET("place/details/json?")
     Observable<Details> getDetails(@Query("place_id") final String placeId,
                                    @Query("key") final String key);
 
-    // TODO: 03/01/2020 Add request to fetch photo 
-//    /**
-//     * Gets a Photo request is an HTTP URL
-//     * @param photoReference    a {@link String} that contains a string identifier that uniquely identifies a photo
-//     * @param maxWidth          a double that specifies the maximum desired width, in pixels, of the image
-//     * @param key               a {@link String} that contains your application's API key
-//     * @return
-//     */
-//    @GET("place/photo?")
-//    Observable<String> getPhoto(@Query("photoreference") final String photoReference,
-//                                @Query("maxwidth") double maxWidth,
-//                                @Query("key") final String key);
-
     /**
      * Gets a Distance Matrix request is an HTTP URL in Json format
-     * @param origins       a {@link String} that contains the starting point for calculating travel distance and time
-     * @param destinations  a {@link String} that contains one or more locations to use as the finishing point for calculating travel distance and time
-     * @param mode          a {@link String} that specifies the mode of transport to use when calculating distance
-     * @param units         a {@link String} that specifies the unit system to use when expressing distance as text
-     * @param key           a {@link String} that contains your application's API key
+     *
+     * @param origins      a {@link String} that contains the starting point for calculating travel distance and time
+     * @param destinations a {@link String} that contains one or more locations to use as the finishing point for calculating travel distance and time
+     * @param mode         a {@link String} that specifies the mode of transport to use when calculating distance
+     * @param units        a {@link String} that specifies the unit system to use when expressing distance as text
+     * @param key          a {@link String} that contains your application's API key
      * @return an {@link Observable<DistanceMatrix>}
      */
     @GET("distancematrix/json?")
@@ -82,4 +76,21 @@ public interface GoogleMapsService {
                                                  @Query("mode") final String mode,
                                                  @Query("units") final String units,
                                                  @Query("key") final String key);
+
+    // STATIC METHODS ------------------------------------------------------------------------------
+
+    /**
+     * Gets a photo request URL
+     * @param photoReference    a {@link String} that contains a string identifier that uniquely identifies a photo
+     * @param maxWidth          an integer that specifies the maximum desired width, in pixels, of the image
+     * @param key               a {@link String} that contains your application's API key
+     * @return a {@link String} that contains the photo request URL
+     */
+    static String getPhoto(@NonNull final String photoReference,
+                           int maxWidth,
+                           @NonNull final String key) {
+        return baseURL + "place/photo?" + "photoreference=" + photoReference + "&" +
+                                          "maxwidth="       + maxWidth       + "&" +
+                                          "key="            + key;
+    }
 }

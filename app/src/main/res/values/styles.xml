@@ -170,4 +170,12 @@
         <item name="android:drawableStart">@drawable/ic_facebook</item>
     </style>
 
+    <!-- *********************************** ImageView ***************************************** -->
+
+    <!-- ImageView style -->
+    <style name="ImageViewStyle">
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:background">@drawable/image_view_background</item>
+    </style>
+
 </resources>

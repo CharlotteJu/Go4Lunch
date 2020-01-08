@@ -6,10 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.mancel.yann.go4lunch.models.User;
+import com.mancel.yann.go4lunch.utils.UserDiffCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +84,15 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateViewHolder> {
      * @param newUsers a {@link List<User>} that contains the new data
      */
     public void updateData(@NonNull final List<User> newUsers) {
+        // Optimizes the performances of RecyclerView
+        final UserDiffCallback diffCallback = new UserDiffCallback(this.mUsers, newUsers);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        // New data
         this.mUsers = newUsers;
-        this.notifyDataSetChanged();
+
+        // Notifies adapter
+        diffResult.dispatchUpdatesTo(this);
 
         // Callback to update UI
         this.mCallback.onDataChanged();

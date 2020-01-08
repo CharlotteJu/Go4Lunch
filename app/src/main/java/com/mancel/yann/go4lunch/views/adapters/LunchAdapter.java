@@ -6,10 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 import com.mancel.yann.go4lunch.models.Restaurant;
+import com.mancel.yann.go4lunch.utils.RestaurantDiffCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,8 +82,15 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
      * @param newRestaurants a {@link List<Restaurant>} that contains the new data
      */
     public void updateData(@NonNull final List<Restaurant> newRestaurants) {
+        // Optimizes the performances of RecyclerView
+        final RestaurantDiffCallback diffCallback = new RestaurantDiffCallback(this.mRestaurants, newRestaurants);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        // New data
         this.mRestaurants = newRestaurants;
-        this.notifyDataSetChanged();
+
+        // Notifies adapter
+        diffResult.dispatchUpdatesTo(this);
 
         // Callback to update UI
         this.mCallback.onDataChanged();

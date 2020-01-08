@@ -211,8 +211,8 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
         // weekday_text
         if (openingHours.getWeekdayText() != null) {
-            final String openigHoursForThisDay = RestaurantUtils.analyseOpeningHours(openingHours.getWeekdayText(), dayOfWeek);
-            this.mOpeningHours.setText(openigHoursForThisDay);
+            final String openingHoursForThisDay = RestaurantUtils.analyseOpeningHours(openingHours.getWeekdayText(), dayOfWeek);
+            this.mOpeningHours.setText(openingHoursForThisDay);
 
             return;
         }

@@ -149,6 +149,7 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
 
         // RecyclerView
         this.mRecyclerView.setAdapter(this.mAdapter);
+        this.mRecyclerView.setHasFixedSize(true);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                                                                        DividerItemDecoration.VERTICAL));

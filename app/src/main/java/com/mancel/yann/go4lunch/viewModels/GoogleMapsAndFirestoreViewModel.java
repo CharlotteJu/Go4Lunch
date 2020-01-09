@@ -1,5 +1,6 @@
 package com.mancel.yann.go4lunch.viewModels;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -8,10 +9,17 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.Query;
+import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.liveDatas.RestaurantsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.UsersLiveData;
+import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.UserRepository;
+
+import java.util.List;
+
+import io.reactivex.Observable;
 
 /**
  * Created by Yann MANCEL on 09/01/2020.
@@ -32,6 +40,9 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
     @Nullable
     private UsersLiveData mUsersLiveData = null;
+
+    @Nullable
+    private RestaurantsLiveData mRestaurantsLiveData = null;
 
     private static final String TAG = GoogleMapsAndFirestoreViewModel.class.getSimpleName();
 
@@ -73,6 +84,47 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         }
 
         return this.mUsersLiveData;
+    }
+
+    // -- RestaurantsLiveData --
+
+    /**
+     * Gets all restaurants from Google Maps
+     * @param context a {@link Context}
+     * @return a {@link RestaurantsLiveData}
+     */
+    @NonNull
+    public RestaurantsLiveData getRestaurants(@NonNull final Context context) {
+        if (this.mRestaurantsLiveData == null) {
+            this.mRestaurantsLiveData = new RestaurantsLiveData();
+        }
+
+        // Fetches the restaurants
+        this.loadRestaurants(context);
+
+        return this.mRestaurantsLiveData;
+    }
+
+    /**
+     * Loads the restaurant
+     * @param context a {@link Context}
+     */
+    public void loadRestaurants(@NonNull final Context context) {
+        // Retrieves Google Maps Key
+        final String key = context.getResources()
+                                  .getString(R.string.google_maps_key);
+
+        // Observable
+        final Observable<List<Restaurant>> observable;
+        observable = this.mPlaceRepository.getStreamToFetchNearbySearchThenToFetchRestaurants("45.9922027,4.7176896",
+                                                                                              200.0,
+                                                                                              "restaurant",
+                                                                                              "walking",
+                                                                                              "metric",
+                                                                                               key);
+
+        // Updates LiveData for the restaurants
+        this.mRestaurantsLiveData.getRestaurantsWithObservable(observable);
     }
 
     // -- Create (User) --

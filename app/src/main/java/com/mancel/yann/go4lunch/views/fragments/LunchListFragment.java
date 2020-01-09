@@ -1,32 +1,26 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.widget.ContentLoadingProgressBar;
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.mancel.yann.go4lunch.R;
-import com.mancel.yann.go4lunch.models.Restaurant;
-import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
+import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
+import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
+import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.LunchAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
-import io.reactivex.annotations.Nullable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by Yann MANCEL on 19/11/2019.
@@ -48,16 +42,11 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
 
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private LunchAdapter mAdapter;
-
-    @Nullable
-    private Disposable mDisposable = null;
+    private GoogleMapsAndFirestoreViewModel mViewModel;
 
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private List<Restaurant> mRestaurants;
-
-    private static final String TAG = LunchListFragment.class.getSimpleName();
+    private LunchAdapter mAdapter;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -75,15 +64,8 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
     @Override
     protected void configureDesign() {
         this.configureRecyclerView();
-        this.configureRestaurants();
-    }
-
-    // -- Fragment --
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        this.disposeWhenDestroy();
+        this.configureViewModel();
+        this.configureRestaurantsLiveData();
     }
 
     // -- AdapterListener interface --
@@ -105,6 +87,38 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
         return new LunchListFragment();
     }
 
+    // -- GoogleMapsAndFirestoreViewModel --
+
+    /**
+     * Configures the {@link GoogleMapsAndFirestoreViewModel}
+     */
+    private void configureViewModel() {
+        // TODO: 09/01/2020 UserRepository and PlaceRepository must be removed thanks to Dagger 2
+        final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
+                                                                                                          new PlaceRepositoryImpl());
+
+        this.mViewModel = ViewModelProviders.of(this.getActivity(), factory)
+                                            .get(GoogleMapsAndFirestoreViewModel.class);
+    }
+
+    /**
+     * Configures the {@link com.mancel.yann.go4lunch.liveDatas.RestaurantsLiveData}
+     */
+    private void configureRestaurantsLiveData() {
+        // Bind between liveData of ViewModel and the Adapter of RecyclerView
+        this.mViewModel.getRestaurants(this.getContext())
+                       .observe(getActivity(),
+                                restaurants -> {
+                                    // The action can take a long time
+                                    this.mProgressBar.show();
+
+                                    this.mAdapter.updateData(restaurants);
+
+                                    // The end of action
+                                    this.mProgressBar.hide();
+                                });
+    }
+
     // -- RecyclerView --
 
     /**
@@ -120,65 +134,5 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                                                                        DividerItemDecoration.VERTICAL));
-    }
-
-    // -- Java Rx --
-
-    /**
-     * Disposes the {@link Disposable} when {@link Fragment#onDestroy()} method is called
-     */
-    private void disposeWhenDestroy() {
-        Log.e(TAG, "disposeWhenDestroy");
-
-        if (this.mDisposable != null && !this.mDisposable.isDisposed()) {
-            this.mDisposable.dispose();
-        }
-    }
-
-    /**
-     * Configures the {@link List<Restaurant>}
-     */
-    private void configureRestaurants() {
-        // The action can take a long time
-        this.mProgressBar.show();
-
-        // Initializes the list
-        this.mRestaurants = new ArrayList<>();
-
-        // TODO: 03/01/2020 PlaceRepository must be removed
-        PlaceRepository placeRepository = new PlaceRepositoryImpl();
-
-        // Retrieves Google Maps Key
-        final String key = getContext().getResources()
-                                       .getString(R.string.google_maps_key);
-
-        // Creates stream
-        this.mDisposable = placeRepository.getStreamToFetchNearbySearchThenToFetchRestaurant("45.9922027,4.7176896",
-                                                                                             200.0,
-                                                                                             "restaurant",
-                                                                                             "walking",
-                                                                                             "metric",
-                                                                                              key)
-                                          .subscribeWith(new DisposableObserver<Restaurant>() {
-                                              @Override
-                                              public void onNext(Restaurant restaurant) {
-                                                  // Add item
-                                                  mRestaurants.add(restaurant);
-                                              }
-
-                                              @Override
-                                              public void onError(Throwable e) {
-                                                  Log.e(TAG, "onError: " + e.getMessage());
-                                              }
-
-                                              @Override
-                                              public void onComplete() {
-                                                  // Update data of adapter
-                                                  mAdapter.updateData(mRestaurants);
-
-                                                  // The end of action
-                                                  mProgressBar.hide();
-                                              }
-                                          });
     }
 }

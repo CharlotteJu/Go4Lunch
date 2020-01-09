@@ -6,6 +6,7 @@ import com.mancel.yann.go4lunch.models.DistanceMatrix;
 import com.mancel.yann.go4lunch.models.NearbySearch;
 import com.mancel.yann.go4lunch.models.Restaurant;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -99,5 +100,20 @@ public class PlaceRepositoryImpl implements PlaceRepository {
                    .map( nearbySearch -> nearbySearch.getResults() )
                    .flatMapIterable( result -> result )
                    .flatMap( result -> this.getStreamToFetchDetailsAndDistanceMatrix(location, result.getPlaceId(), mode, units, key));
+    }
+
+    @Override
+    public Observable<List<Restaurant>> getStreamToFetchNearbySearchThenToFetchRestaurants(final String location,
+                                                                                           double radius,
+                                                                                           final String types,
+                                                                                           final String mode,
+                                                                                           final String units,
+                                                                                           final String key) {
+        return this.getStreamToFetchNearbySearch(location, radius, types, key)
+                   .map( nearbySearch -> nearbySearch.getResults() )
+                   .flatMapIterable( result -> result )
+                   .flatMap( result -> this.getStreamToFetchDetailsAndDistanceMatrix(location, result.getPlaceId(), mode, units, key))
+                   .toList()
+                   .toObservable();
     }
 }

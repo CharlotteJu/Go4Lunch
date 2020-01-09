@@ -106,7 +106,6 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
         this.mViewModel.getUsers()
                        .observe(getActivity(),
                                 users -> this.mAdapter.updateData(users));
-
     }
 
     // -- RecyclerView --

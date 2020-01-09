@@ -241,4 +241,31 @@ public class PlaceRepositoryTest {
         // TEST: results's size
         assertEquals("results: Number of restaurant equals to 13", restaurants.size(), 13);
     }
+
+    @Test
+    public void should_Fetch_NearbySearch_Then_should_Fetch_Restaurants() {
+        // Creates Observable
+        final Observable<List<Restaurant>> observable;
+        observable = this.mPlaceRepository.getStreamToFetchNearbySearchThenToFetchRestaurants("45.9922027,4.7176896",
+                                                                                              200.0,
+                                                                                              "restaurant",
+                                                                                              "walking",
+                                                                                              "metric",
+                                                                                               KEY);
+
+        // Creates Observer
+        final TestObserver<List<Restaurant>> observer = new TestObserver<>();
+
+        // Creates Stream
+        observable.subscribeWith(observer)
+                  .assertNoErrors()
+                  .assertNoTimeout()
+                  .awaitTerminalEvent();
+
+        // Fetches the result
+        final List<Restaurant> restaurants = observer.values().get(0);
+
+        // TEST: results's size
+        assertEquals("results: Number of restaurant equals to 13", restaurants.size(), 13);
+    }
 }

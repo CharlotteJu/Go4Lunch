@@ -1,6 +1,5 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,19 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.mancel.yann.go4lunch.R;
-import com.mancel.yann.go4lunch.models.User;
+import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
-import com.mancel.yann.go4lunch.viewModels.UserViewModel;
-import com.mancel.yann.go4lunch.viewModels.UserViewModelFactory;
+import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
+import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.WorkmateAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 
@@ -45,17 +39,11 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
 
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private UserViewModel mUserViewModel;
+    private GoogleMapsAndFirestoreViewModel mViewModel;
 
     @SuppressWarnings("NullableProblems")
     @NonNull
     private WorkmateAdapter mAdapter;
-
-    @SuppressWarnings("NullableProblems")
-    @NonNull
-    private ListenerRegistration mListenerRegistration;
-
-    private static final String TAG = WorkmateFragment.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -72,16 +60,9 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
 
     @Override
     protected void configureDesign() {
-        this.configureUserViewModel();
         this.configureRecyclerView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        // Stop listening to changes
-        this.mListenerRegistration.remove();
+        this.configureViewModel();
+        this.configureUsersLiveData();
     }
 
     // -- AdapterListener interface --
@@ -103,17 +84,29 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
         return new WorkmateFragment();
     }
 
-    // -- UserViewModel --
+    // -- GoogleMapsAndFirestoreViewModel --
 
     /**
-     * Configures the {@link UserViewModel}
+     * Configures the {@link GoogleMapsAndFirestoreViewModel}
      */
-    private void configureUserViewModel() {
-        // TODO: 23/12/2019 UserRepository must be removed thanks to Dagger 2
-        final UserViewModelFactory factory = new UserViewModelFactory(new UserRepositoryImpl());
+    private void configureViewModel() {
+        // TODO: 09/01/2020 UserRepository and PlaceRepository must be removed thanks to Dagger 2
+        final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
+                                                                                                          new PlaceRepositoryImpl());
 
-        this.mUserViewModel = ViewModelProviders.of(this.getActivity(), factory)
-                                                .get(UserViewModel.class);
+        this.mViewModel = ViewModelProviders.of(this.getActivity(), factory)
+                                            .get(GoogleMapsAndFirestoreViewModel.class);
+    }
+
+    /**
+     * Configures the {@link com.mancel.yann.go4lunch.liveDatas.UsersLiveData}
+     */
+    private void configureUsersLiveData() {
+        // Bind between liveData of ViewModel and the Adapter of RecyclerView
+        this.mViewModel.getUsers()
+                       .observe(getActivity(),
+                                users -> this.mAdapter.updateData(users));
+
     }
 
     // -- RecyclerView --
@@ -125,27 +118,6 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
         // Adapter
         this.mAdapter = new WorkmateAdapter(this,
                                             Glide.with(this));
-
-        // ListenerRegistration: SnapshotListener of Query
-        this.mListenerRegistration = this.mUserViewModel.getAllUsers()
-                                                        .addSnapshotListener( (queryDocumentSnapshots, e) -> {
-                                                            if (e != null) {
-                                                                Log.e(TAG, "When addSnapshotListener to query (Update WorkmateAdapter): Listen failed.", e);
-                                                                return;
-                                                            }
-
-                                                            List<User> users = new ArrayList<>();
-
-                                                            if (queryDocumentSnapshots != null) {
-                                                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                                                    if (doc != null) {
-                                                                        users.add(doc.toObject(User.class));
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            this.mAdapter.updateData(users);
-                                                        });
 
         // RecyclerView
         this.mRecyclerView.setAdapter(this.mAdapter);

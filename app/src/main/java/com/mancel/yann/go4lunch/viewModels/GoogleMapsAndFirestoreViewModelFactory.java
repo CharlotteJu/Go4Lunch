@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.UserRepository;
 
 /**
@@ -13,21 +14,27 @@ import com.mancel.yann.go4lunch.repositories.UserRepository;
  *
  * A class which implements {@link ViewModelProvider.Factory}.
  */
-public class UserViewModelFactory implements ViewModelProvider.Factory {
+public class GoogleMapsAndFirestoreViewModelFactory implements ViewModelProvider.Factory {
 
     // FIELDS --------------------------------------------------------------------------------------
 
     @NonNull
-    private UserRepository mUserRepository;
+    private final UserRepository mUserRepository;
+
+    @NonNull
+    private final PlaceRepository mPlaceRepository;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
-     * Constructor
-     * @param userRepository a {@link UserRepository}
+     * Constructor with 2 repositories
+     * @param userRepository    a {@link UserRepository} for data from Firebase Firestore
+     * @param placeRepository   a {@link PlaceRepository} for data from Google Maps
      */
-    public UserViewModelFactory(@NonNull final UserRepository userRepository) {
+    public GoogleMapsAndFirestoreViewModelFactory(@NonNull UserRepository userRepository,
+                                                  @NonNull PlaceRepository placeRepository) {
         this.mUserRepository = userRepository;
+        this.mPlaceRepository = placeRepository;
     }
 
     // METHODS -------------------------------------------------------------------------------------
@@ -37,8 +44,9 @@ public class UserViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(UserViewModel.class)) {
-            return (T) new UserViewModel(this.mUserRepository);
+        if (modelClass.isAssignableFrom(GoogleMapsAndFirestoreViewModel.class)) {
+            return (T) new GoogleMapsAndFirestoreViewModel(this.mUserRepository,
+                                                           this.mPlaceRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

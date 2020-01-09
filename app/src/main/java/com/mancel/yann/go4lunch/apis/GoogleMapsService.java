@@ -86,6 +86,7 @@ public interface GoogleMapsService {
      * @param key               a {@link String} that contains your application's API key
      * @return a {@link String} that contains the photo request URL
      */
+    @NonNull
     static String getPhoto(@NonNull final String photoReference,
                            int maxWidth,
                            @NonNull final String key) {

@@ -8,35 +8,46 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.Query;
+import com.mancel.yann.go4lunch.liveDatas.UsersLiveData;
 import com.mancel.yann.go4lunch.models.User;
+import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.UserRepository;
 
 /**
- * Created by Yann MANCEL on 10/12/2019.
+ * Created by Yann MANCEL on 09/01/2020.
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.viewModels
  *
  * A {@link ViewModel} subclass.
  */
-public class UserViewModel extends ViewModel {
+public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
     // FIELDS --------------------------------------------------------------------------------------
 
     @NonNull
-    private UserRepository mUserRepository;
+    private final UserRepository mUserRepository;
 
-    private static final String TAG = UserViewModel.class.getSimpleName();
+    @NonNull
+    private final PlaceRepository mPlaceRepository;
+
+    @Nullable
+    private UsersLiveData mUsersLiveData = null;
+
+    private static final String TAG = GoogleMapsAndFirestoreViewModel.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
-     * Constructor with an argument
-     * @param userRepository a {@link UserRepository}
+     * Constructor with 2 repositories
+     * @param userRepository    a {@link UserRepository} for data from Firebase Firestore
+     * @param placeRepository   a {@link PlaceRepository} for data from Google Maps
      */
-    public UserViewModel(@NonNull UserRepository userRepository) {
-        Log.d(TAG, "UserViewModel");
+    public GoogleMapsAndFirestoreViewModel(@NonNull final UserRepository userRepository,
+                                           @NonNull final PlaceRepository placeRepository) {
+        Log.d(TAG, "GoogleMapsAndFirestoreViewModel");
 
         this.mUserRepository = userRepository;
+        this.mPlaceRepository = placeRepository;
     }
 
     // METHODS -------------------------------------------------------------------------------------
@@ -47,6 +58,21 @@ public class UserViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
         Log.d(TAG, "onCleared");
+    }
+
+    // -- UsersLiveData --
+
+    /**
+     * Gets all users from Firebase Firestore
+     * @return a {@link UsersLiveData}
+     */
+    @NonNull
+    public UsersLiveData getUsers() {
+        if (this.mUsersLiveData == null) {
+            this.mUsersLiveData = new UsersLiveData(this.mUserRepository.getAllUsers());
+        }
+
+        return this.mUsersLiveData;
     }
 
     // -- Create (User) --
@@ -80,16 +106,16 @@ public class UserViewModel extends ViewModel {
                                                                     currentUser.getDisplayName(),
                                                                     currentUser.getPhotoUrl().toString())
                                                         .addOnSuccessListener( aVoid ->
-                                                            Log.d(TAG, "--> createUser (onSuccess)")
+                                                                Log.d(TAG, "--> createUser (onSuccess)")
                                                         )
                                                         .addOnFailureListener( e ->
-                                                            Log.d(TAG, "--> createUser (onFailure): " + e.getMessage())
+                                                                Log.d(TAG, "--> createUser (onFailure): " + e.getMessage())
                                                         );
 
                                 }
                             })
                             .addOnFailureListener( e ->
-                                Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
+                                    Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
                             );
     }
 
@@ -114,7 +140,7 @@ public class UserViewModel extends ViewModel {
                                 user.copy(userFromFirestore);
                             })
                             .addOnFailureListener( e ->
-                                Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
+                                    Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
                             );
 
         return user;
@@ -151,10 +177,10 @@ public class UserViewModel extends ViewModel {
         Log.d(TAG, "updateUsername: " + uid);
         this.mUserRepository.updateUsername(uid, username)
                             .addOnSuccessListener( aVoid ->
-                                Log.d(TAG, "--> updateUsername (onSuccess)")
+                                    Log.d(TAG, "--> updateUsername (onSuccess)")
                             )
                             .addOnFailureListener( e ->
-                                Log.e(TAG, "--> updateUsername (onFailure): " + e.getMessage())
+                                    Log.e(TAG, "--> updateUsername (onFailure): " + e.getMessage())
                             );
     }
 
@@ -192,10 +218,20 @@ public class UserViewModel extends ViewModel {
         Log.d(TAG, "deleteUser: " + currentUser.getUid());
         this.mUserRepository.deleteUser(currentUser.getUid())
                             .addOnSuccessListener( aVoid ->
-                                Log.d(TAG, "--> deleteUser (onSuccess)")
+                                    Log.d(TAG, "--> deleteUser (onSuccess)")
                             )
                             .addOnFailureListener( e ->
-                                Log.e(TAG, "--> deleteUser (onFailure): " + e.getMessage())
+                                    Log.e(TAG, "--> deleteUser (onFailure): " + e.getMessage())
                             );
     }
+
+
+
+
+
+
+
+
+
+
 }

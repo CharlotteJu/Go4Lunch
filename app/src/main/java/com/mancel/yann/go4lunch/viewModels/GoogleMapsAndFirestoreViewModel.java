@@ -147,7 +147,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
                                 final User user = documentSnapshot.toObject(User.class);
 
                                 if (user != null) {
-                                    Log.d(TAG, "----> user is already present: " + user.toString());
+                                    Log.d(TAG, "----> user is already present");
                                 }
                                 else {
                                     Log.d(TAG, "----> user is not present");

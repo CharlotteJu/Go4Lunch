@@ -16,6 +16,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
@@ -24,7 +25,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
+import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.BlurTransformation;
+import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
+import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
 import com.mancel.yann.go4lunch.views.fragments.LunchListFragment;
 import com.mancel.yann.go4lunch.views.fragments.LunchMapFragment;
@@ -56,9 +61,21 @@ public class MainActivity extends BaseActivity {
     private ImageView mUserImageFromHeader;
     private TextView mUsernameFromHeader;
     private TextView mEmailFromHeader;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private GoogleMapsAndFirestoreViewModel mViewModel;
+
+    private enum FragmentType {MAP, LIST, WORKMATE}
+
+    @NonNull
+    private FragmentType mFragmentType = FragmentType.MAP;
+
     private LunchMapFragment mLunchMapFragment;
     private LunchListFragment mLunchListFragment;
     private WorkmateFragment mWorkmateFragment;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -77,11 +94,20 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void configureDesign() {
+        // UI
         this.configureToolBar();
         this.configureDrawerLayout();
         this.configureNavigationView();
         this.configureBottomNavigationView();
-        this.configureLunchMapFragment();
+
+        // ViewModel
+        this.configureViewModel();
+
+        // User
+        this.createUser();
+
+        // Fragment
+        this.configureFragment(this.mFragmentType);
     }
 
     // -- Activity --
@@ -111,6 +137,7 @@ public class MainActivity extends BaseActivity {
             this.mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         else {
+            // TODO: 10/01/2020 call logout method and not super.onBackPressed();
             super.onBackPressed();
         }
     }
@@ -152,18 +179,20 @@ public class MainActivity extends BaseActivity {
                 Log.e(this.getClass().getSimpleName(), "Setting");
                 break;
             case R.id.menu_drawer_logout:
-                this.signOutCurrentUser();
-                this.startAnotherActivity(AuthActivity.class);
+                this.logout();
                 break;
 
             // BottomNavigationView
             case R.id.bottom_navigation_menu_map:
+                this.mFragmentType = FragmentType.MAP;
                 this.configureLunchMapFragment();
                 break;
             case R.id.bottom_navigation_menu_list:
+                this.mFragmentType = FragmentType.LIST;
                 this.configureLunchListFragment();
                 break;
             case R.id.bottom_navigation_menu_workmate:
+                this.mFragmentType = FragmentType.WORKMATE;
                 this.configureWorkmateFragment();
                 break;
 
@@ -186,11 +215,11 @@ public class MainActivity extends BaseActivity {
      */
     private void configureDrawerLayout() {
         // Creates the Hamburger button of the toolbar
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
-                                                                 this.mDrawerLayout,
-                                                                 this.getToolbar(),
-                                                                 R.string.navigation_drawer_open,
-                                                                 R.string.navigation_drawer_close);
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
+                                                                        this.mDrawerLayout,
+                                                                        this.getToolbar(),
+                                                                        R.string.navigation_drawer_open,
+                                                                        R.string.navigation_drawer_close);
 
         // Adds the listener (the "Hamburger" button) to the DrawerLayout field
         this.mDrawerLayout.addDrawerListener(toggle);
@@ -266,7 +295,42 @@ public class MainActivity extends BaseActivity {
         this.mBottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
     }
 
+    // -- GoogleMapsAndFirestoreViewModel --
+
+    /**
+     * Configures the {@link GoogleMapsAndFirestoreViewModel}
+     */
+    private void configureViewModel() {
+        // TODO: 10/01/2020 UserRepository and PlaceRepository must be removed thanks to Dagger 2
+        final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
+                                                                                                          new PlaceRepositoryImpl());
+
+        this.mViewModel = ViewModelProviders.of(this, factory)
+                                            .get(GoogleMapsAndFirestoreViewModel.class);
+    }
+
     // -- Fragment --
+
+    /**
+     * Configures the {@link androidx.fragment.app.Fragment}
+     * @param fragmentType a {@link FragmentType}
+     */
+    private void configureFragment(@NonNull final FragmentType fragmentType) {
+        // TODO: 10/01/2020 refactor and delete field not useful
+        switch (fragmentType) {
+            case MAP:
+                this.configureLunchMapFragment();
+                break;
+
+            case LIST:
+                this.configureLunchListFragment();
+                break;
+
+            case WORKMATE:
+                this.configureWorkmateFragment();
+                break;
+        }
+    }
 
     /**
      * Configures the {@link LunchMapFragment}
@@ -299,5 +363,31 @@ public class MainActivity extends BaseActivity {
         }
 
         this.replaceFragment(this.mWorkmateFragment, R.id.activity_main_frame_layout);
+    }
+
+    // -- User --
+
+    /**
+     * Creates the user if it does not exist
+     */
+    private void createUser() {
+        try {
+            this.mViewModel.createUser(this.getCurrentUser());
+        }
+        catch (Exception e) {
+            Log.e(TAG, "createUser: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Logout the current user
+     */
+    private void logout() {
+        // TODO: 10/01/2020 Create Dialog to ask if the user would like really logout
+        this.signOutCurrentUser();
+        this.startAnotherActivity(AuthActivity.class);
+
+        // Deletes this activity
+        this.finish();
     }
 }

@@ -150,6 +150,9 @@ public class AuthActivity extends BaseActivity {
 
         if (currentUser != null) {
             this.startAnotherActivity(MainActivity.class);
+
+            // Deletes this activity
+            this.finish();
         }
     }
 
@@ -210,7 +213,8 @@ public class AuthActivity extends BaseActivity {
         this.mFirebaseAuth.signInWithCredential(credential)
                           .addOnCompleteListener(this, (task) -> {
                               if (task.isSuccessful()) {
-                                  this.startAnotherActivity(MainActivity.class);
+                                  // Checks if user is signed in (non-null)
+                                  this.manageFirebaseUser(this.mFirebaseAuth);
                               }
                               else {
                                   ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
@@ -275,7 +279,8 @@ public class AuthActivity extends BaseActivity {
         this.mFirebaseAuth.signInWithCredential(credential)
                           .addOnCompleteListener(this, (task) -> {
                               if (task.isSuccessful()) {
-                                  this.startAnotherActivity(MainActivity.class);
+                                  // Checks if user is signed in (non-null)
+                                  this.manageFirebaseUser(this.mFirebaseAuth);
                               }
                               else {
                                   ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,

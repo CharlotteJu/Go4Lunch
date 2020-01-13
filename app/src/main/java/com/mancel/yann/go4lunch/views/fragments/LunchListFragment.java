@@ -63,9 +63,14 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
 
     @Override
     protected void configureDesign() {
+        // UI
         this.configureRecyclerView();
+
+        // ViewModel
         this.configureViewModel();
-        this.configureRestaurantsLiveData();
+
+        // LiveData
+        this.configureRestaurantsWithUsersLiveData();
     }
 
     // -- AdapterListener interface --
@@ -102,16 +107,17 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
     }
 
     /**
-     * Configures the {@link com.mancel.yann.go4lunch.liveDatas.RestaurantsLiveData}
+     * Configures the {@link com.mancel.yann.go4lunch.liveDatas.RestaurantsWithUsersLiveData}
      */
-    private void configureRestaurantsLiveData() {
+    private void configureRestaurantsWithUsersLiveData() {
         // Bind between liveData of ViewModel and the Adapter of RecyclerView
-        this.mViewModel.getRestaurants(this.getContext())
-                       .observe(getActivity(),
+        this.mViewModel.getRestaurantsWithUsers(this.getContext())
+                       .observe(this.getActivity(),
                                 restaurants -> {
                                     // The action can take a long time
                                     this.mProgressBar.show();
 
+                                    // Updates adapter
                                     this.mAdapter.updateData(restaurants);
 
                                     // The end of action

@@ -489,7 +489,7 @@ public class Details {
         }
     }
 
-    public class Result {
+    public static class Result {
 
         @SerializedName("address_components")
         @Expose

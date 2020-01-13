@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.Query;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsLiveData;
+import com.mancel.yann.go4lunch.liveDatas.RestaurantsWithUsersLiveData;
 import com.mancel.yann.go4lunch.liveDatas.UsersLiveData;
 import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.models.User;
@@ -43,6 +44,9 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
     @Nullable
     private RestaurantsLiveData mRestaurantsLiveData = null;
+
+    @Nullable
+    private RestaurantsWithUsersLiveData mRestaurantsWithUsersLiveData = null;
 
     private static final String TAG = GoogleMapsAndFirestoreViewModel.class.getSimpleName();
 
@@ -125,6 +129,23 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
         // Updates LiveData for the restaurants
         this.mRestaurantsLiveData.getRestaurantsWithObservable(observable);
+    }
+
+    // -- RestaurantsWithUsersLiveData --
+
+    /**
+     * Gets all restaurants from Google Maps and associated with all users
+     * @param context a {@link Context}
+     * @return a {@link RestaurantsWithUsersLiveData}
+     */
+    @NonNull
+    public RestaurantsWithUsersLiveData getRestaurantsWithUsers(@NonNull final Context context) {
+        if (this.mRestaurantsWithUsersLiveData == null) {
+            this.mRestaurantsWithUsersLiveData = new RestaurantsWithUsersLiveData(this.getRestaurants(context),
+                                                                                  this.getUsers());
+        }
+
+        return this.mRestaurantsWithUsersLiveData;
     }
 
     // -- Create (User) --

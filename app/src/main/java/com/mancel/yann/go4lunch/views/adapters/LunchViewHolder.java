@@ -42,6 +42,8 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
     TextView mOpeningHours;
     @BindView(R.id.item_restaurant_distance)
     TextView mDistance;
+    @BindView(R.id.item_restaurant_people_image)
+    ImageView mImagePeople;
     @BindView(R.id.item_restaurant_people_number)
     TextView mPeopleNumber;
     @BindView(R.id.item_restaurant_rating_bar)
@@ -95,8 +97,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         this.mDistance.setText(restaurant.getDistanceMatrix().getRows().get(0).getElements().get(0).getDistance().getText());
 
         // People
-        // TODO: 06/01/2020 Add people number
-        //this.mPeopleNumber;
+        this.updatePeople(restaurant.getNumberOfUsers());
 
         // Rating
         this.updateRating(restaurant.getDetails().getResult().getRating());
@@ -220,6 +221,22 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         // open_now
         this.mOpeningHours.setText(openingHours.getOpenNow() ? itemView.getContext().getString(R.string.currently_open) :
                                                                itemView.getContext().getString(R.string.not_currently_open));
+    }
+
+    /**
+     * Updates the {@link TextView} on people and the {@link ImageView} associated
+     * @param numberOfUser an integer that contains the number of user who has selected the restaurant
+     */
+    private void updatePeople(int numberOfUser) {
+        // No user
+        if (numberOfUser == 0) {
+            this.mImagePeople.setVisibility(View.GONE);
+            this.mPeopleNumber.setVisibility(View.GONE);
+
+            return;
+        }
+
+        this.mPeopleNumber.setText("(" + numberOfUser + ")");
     }
 
     /**

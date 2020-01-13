@@ -60,8 +60,13 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
 
     @Override
     protected void configureDesign() {
+        // UI
         this.configureRecyclerView();
+
+        // ViewModel
         this.configureViewModel();
+
+        // LiveData
         this.configureUsersLiveData();
     }
 

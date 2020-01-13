@@ -17,6 +17,8 @@ public class Restaurant {
     @NonNull
     private DistanceMatrix mDistanceMatrix;
 
+    int mNumberOfUsers = 0;
+
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
@@ -41,5 +43,15 @@ public class Restaurant {
     @NonNull
     public DistanceMatrix getDistanceMatrix() {
         return this.mDistanceMatrix;
+    }
+
+    public int getNumberOfUsers() {
+        return this.mNumberOfUsers;
+    }
+
+    // -- Setter --
+
+    public void setNumberOfUsers(int numberOfUsers) {
+        this.mNumberOfUsers = numberOfUsers;
     }
 }

@@ -2,6 +2,10 @@ package com.mancel.yann.go4lunch.utils;
 
 import androidx.annotation.NonNull;
 
+import com.mancel.yann.go4lunch.models.Restaurant;
+import com.mancel.yann.go4lunch.models.User;
+
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -59,5 +63,38 @@ public abstract class RestaurantUtils {
         // TODO: 07/01/2020 to remove the day (ex Monday:)
 
         return weekdayText.get(dayOfWeek);
+    }
+
+    /**
+     * Updates a {@link List<Restaurant>} with a {@link List<User>}
+     * @param restaurants   a {@link List<Restaurant>}
+     * @param users         a {@link List<User>}
+     * @return a {@link List<Restaurant>} that contains the couple {@link Restaurant} and the number of {@link User}
+     */
+    @NonNull
+    public static synchronized List<Restaurant> updateRestaurantsWithUsers(@NonNull List<Restaurant> restaurants,
+                                                                           @NonNull List<User> users) {
+        final Iterator<Restaurant> iterator = restaurants.iterator();
+
+        while (iterator.hasNext()) {
+            final Restaurant restaurant = iterator.next();
+
+            int nbUser = 0;
+            for (User user : users) {
+                // Place Id is null
+                if (user.getPlaceIdOfRestaurant() == null) {
+                    continue;
+                }
+
+                // Same Place Id
+                if (user.getPlaceIdOfRestaurant().equals(restaurant.getDetails().getResult().getPlaceId())) {
+                    nbUser++;
+                }
+            }
+
+            restaurant.setNumberOfUsers(nbUser);
+        }
+
+        return restaurants;
     }
 }

@@ -36,7 +36,7 @@ public class RestaurantsWithUsersLiveData extends MediatorLiveData<List<Restaura
      * @param usersLiveData         a {@link LiveData} of {@link List<User>}
      */
     public RestaurantsWithUsersLiveData(@NonNull LiveData<List<Restaurant>> restaurantsLiveData,
-                                        @NonNull UsersLiveData usersLiveData) {
+                                        @NonNull LiveData<List<User>> usersLiveData) {
         this.addSourceRestaurants(restaurantsLiveData);
         this.addSourceUsers(usersLiveData);
     }

@@ -21,4 +21,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
+    <!-- FloatingActionButton: Action -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fragment_lunch_map_FAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/FloatingActionButtonStyle"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

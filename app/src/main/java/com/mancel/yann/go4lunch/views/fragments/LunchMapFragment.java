@@ -5,6 +5,7 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +18,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -27,10 +27,13 @@ import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
+import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.GeneratorBitmap;
-import com.mancel.yann.go4lunch.viewModels.MapViewModel;
-import com.mancel.yann.go4lunch.viewModels.MapViewModelFactory;
+import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
+import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
+
+import butterknife.OnClick;
 
 /**
  * Created by Yann MANCEL on 19/11/2019.
@@ -54,10 +57,18 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private MapViewModel mMapViewModel;
-
     private GoogleMap mGoogleMap;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private GoogleMapsAndFirestoreViewModel mViewModel;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
     private LocationLiveData mLocationLiveData;
+
+
+
 
     @SuppressWarnings("NullableProblems")
     @NonNull
@@ -86,9 +97,23 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     @Override
     protected void configureDesign() {
+        // UI
         this.configureSupportMapFragment();
-        this.configureMapViewModel();
+
+        // ViewModel
+        this.configureViewModel();
+
+        // LiveData
         this.configureLocationLiveData();
+        this.configureLiveData();
+    }
+
+    // -- Actions --
+
+    @OnClick(R.id.fragment_lunch_map_FAB)
+    public void onFABClicked(View view) {
+        // Focusing on vision against the current position
+        // TODO: 14/01/2020 Add action to the focusing on vision against the current position
     }
 
     // -- OnMapReadyCallback interface --
@@ -182,9 +207,12 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         }
 
         // GESTURES
-        final UiSettings uiSettings = this.mGoogleMap.getUiSettings();
-        uiSettings.setZoomGesturesEnabled(true);
-        uiSettings.setZoomControlsEnabled(true);
+        this.mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
+        this.mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
+
+        // SCROLL
+        this.mGoogleMap.getUiSettings().setScrollGesturesEnabled(true);
+        this.mGoogleMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(true);
 
         // MIN ZOOM LEVELS
         this.mGoogleMap.setMinZoomPreference( (this.mGoogleMap.getMinZoomLevel() > 10.0F) ? this.mGoogleMap.getMinZoomLevel() :
@@ -194,37 +222,46 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         this.mGoogleMap.setMaxZoomPreference( (this.mGoogleMap.getMaxZoomLevel() < 21.0F) ? this.mGoogleMap.getMaxZoomLevel() :
                                                                                             21.0F);
 
-        // TODO: 23/12/2019 Add a FAB or use this.mGoogleMap.setMyLocationEnabled(true);
+        // MY LOCATION
+        this.mGoogleMap.setMyLocationEnabled(true);
+        this.mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
-    // -- MapViewModel --
+    // -- GoogleMapsAndFirestoreViewModel --
 
     /**
-     * Configures the {@link MapViewModel}
+     * Configures the {@link GoogleMapsAndFirestoreViewModel}
      */
-    private void configureMapViewModel() {
-        // TODO: 02/01/2020 PlaceRepository must be removed thanks to dagger 2
-        final MapViewModelFactory factory = new MapViewModelFactory(new PlaceRepositoryImpl());
+    private void configureViewModel() {
+        // TODO: 09/01/2020 UserRepository and PlaceRepository must be removed thanks to Dagger 2
+        final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
+                                                                                                          new PlaceRepositoryImpl());
 
-        this.mMapViewModel = ViewModelProviders.of(this.getActivity(), factory)
-                                               .get(MapViewModel.class);
+        this.mViewModel = ViewModelProviders.of(this.getActivity(), factory)
+                                            .get(GoogleMapsAndFirestoreViewModel.class);
     }
-
-    // -- LocationLiveData --
 
     /**
      * Configures the {@link LocationLiveData}
      */
     private void configureLocationLiveData() {
-        this.mLocationLiveData = new LocationLiveData(getContext());
-        this.mLocationLiveData.observe(getActivity(), this::onChangedLocationData);
+        // Bind between liveData of ViewModel and the SupportMapFragment
+        this.mLocationLiveData = this.mViewModel.getLocation(this.getContext());
+        this.mLocationLiveData.observe(this.getActivity(), this::onChangedLocationData);
+    }
+
+    /**
+     * Configures the {@link }
+     */
+    private void configureLiveData() {
+        // TODO: 14/01/2020 Create LiveData for fetch the POIs
     }
 
     /**
      * Method to replace the {@link androidx.lifecycle.Observer} of {@link LocationData}
      * @param locationData a {@link LocationData}
      */
-    private void onChangedLocationData (LocationData locationData) {
+    private void onChangedLocationData (final LocationData locationData) {
         // Exception
         if (this.handleLocationException(locationData.getException())) {
             return;
@@ -306,7 +343,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     }
 
     /**
-     * Starts the location update
+     * Starts the location update from {@link LocationLiveData}
      */
     public void startLocationUpdate() {
         this.mLocationLiveData.requestUpdateLocation();

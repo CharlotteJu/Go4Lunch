@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.widget.ContentLoadingProgressBar;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
@@ -19,6 +21,8 @@ import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactor
 import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.LunchAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -107,7 +111,7 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
     }
 
     /**
-     * Configures the {@link com.mancel.yann.go4lunch.liveDatas.RestaurantsWithUsersLiveData}
+     * Configures the {@link LiveData} of {@link List<Restaurant>}
      */
     private void configureRestaurantsWithUsersLiveData() {
         // Bind between liveData of ViewModel and the Adapter of RecyclerView

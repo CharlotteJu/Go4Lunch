@@ -5,14 +5,17 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.Query;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsWithUsersLiveData;
 import com.mancel.yann.go4lunch.liveDatas.UsersLiveData;
+import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
@@ -38,6 +41,9 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
     @NonNull
     private final PlaceRepository mPlaceRepository;
+
+    @Nullable
+    private LocationLiveData mLocationLiveData = null;
 
     @Nullable
     private UsersLiveData mUsersLiveData = null;
@@ -75,14 +81,30 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         Log.d(TAG, "onCleared");
     }
 
+    // -- LocationLiveData --
+
+    /**
+     * Gets the current location from Google Maps
+     * @param context a {@link Context}
+     * @return a {@link LocationLiveData}
+     */
+    @NonNull
+    public LocationLiveData getLocation(@NonNull final Context context) {
+        if (this.mLocationLiveData == null) {
+            this.mLocationLiveData = new LocationLiveData(context);
+        }
+
+        return this.mLocationLiveData;
+    }
+
     // -- UsersLiveData --
 
     /**
      * Gets all users from Firebase Firestore
-     * @return a {@link UsersLiveData}
+     * @return a {@link LiveData} of {@link List<User>}
      */
     @NonNull
-    public UsersLiveData getUsers() {
+    public LiveData<List<User>> getUsers() {
         if (this.mUsersLiveData == null) {
             this.mUsersLiveData = new UsersLiveData(this.mUserRepository.getAllUsers());
         }

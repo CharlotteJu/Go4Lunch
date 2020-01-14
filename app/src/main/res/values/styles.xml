@@ -170,6 +170,14 @@
         <item name="android:drawableStart">@drawable/ic_facebook</item>
     </style>
 
+    <!-- *********************************** FloatingActionButton ****************************** -->
+
+    <!-- FloatingActionButton style -->
+    <style name="FloatingActionButtonStyle" parent="@style/Widget.MaterialComponents.FloatingActionButton">
+        <item name="android:backgroundTint" tools:targetApi="21">@android:color/white</item>
+        <item name="android:src">@drawable/ic_gps_fixed</item>
+    </style>
+
     <!-- *********************************** ImageView ***************************************** -->
 
     <!-- ImageView style -->

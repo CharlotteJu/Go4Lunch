@@ -20,7 +20,7 @@ import java.util.List;
  *
  * A {@link LiveData} of {@link List<User>} subclass.
  */
-public class UsersLiveData extends LiveData<List<User>>{
+public class UsersLiveData extends LiveData<List<User>> {
 
     // FIELDS --------------------------------------------------------------------------------------
 

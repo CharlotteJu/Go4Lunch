@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
@@ -18,6 +20,8 @@ import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactor
 import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.WorkmateAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -104,7 +108,7 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
     }
 
     /**
-     * Configures the {@link com.mancel.yann.go4lunch.liveDatas.UsersLiveData}
+     * Configures the {@link LiveData} of {@link List<User>}
      */
     private void configureUsersLiveData() {
         // Bind between liveData of ViewModel and the Adapter of RecyclerView

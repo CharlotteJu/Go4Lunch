@@ -113,7 +113,7 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
     private void configureUsersLiveData() {
         // Bind between liveData of ViewModel and the Adapter of RecyclerView
         this.mViewModel.getUsers()
-                       .observe(getActivity(),
+                       .observe(this.getActivity(),
                                 users -> this.mAdapter.updateData(users));
     }
 
@@ -130,8 +130,8 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
         // RecyclerView
         this.mRecyclerView.setAdapter(this.mAdapter);
         this.mRecyclerView.setHasFixedSize(true);
-        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        this.mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        this.mRecyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(),
                                                                        DividerItemDecoration.VERTICAL));
 
         // TODO: 02/01/2020 Replace DividerItemDecoration by a new class (inset divider)

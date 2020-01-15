@@ -31,6 +31,7 @@ import com.mancel.yann.go4lunch.utils.BlurTransformation;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
+import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 import com.mancel.yann.go4lunch.views.fragments.LunchListFragment;
 import com.mancel.yann.go4lunch.views.fragments.LunchMapFragment;
 import com.mancel.yann.go4lunch.views.fragments.WorkmateFragment;
@@ -115,7 +116,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Creates a MenuInflater to add the menu xml file into the Toolbar
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        this.getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
     }
 
@@ -146,13 +147,23 @@ public class MainActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             // Access update location
-            case LunchMapFragment.RC_PERMISSION_LOCATION_UPDATE_LOCATION:
+            case BaseFragment.RC_PERMISSION_LOCATION_UPDATE_LOCATION:
                 // No permission
                 if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     Log.e("MainActivity", "No permission to access fine location");
                 }
 
-                this.mLunchMapFragment.startLocationUpdate();
+                // According to the fragment type
+                switch (this.mFragmentType) {
+                    case MAP:
+                        this.mLunchMapFragment.startLocationUpdate();
+                        break;
+                    case LIST:
+                        break;
+                    case WORKMATE:
+                        break;
+                }
+
                 break;
         }
     }

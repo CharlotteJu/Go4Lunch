@@ -14,9 +14,10 @@ public class LocationData {
     // FIELDS --------------------------------------------------------------------------------------
 
     @Nullable
-    private Location mLocation;
+    private final Location mLocation;
+
     @Nullable
-    private Exception mException;
+    private final Exception mException;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -25,7 +26,8 @@ public class LocationData {
      * @param location  a {@link Location}
      * @param exception an {@link Exception}
      */
-    public LocationData(@Nullable Location location, @Nullable Exception exception) {
+    public LocationData(@Nullable final Location location,
+                        @Nullable final Exception exception) {
         this.mLocation = location;
         this.mException = exception;
     }
@@ -38,6 +40,7 @@ public class LocationData {
     public Location getLocation() {
         return this.mLocation;
     }
+
     @Nullable
     public Exception getException() {
         return this.mException;

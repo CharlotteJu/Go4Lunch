@@ -1,19 +1,12 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
-import android.Manifest;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,6 +16,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PointOfInterest;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
@@ -42,18 +36,17 @@ import butterknife.OnClick;
  *
  * A {@link BaseFragment} subclass which implements {@link OnMapReadyCallback},
  * {@link GoogleMap.OnCameraMoveStartedListener}, {@link GoogleMap.OnCameraMoveListener},
- * {@link GoogleMap.OnCameraMoveCanceledListener} and {@link GoogleMap.OnCameraIdleListener}.
+ * {@link GoogleMap.OnCameraMoveCanceledListener}, {@link GoogleMap.OnCameraIdleListener} and
+ * {@link GoogleMap.OnPoiClickListener}.
  */
 public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback,
                                                               GoogleMap.OnCameraMoveStartedListener,
                                                               GoogleMap.OnCameraMoveListener,
                                                               GoogleMap.OnCameraMoveCanceledListener,
-                                                              GoogleMap.OnCameraIdleListener {
+                                                              GoogleMap.OnCameraIdleListener,
+                                                              GoogleMap.OnPoiClickListener {
 
     // FIELDS --------------------------------------------------------------------------------------
-
-    @Nullable
-    private SupportMapFragment mMapFragment;
 
     @SuppressWarnings("NullableProblems")
     @NonNull
@@ -77,8 +70,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     private boolean mIsFirstLocation = true;
     private boolean mIsLocatedOnUser = true;
 
-    public static final int RC_PERMISSION_LOCATION_UPDATE_LOCATION = 100;
-    public static final int RC_CHECK_SETTINGS_TO_LOCATION = 1000;
+
 
     private static final String TAG = LunchMapFragment.class.getSimpleName();
 
@@ -169,23 +161,30 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         Log.d(TAG, "tilt " + camera.tilt);
     }
 
+    // -- GoogleMap.OnPoiClickListener --
+
+    @Override
+    public void onPoiClick(PointOfInterest pointOfInterest) {
+        // TODO: 15/01/2020 add POIs
+    }
+
     // -- Google Maps --
 
     /**
      * Configures the {@link SupportMapFragment}
      */
     private void configureSupportMapFragment() {
-        this.mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_lunch_map_fragment);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_lunch_map_fragment);
 
-        if (this.mMapFragment == null) {
-            this.mMapFragment = SupportMapFragment.newInstance();
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
 
             getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_lunch_map_fragment, this.mMapFragment)
-                    .commit();
+                                .add(R.id.fragment_lunch_map_fragment, mapFragment)
+                                .commit();
         }
 
-        this.mMapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(this);
     }
 
     /**
@@ -261,7 +260,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
      * Method to replace the {@link androidx.lifecycle.Observer} of {@link LocationData}
      * @param locationData a {@link LocationData}
      */
-    private void onChangedLocationData (final LocationData locationData) {
+    private void onChangedLocationData (@NonNull final LocationData locationData) {
         // Exception
         if (this.handleLocationException(locationData.getException())) {
             return;
@@ -312,67 +311,10 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     }
 
     /**
-     * Handles the location {@link Exception}
-     * @param exception an {@link Exception}
-     * @return a boolean that is true if there is an {@link Exception}
-     */
-    private boolean handleLocationException(@Nullable Exception exception) {
-        if (exception == null) {
-            return false;
-        }
-
-        if (exception instanceof SecurityException) {
-            this.checkLocationPermission(RC_PERMISSION_LOCATION_UPDATE_LOCATION);
-        }
-
-        if (exception instanceof ResolvableApiException) {
-            // Location settings are not satisfied, but this can be fixed
-            // by showing the user a dialog.
-            try {
-                // Show the dialog by calling startResolutionForResult(),
-                // and check the result in onActivityResult().
-                ResolvableApiException resolvable = (ResolvableApiException) exception;
-                resolvable.startResolutionForResult(getActivity(),
-                                                    RC_CHECK_SETTINGS_TO_LOCATION);
-            } catch (IntentSender.SendIntentException sendEx) {
-                // Ignore the error.
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Starts the location update from {@link LocationLiveData}
      */
     public void startLocationUpdate() {
         this.mLocationLiveData.requestUpdateLocation();
-    }
-
-    // -- Permissions --
-
-    /**
-     * Checks the permission: ACCESS_FINE_LOCATION
-     * @param requestCode an integer that contains the request code
-     * @return a boolean [true for PERMISSION_GRANTED - false to PERMISSION_DENIED]
-     */
-    private boolean checkLocationPermission(int requestCode) {
-        int permissionResult = ContextCompat.checkSelfPermission(getContext(),
-                                                                 Manifest.permission.ACCESS_FINE_LOCATION);
-
-        // PackageManager.PERMISSION_DENIED
-        if (permissionResult != PackageManager.PERMISSION_GRANTED) {
-            final String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
-
-            ActivityCompat.requestPermissions(getActivity(),
-                                              permissions,
-                                              requestCode);
-
-            return false;
-        }
-        else {
-            return true;
-        }
     }
 
     // -- Instances --

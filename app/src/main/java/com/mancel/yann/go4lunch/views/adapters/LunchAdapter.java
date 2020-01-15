@@ -56,11 +56,11 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchViewHolder> {
     @Override
     public LunchViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         // Creates a Context to the LayoutInflater
-        Context context = viewGroup.getContext();
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        final Context context = viewGroup.getContext();
+        final LayoutInflater layoutInflater = LayoutInflater.from(context);
 
         // Creates the View thanks to the inflater
-        View view = layoutInflater.inflate(LunchViewHolder.getLayout(), viewGroup, false);
+        final View view = layoutInflater.inflate(LunchViewHolder.getLayout(), viewGroup, false);
 
         return new LunchViewHolder(view);
     }

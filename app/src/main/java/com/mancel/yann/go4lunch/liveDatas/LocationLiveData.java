@@ -3,7 +3,9 @@ package com.mancel.yann.go4lunch.liveDatas;
 import android.content.Context;
 import android.location.Location;
 import android.os.Looper;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -12,9 +14,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.Task;
 import com.mancel.yann.go4lunch.models.LocationData;
 
 /**
@@ -22,27 +22,38 @@ import com.mancel.yann.go4lunch.models.LocationData;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.liveDatas
  *
- * A {@link LiveData} subclass.
+ * A {@link LiveData<LocationData>} subclass.
  */
 public class LocationLiveData extends LiveData<LocationData> {
 
     // FIELDS --------------------------------------------------------------------------------------
 
-    private Context mContext;
+    @NonNull
+    private final Context mContext;
 
+    @SuppressWarnings("NullableProblems")
+    @NonNull
     private FusedLocationProviderClient mFusedLocationProviderClient;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
     private LocationRequest mLocationRequest;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
     private LocationCallback mLocationCallback;
 
     private boolean isFirstSubscriber = true;
 
+    private static final String TAG = LocationLiveData.class.getSimpleName();
+
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
-     * Constructor
+     * Constructor with the {@link Context}
      * @param context a {@link Context}
      */
-    public LocationLiveData(Context context) {
+    public LocationLiveData(@NonNull final Context context) {
         this.mContext = context.getApplicationContext();
 
         this.configureFusedLocationProviderClient();
@@ -57,6 +68,7 @@ public class LocationLiveData extends LiveData<LocationData> {
     @Override
     protected void onActive() {
         super.onActive();
+        Log.d(TAG, "onActive");
 
         if (this.isFirstSubscriber) {
             this.requestLastLocation();
@@ -70,6 +82,8 @@ public class LocationLiveData extends LiveData<LocationData> {
     @Override
     protected void onInactive() {
         super.onInactive();
+        Log.d(TAG, "onInactive");
+
         this.mFusedLocationProviderClient.removeLocationUpdates(this.mLocationCallback);
 
         // For the other subscribers
@@ -111,6 +125,7 @@ public class LocationLiveData extends LiveData<LocationData> {
                 }
 
                 for (Location location : locationResult.getLocations()) {
+                    // Notify
                     setValue(new LocationData(location, null));
                 }
             }
@@ -120,14 +135,16 @@ public class LocationLiveData extends LiveData<LocationData> {
     // -- Request location --
 
     /**
-     * Requests the last location
+     * Requests the last location thanks to {@link FusedLocationProviderClient}
      */
     private void requestLastLocation() {
         this.mFusedLocationProviderClient.getLastLocation()
                                          .addOnSuccessListener( location ->
+                                             // Notify
                                              this.setValue(new LocationData(location, null))
                                          )
                                          .addOnFailureListener( exception ->
+                                             // Notify
                                              this.setValue(new LocationData(null, exception))
                                          );
     }
@@ -136,18 +153,20 @@ public class LocationLiveData extends LiveData<LocationData> {
      * Requests the update location
      */
     public void requestUpdateLocation() {
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                                                                             .addLocationRequest(this.mLocationRequest);
+        final LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                                                                                   .addLocationRequest(this.mLocationRequest);
 
-        SettingsClient client = LocationServices.getSettingsClient(this.mContext);
+        final SettingsClient client = LocationServices.getSettingsClient(this.mContext);
 
-        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build())
-                                                    .addOnSuccessListener( locationSettingsResponse ->
-                                                        this.requestLocation()
-                                                    )
-                                                    .addOnFailureListener( exception ->
-                                                        this.setValue(new LocationData(null, exception))
-                                                    );
+        // TASK: Task<LocationSettingsResponse>
+        client.checkLocationSettings(builder.build())
+              .addOnSuccessListener( locationSettingsResponse ->
+                  this.requestLocation()
+              )
+              .addOnFailureListener( exception ->
+                  // Notify
+                  this.setValue(new LocationData(null, exception))
+              );
     }
 
     /**
@@ -158,6 +177,7 @@ public class LocationLiveData extends LiveData<LocationData> {
                                                                  this.mLocationCallback,
                                                                  Looper.getMainLooper())
                                          .addOnFailureListener( exception ->
+                                             // Notify
                                              this.setValue(new LocationData(null, exception))
                                          );
     }

@@ -19,7 +19,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
+import com.mancel.yann.go4lunch.liveDatas.NearbySearchLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
+import com.mancel.yann.go4lunch.models.NearbySearch;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.GeneratorBitmap;
@@ -60,6 +62,11 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     @NonNull
     private LocationLiveData mLocationLiveData;
 
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private NearbySearchLiveData mNearbySearchLiveData;
+
+
 
 
 
@@ -97,7 +104,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
         // LiveData
         this.configureLocationLiveData();
-        this.configureLiveData();
+        this.configureNearbySearchLiveData();
     }
 
     // -- Actions --
@@ -241,6 +248,13 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     }
 
     /**
+     * Starts the location update from {@link LocationLiveData}
+     */
+    public void startLocationUpdate() {
+        this.mViewModel.startLocationUpdate();
+    }
+
+    /**
      * Configures the {@link LocationLiveData}
      */
     private void configureLocationLiveData() {
@@ -250,10 +264,11 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     }
 
     /**
-     * Configures the {@link }
+     * Configures the {@link NearbySearchLiveData}
      */
-    private void configureLiveData() {
-        // TODO: 14/01/2020 Create LiveData for fetch the POIs
+    private void configureNearbySearchLiveData() {
+        this.mNearbySearchLiveData = this.mViewModel.getNearbySearch(this.getContext(), null);
+        this.mNearbySearchLiveData.observe(this.getActivity(), this::onChangedNearbySearchData);
     }
 
     /**
@@ -270,6 +285,9 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         if (locationData.getLocation() == null) {
             return;
         }
+
+        // NearbySearch
+        // TODO: 15/01/2020 Add method to update NearbySearchLiveData
 
         if (this.mGoogleMap != null) {
             // Current location
@@ -311,10 +329,12 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     }
 
     /**
-     * Starts the location update from {@link LocationLiveData}
+     * Method to replace the {@link androidx.lifecycle.Observer} of {@link NearbySearch}
+     * @param nearbySearch a {@link NearbySearch}
      */
-    public void startLocationUpdate() {
-        this.mLocationLiveData.requestUpdateLocation();
+    private void onChangedNearbySearchData(@NonNull final NearbySearch nearbySearch) {
+        // TODO: 15/01/2020 Create method to add POIs
+        Log.d(TAG, "onChangedNearbySearchData: ");
     }
 
     // -- Instances --

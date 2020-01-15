@@ -12,10 +12,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.Query;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
+import com.mancel.yann.go4lunch.liveDatas.NearbySearchLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsWithUsersLiveData;
 import com.mancel.yann.go4lunch.liveDatas.UsersLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
+import com.mancel.yann.go4lunch.models.NearbySearch;
 import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
@@ -36,14 +38,21 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
     // FIELDS --------------------------------------------------------------------------------------
 
+    // -- Repositories --
     @NonNull
     private final UserRepository mUserRepository;
 
     @NonNull
     private final PlaceRepository mPlaceRepository;
 
+    // -- LiveData --
     @Nullable
     private LocationLiveData mLocationLiveData = null;
+
+    @Nullable
+    private NearbySearchLiveData mNearbySearchLiveData = null;
+
+    // TODO: 15/01/2020 add the LiveData which couples LocationLiveData and NearbySearchLiveData
 
     @Nullable
     private UsersLiveData mUsersLiveData = null;
@@ -96,6 +105,82 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
         return this.mLocationLiveData;
     }
+
+    /**
+     * Starts the location update from {@link LocationLiveData}
+     */
+    public void startLocationUpdate() {
+        this.mLocationLiveData.requestUpdateLocation();
+    }
+
+    // -- NearbySearchLiveData --
+
+    /**
+     * Gets the nearby search from Google Maps
+     * @param context       a {@link Context}
+     * @param locationData  a {@link LocationData}
+     * @return a {@link NearbySearchLiveData}
+     */
+    @NonNull
+    public NearbySearchLiveData getNearbySearch(@NonNull final Context context,
+                                                @Nullable final LocationData locationData) {
+        if (this.mNearbySearchLiveData == null) {
+            this.mNearbySearchLiveData = new NearbySearchLiveData();
+        }
+
+        // Fetches the nearbySearch
+        if (locationData != null) {
+            this.fetchNearbySearch(context, locationData);
+        }
+
+        return this.mNearbySearchLiveData;
+    }
+
+    /**
+     * Loads the {@link NearbySearch}
+     * @param context       a {@link Context}
+     * @param locationData  a {@link LocationData}
+     */
+    public void fetchNearbySearch(@NonNull final Context context,
+                                  @NonNull final LocationData locationData) {
+        // No location
+        if (locationData.getLocation() == null) {
+            return;
+        }
+
+        // Retrieves Google Maps Key
+        final String key = context.getResources()
+                                  .getString(R.string.google_maps_key);
+
+        // Location
+        final String location = locationData.getLocation().getLatitude() + "," +
+                                locationData.getLocation().getLongitude();
+
+        // Radius
+        double radius = 200.0;
+
+        // Types
+        final String types = "restaurant";
+
+        // Observable
+        final Observable<NearbySearch> observable;
+        observable = this.mPlaceRepository.getStreamToFetchNearbySearch(location,
+                                                                        radius,
+                                                                        types,
+                                                                        key);
+
+        // Updates LiveData for the NearbySearch
+        this.mNearbySearchLiveData.getNearbySearchWithObservable(observable);
+    }
+
+//    // -- SwitchMap: LocationLiveData then NearbySearchLiveData
+//    @NonNull
+//    public LiveData<NearbySearch> getNearbySearchFromLocation(@NonNull final Context context) {
+//        // LocationLiveData -> NearbySearchLiveData
+//        return Transformations.switchMap(this.getLocation(context), locationData ->
+//            this.getNearbySearch(context, locationData)
+//        );
+//    }
 
     // -- UsersLiveData --
 
@@ -319,14 +404,4 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
                                     Log.e(TAG, "--> deleteUser (onFailure): " + e.getMessage())
                             );
     }
-
-
-
-
-
-
-
-
-
-
 }

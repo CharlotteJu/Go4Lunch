@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,15 +20,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
-import com.mancel.yann.go4lunch.liveDatas.NearbySearchLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
-import com.mancel.yann.go4lunch.models.NearbySearch;
+import com.mancel.yann.go4lunch.models.POI;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.GeneratorBitmap;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
+
+import java.util.List;
 
 import butterknife.OnClick;
 
@@ -60,11 +62,10 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private LocationLiveData mLocationLiveData;
+    private LiveData<List<POI>> mPOIsLiveData;
 
-    @SuppressWarnings("NullableProblems")
-    @NonNull
-    private NearbySearchLiveData mNearbySearchLiveData;
+    // TODO: 16/01/2020 Add LocationLiveData to source of POIsLiveData for remove the reference of this LiveData
+
 
 
 
@@ -104,7 +105,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
         // LiveData
         this.configureLocationLiveData();
-        this.configureNearbySearchLiveData();
+        this.configurePOIsLiveData();
     }
 
     // -- Actions --
@@ -255,20 +256,22 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     }
 
     /**
-     * Configures the {@link LocationLiveData}
+     * Configures the {@link LiveData<LocationData>}
      */
     private void configureLocationLiveData() {
         // Bind between liveData of ViewModel and the SupportMapFragment
-        this.mLocationLiveData = this.mViewModel.getLocation(this.getContext());
-        this.mLocationLiveData.observe(this.getActivity(), this::onChangedLocationData);
+        this.mViewModel.getLocation(this.getContext())
+                       .observe(this.getActivity(), this::onChangedLocationData);
     }
 
     /**
-     * Configures the {@link NearbySearchLiveData}
+     * Configures the {@link LiveData} of {@link List<POI>}
      */
-    private void configureNearbySearchLiveData() {
-        this.mNearbySearchLiveData = this.mViewModel.getNearbySearch(this.getContext(), null);
-        this.mNearbySearchLiveData.observe(this.getActivity(), this::onChangedNearbySearchData);
+    private void configurePOIsLiveData() {
+        // Bind between liveData of ViewModel and the SupportMapFragment
+        // TODO: 16/01/2020 Add LocationLiveData to source of POIsLiveData for remove the reference of this LiveData
+        this.mPOIsLiveData = this.mViewModel.getPOIs(this.getContext(), null);
+        this.mPOIsLiveData.observe(this.getActivity(), this::onChangedPOIsData);
     }
 
     /**
@@ -286,8 +289,9 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
             return;
         }
 
-        // NearbySearch
-        // TODO: 15/01/2020 Add method to update NearbySearchLiveData
+        // POIs
+        // TODO: 15/01/2020 Add method to update NearbySearchLiveData from POIsLiveData
+        // this.mViewModel.fetchNearbySearch(this.getContext(), locationData);
 
         if (this.mGoogleMap != null) {
             // Current location
@@ -329,12 +333,12 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     }
 
     /**
-     * Method to replace the {@link androidx.lifecycle.Observer} of {@link NearbySearch}
-     * @param nearbySearch a {@link NearbySearch}
+     * Method to replace the {@link androidx.lifecycle.Observer} of {@link LiveData} of {@link List<POI>}
+     * @param pois a {@link List<POI>}
      */
-    private void onChangedNearbySearchData(@NonNull final NearbySearch nearbySearch) {
+    private void onChangedPOIsData(@NonNull final List<POI> pois) {
         // TODO: 15/01/2020 Create method to add POIs
-        Log.d(TAG, "onChangedNearbySearchData: ");
+        Log.d(TAG, "onChangedPOIsData: ");
     }
 
     // -- Instances --

@@ -13,11 +13,13 @@ import com.google.firebase.firestore.Query;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.liveDatas.NearbySearchLiveData;
+import com.mancel.yann.go4lunch.liveDatas.POIsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsWithUsersLiveData;
 import com.mancel.yann.go4lunch.liveDatas.UsersLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.NearbySearch;
+import com.mancel.yann.go4lunch.models.POI;
 import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
@@ -39,6 +41,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     // FIELDS --------------------------------------------------------------------------------------
 
     // -- Repositories --
+
     @NonNull
     private final UserRepository mUserRepository;
 
@@ -46,16 +49,22 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     private final PlaceRepository mPlaceRepository;
 
     // -- LiveData --
+
+    @Nullable
+    private UsersLiveData mUsersLiveData = null;
+
     @Nullable
     private LocationLiveData mLocationLiveData = null;
 
     @Nullable
     private NearbySearchLiveData mNearbySearchLiveData = null;
 
+    @Nullable
+    private POIsLiveData mPOIsLiveData = null;
+
     // TODO: 15/01/2020 add the LiveData which couples LocationLiveData and NearbySearchLiveData
 
-    @Nullable
-    private UsersLiveData mUsersLiveData = null;
+
 
     @Nullable
     private RestaurantsLiveData mRestaurantsLiveData = null;
@@ -90,15 +99,30 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         Log.d(TAG, "onCleared");
     }
 
+    // -- UsersLiveData --
+
+    /**
+     * Gets all users from Firebase Firestore
+     * @return a {@link LiveData} of {@link List<User>}
+     */
+    @NonNull
+    public LiveData<List<User>> getUsers() {
+        if (this.mUsersLiveData == null) {
+            this.mUsersLiveData = new UsersLiveData(this.mUserRepository.getAllUsers());
+        }
+
+        return this.mUsersLiveData;
+    }
+
     // -- LocationLiveData --
 
     /**
      * Gets the current location from Google Maps
      * @param context a {@link Context}
-     * @return a {@link LocationLiveData}
+     * @return a {@link LiveData<LocationData>}
      */
     @NonNull
-    public LocationLiveData getLocation(@NonNull final Context context) {
+    public LiveData<LocationData> getLocation(@NonNull final Context context) {
         if (this.mLocationLiveData == null) {
             this.mLocationLiveData = new LocationLiveData(context);
         }
@@ -173,6 +197,50 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         this.mNearbySearchLiveData.getNearbySearchWithObservable(observable);
     }
 
+    // -- POIsLiveData --
+
+    /**
+     * Gets a {@link List<POI>} from Google Maps and Firebase Firestore
+     * @param context       a {@link Context}
+     * @param locationData  a {@link LocationData}
+     * @return a {@link LiveData} of {@link List<POI>}
+     */
+    @NonNull
+    public LiveData<List<POI>> getPOIs(@NonNull final Context context,
+                                       @Nullable final LocationData locationData) {
+        if (this.mPOIsLiveData == null) {
+            this.mPOIsLiveData = new POIsLiveData(this.getNearbySearch(context, locationData),
+                                                  this.getUsers());
+        }
+
+        return this.mPOIsLiveData;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //    // -- SwitchMap: LocationLiveData then NearbySearchLiveData
 //    @NonNull
 //    public LiveData<NearbySearch> getNearbySearchFromLocation(@NonNull final Context context) {
@@ -181,21 +249,6 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 //            this.getNearbySearch(context, locationData)
 //        );
 //    }
-
-    // -- UsersLiveData --
-
-    /**
-     * Gets all users from Firebase Firestore
-     * @return a {@link LiveData} of {@link List<User>}
-     */
-    @NonNull
-    public LiveData<List<User>> getUsers() {
-        if (this.mUsersLiveData == null) {
-            this.mUsersLiveData = new UsersLiveData(this.mUserRepository.getAllUsers());
-        }
-
-        return this.mUsersLiveData;
-    }
 
     // -- RestaurantsLiveData --
 

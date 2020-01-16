@@ -142,7 +142,7 @@ public class NearbySearch {
 
     // INNER CLASSES -------------------------------------------------------------------------------
 
-    public class Geometry {
+    public static class Geometry {
 
         @SerializedName("location")
         @Expose
@@ -168,7 +168,7 @@ public class NearbySearch {
         }
     }
 
-    public class Location {
+    public static class Location {
 
         @SerializedName("lat")
         @Expose
@@ -309,7 +309,7 @@ public class NearbySearch {
         }
     }
 
-    public class Result {
+    public static class Result {
 
         @SerializedName("geometry")
         @Expose

@@ -125,6 +125,24 @@ public class LocationLiveData extends LiveData<LocationData> {
                 }
 
                 for (Location location : locationResult.getLocations()) {
+                    final double latitude = location.getLatitude();
+                    final double longitude = location.getLongitude();
+
+                    // Error: Out of boundaries of coordinates
+                    if (!(latitude >= -90.0 && latitude <= 90.0 && longitude >= -180.0 && longitude <= 180.0)) {
+                        return;
+                    }
+
+                    // Not useful: Same LocationData
+                    if (getValue() != null) {
+                        if (getValue().getLocation() != null) {
+                            if (getValue().getLocation().getLatitude() == latitude &&
+                                getValue().getLocation().getLongitude() == longitude) {
+                                return;
+                            }
+                        }
+                    }
+
                     // Notify
                     setValue(new LocationData(location, null));
                 }

@@ -29,11 +29,11 @@ public abstract class NearbySearchUtils {
     public static synchronized List<POI> updatePOIs(@NonNull NearbySearch nearbySearch,
                                                     @NonNull List<User> users) {
         // Initialises list
-        final List<POI> pois = new ArrayList<>();
+        final List<POI> poiList = new ArrayList<>();
 
         // No Result
         if (nearbySearch.getResults() == null || nearbySearch.getResults().size() == 0) {
-            return pois;
+            return poiList;
         }
 
         final Iterator<NearbySearch.Result> iterator = nearbySearch.getResults().iterator();
@@ -65,9 +65,9 @@ public abstract class NearbySearchUtils {
                 }
             }
 
-            pois.add(poi);
+            poiList.add(poi);
         }
 
-        return pois;
+        return poiList;
     }
 }

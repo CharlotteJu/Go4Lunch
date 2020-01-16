@@ -1,6 +1,7 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
 import android.content.res.Resources;
+import android.location.Location;
 import android.util.Log;
 import android.view.View;
 
@@ -16,8 +17,8 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PointOfInterest;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
@@ -39,16 +40,13 @@ import butterknife.OnClick;
  * Name of the package: com.mancel.yann.go4lunch.views.fragments
  *
  * A {@link BaseFragment} subclass which implements {@link OnMapReadyCallback},
- * {@link GoogleMap.OnCameraMoveStartedListener}, {@link GoogleMap.OnCameraMoveListener},
- * {@link GoogleMap.OnCameraMoveCanceledListener}, {@link GoogleMap.OnCameraIdleListener} and
- * {@link GoogleMap.OnPoiClickListener}.
+ * {@link GoogleMap.OnCameraMoveStartedListener}, {@link GoogleMap.OnCameraIdleListener} and
+ * {@link GoogleMap.OnMarkerClickListener}.
  */
 public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback,
                                                               GoogleMap.OnCameraMoveStartedListener,
-                                                              GoogleMap.OnCameraMoveListener,
-                                                              GoogleMap.OnCameraMoveCanceledListener,
                                                               GoogleMap.OnCameraIdleListener,
-                                                              GoogleMap.OnPoiClickListener {
+                                                              GoogleMap.OnMarkerClickListener {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -62,23 +60,13 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private LiveData<List<POI>> mPOIsLiveData;
-
-    // TODO: 16/01/2020 Add LocationLiveData to source of POIsLiveData for remove the reference of this LiveData
-
-
-
-
-
-
-    @SuppressWarnings("NullableProblems")
-    @NonNull
-    private LatLng mCurrentLatLngUser;
+    private Location mCurrentLocation;
+    // TODO: 16/01/2020 Not useful, should pass by LocationLiveData
 
     private boolean mIsFirstLocation = true;
     private boolean mIsLocatedOnUser = true;
 
-
+    private static final float DEFAULT_ZOOM = 17F;
 
     private static final String TAG = LunchMapFragment.class.getSimpleName();
 
@@ -113,7 +101,12 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     @OnClick(R.id.fragment_lunch_map_FAB)
     public void onFABClicked(View view) {
         // Focusing on vision against the current position
-        // TODO: 14/01/2020 Add action to the focusing on vision against the current position
+        if (!this.mIsLocatedOnUser) {
+            this.animateCamera();
+
+            // Reset: Camera focus on user
+            this.mIsLocatedOnUser = true;
+        }
     }
 
     // -- OnMapReadyCallback interface --
@@ -124,12 +117,10 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
         // Camera
         this.mGoogleMap.setOnCameraMoveStartedListener(this);
-        this.mGoogleMap.setOnCameraMoveListener(this);
-        this.mGoogleMap.setOnCameraMoveCanceledListener(this);
         this.mGoogleMap.setOnCameraIdleListener(this);
 
-        // POIs
-//        this.mGoogleMap.setOnPoiClickListener(this);
+        // Markers
+        this.mGoogleMap.setOnMarkerClickListener(this);
 
         // Configure the style of the GoogleMap
         this.configureGoogleMapStyle();
@@ -139,22 +130,30 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     @Override
     public void onCameraMoveStarted(int reason) {
-        Log.d(TAG, "onCameraMoveStarted: The camera move started.");
-    }
+        switch (reason) {
+            // The user gestured on the map
+            case GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE:
+                // Projection's Center (visible region) = current location of user (ex: zoom or rotation)
+                if (this.mGoogleMap.getProjection().getVisibleRegion().latLngBounds.getCenter().latitude == this.mCurrentLocation.getLatitude() &&
+                    this.mGoogleMap.getProjection().getVisibleRegion().latLngBounds.getCenter().longitude == this.mCurrentLocation.getLongitude()) {
+                    Log.d(TAG, "onCameraMoveStarted: REASON_GESTURE but same center");
+                }
+                else {
+                    this.mIsLocatedOnUser = false;
+                }
 
-    // -- GoogleMap.OnCameraMoveListener interface --
+                break;
 
-    @Override
-    public void onCameraMove() {
-        Log.d(TAG, "onCameraMove: The camera is moving.");
+            // The user tapped something on the map (ex: tap on marker)
+            case GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION:
+                this.mIsLocatedOnUser = false;
+                break;
 
-    }
-
-    // -- GoogleMap.OnCameraMoveCanceledListener interface --
-
-    @Override
-    public void onCameraMoveCanceled() {
-        Log.d(TAG, "onCameraMoveCanceled: Camera movement canceled.");
+            // The app moved the camera
+            case GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION:
+                // [The app moved the camera]
+                // Do nothing
+        }
     }
 
     // -- GoogleMap.OnCameraIdleListener interface --
@@ -162,18 +161,15 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     @Override
     public void onCameraIdle() {
         Log.d(TAG, "onCameraIdle: The camera has stopped moving.");
-
-        final CameraPosition camera = this.mGoogleMap.getCameraPosition();
-        Log.d(TAG, "zoom " + camera.zoom);
-        Log.d(TAG, "bearing " + camera.bearing);
-        Log.d(TAG, "tilt " + camera.tilt);
     }
 
-    // -- GoogleMap.OnPoiClickListener --
+    // -- GoogleMap.OnMarkerClickListener --
 
     @Override
-    public void onPoiClick(PointOfInterest pointOfInterest) {
-        // TODO: 15/01/2020 add POIs
+    public boolean onMarkerClick(Marker marker) {
+        // The default behavior (return false) for a marker click event is to show its info window (if available)
+        // and move the camera such that the marker is centered on the map.
+        return false;
     }
 
     // -- Google Maps --
@@ -234,6 +230,37 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         this.mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
+    /**
+     * Configures the camera of {@link GoogleMap}
+     */
+    private void configureCamera() {
+        // Location to LatLng
+        final LatLng currentLatLng = new LatLng(this.mCurrentLocation.getLatitude(),
+                                                this.mCurrentLocation.getLongitude());
+
+        // Camera
+        this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,
+                                                                     DEFAULT_ZOOM));
+    }
+
+    /**
+     * Animates the camera of {@link GoogleMap}
+     */
+    private void animateCamera() {
+        // Location to LatLng -> Target
+        final LatLng target = new LatLng(this.mCurrentLocation.getLatitude(),
+                                         this.mCurrentLocation.getLongitude());
+
+        // CameraPosition
+        final CameraPosition cameraPosition = new CameraPosition.Builder()
+                                                                .target(target)
+                                                                .zoom(DEFAULT_ZOOM)
+                                                                .build();
+
+        // Camera
+        this.mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
     // -- GoogleMapsAndFirestoreViewModel --
 
     /**
@@ -270,8 +297,8 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     private void configurePOIsLiveData() {
         // Bind between liveData of ViewModel and the SupportMapFragment
         // TODO: 16/01/2020 Add LocationLiveData to source of POIsLiveData for remove the reference of this LiveData
-        this.mPOIsLiveData = this.mViewModel.getPOIs(this.getContext(), null);
-        this.mPOIsLiveData.observe(this.getActivity(), this::onChangedPOIsData);
+        this.mViewModel.getPOIs(this.getContext(), null)
+                       .observe(this.getActivity(), this::onChangedPOIsData);
     }
 
     /**
@@ -289,56 +316,55 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
             return;
         }
 
+        // Current location
+        // TODO: 16/01/2020 add LocationLiveData to do a getValue()
+        this.mCurrentLocation = locationData.getLocation();
+
         // POIs
-        // TODO: 15/01/2020 Add method to update NearbySearchLiveData from POIsLiveData
-        // this.mViewModel.fetchNearbySearch(this.getContext(), locationData);
+        this.mViewModel.fetchNearbySearch(this.getContext(), locationData);
 
-        if (this.mGoogleMap != null) {
-            // Current location
-            this.mCurrentLatLngUser = new LatLng(locationData.getLocation().getLatitude(),
-                                                 locationData.getLocation().getLongitude());
-
-            // First location
+        // Focus on the current location of user
+        if (this.mIsLocatedOnUser) {
+            // First Location
             if (this.mIsFirstLocation) {
                 this.mIsFirstLocation = false;
-
-//                this.mMapViewModel.getPOIs(this.mCurrentLatLngUser.latitude,
-//                                           this.mCurrentLatLngUser.longitude);
-
-                this.mGoogleMap.addMarker(new MarkerOptions().position(this.mCurrentLatLngUser)
-                                                             .title("Current position"));
-
-
-                final BitmapDescriptor bitmapDescriptor = GeneratorBitmap.bitmapDescriptorFromVector(this.getContext(), R.drawable.ic_star);
-
-                this.mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(this.mCurrentLatLngUser.latitude + 0.0002,
-                                                                                 this.mCurrentLatLngUser.longitude + 0.0002))
-                                                             .title("test1")
-                                                             .snippet("test to add marker")
-                                                             .icon(bitmapDescriptor));
-
-                //this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPlace));
-                this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.mCurrentLatLngUser, 17));
-
-                return;
+                this.configureCamera();
             }
-
-            if (this.mIsLocatedOnUser) {
-                // TODO: 29/12/2019 to follow user when none of gesture has been done
+            else {
+                this.animateCamera();
             }
-
-            //final LatLngBounds lngBounds = this.mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
-            //Log.e(TAG, "[northeast]: " + lngBounds.northeast + " & [southwest]: " + lngBounds.southwest);
         }
     }
 
     /**
      * Method to replace the {@link androidx.lifecycle.Observer} of {@link LiveData} of {@link List<POI>}
-     * @param pois a {@link List<POI>}
+     * @param poiList a {@link List<POI>}
      */
-    private void onChangedPOIsData(@NonNull final List<POI> pois) {
-        // TODO: 15/01/2020 Create method to add POIs
-        Log.d(TAG, "onChangedPOIsData: ");
+    private void onChangedPOIsData(@NonNull final List<POI> poiList) {
+        Log.d(TAG, "onChangedPOIsData: POIs");
+        // No POI
+        if (poiList.size() == 0) {
+            return;
+        }
+
+        // Remove Markers
+        // TODO: 16/01/2020 remove markers
+
+        for (POI poi : poiList) {
+            int drawableValue = poi.getIsSelected() ? R.drawable.ic_star :
+                                                      R.drawable.ic_close;
+
+            final BitmapDescriptor bitmapDescriptor = GeneratorBitmap.bitmapDescriptorFromVector(this.getContext(),
+                                                                                                 drawableValue);
+
+            this.mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(poi.getLatitude(),
+                                                                              poi.getLongitude()))
+                           .title(poi.getName())
+                           .snippet("test to add marker")
+                           .icon(bitmapDescriptor));
+
+            // TODO: 16/01/2020 add info windows 
+        }
     }
 
     // -- Instances --

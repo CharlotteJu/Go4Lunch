@@ -80,15 +80,15 @@ public class NearbySearchUtilsTest {
                                                userWithSamePlaceId2);
 
         // POIs
-        final List<POI> pois = NearbySearchUtils.updatePOIs(nearbySearch, users);
+        final List<POI> poiList = NearbySearchUtils.updatePOIs(nearbySearch, users);
 
         // TEST: Same size
-        assertEquals(nearbySearch.getResults().size(), pois.size());
-        assertEquals(pois.size(), 3);
+        assertEquals(nearbySearch.getResults().size(), poiList.size());
+        assertEquals(poiList.size(), 3);
 
         // TEST: To know if at least one user has selected the restaurant
-        assertTrue(pois.get(0).getIsSelected());
-        assertFalse(pois.get(1).getIsSelected());
-        assertTrue(pois.get(2).getIsSelected());
+        assertTrue(poiList.get(0).getIsSelected());
+        assertFalse(poiList.get(1).getIsSelected());
+        assertTrue(poiList.get(2).getIsSelected());
     }
 }

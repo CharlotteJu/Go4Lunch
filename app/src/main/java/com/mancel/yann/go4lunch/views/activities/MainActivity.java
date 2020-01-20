@@ -32,6 +32,7 @@ import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
+import com.mancel.yann.go4lunch.views.fragments.FragmentListener;
 import com.mancel.yann.go4lunch.views.fragments.LunchListFragment;
 import com.mancel.yann.go4lunch.views.fragments.LunchMapFragment;
 import com.mancel.yann.go4lunch.views.fragments.WorkmateFragment;
@@ -43,9 +44,9 @@ import butterknife.BindView;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.views.activities
  *
- * A {@link BaseActivity} subclass.
+ * A {@link BaseActivity} subclass which implements {@link FragmentListener}.
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements FragmentListener {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -75,6 +76,8 @@ public class MainActivity extends BaseActivity {
     private LunchMapFragment mLunchMapFragment;
     private LunchListFragment mLunchListFragment;
     private WorkmateFragment mWorkmateFragment;
+
+    public static final String INTENT_PLACE_ID = "INTENT_PLACE_ID";
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -176,6 +179,18 @@ public class MainActivity extends BaseActivity {
         if (requestCode == LunchMapFragment.RC_CHECK_SETTINGS_TO_LOCATION && resultCode == RESULT_OK) {
             this.mLunchMapFragment.startLocationUpdate();
         }
+    }
+
+    // -- FragmentListener --
+
+    @Override
+    public void onSelectedRestaurant(@NonNull String placeIdOfRestaurant) {
+        final Intent intent = new Intent(this.getApplicationContext(), DetailsActivity.class);
+
+        // Place Id
+        intent.putExtra(INTENT_PLACE_ID, placeIdOfRestaurant);
+
+        this.startActivity(intent);
     }
 
     // -- Actions --
@@ -348,7 +363,7 @@ public class MainActivity extends BaseActivity {
      */
     private void configureLunchMapFragment() {
         if (this.mLunchMapFragment == null) {
-            this.mLunchMapFragment = LunchMapFragment.newInstance();
+            this.mLunchMapFragment = LunchMapFragment.newInstance(this);
         }
 
         this.replaceFragment(this.mLunchMapFragment, R.id.activity_main_frame_layout);

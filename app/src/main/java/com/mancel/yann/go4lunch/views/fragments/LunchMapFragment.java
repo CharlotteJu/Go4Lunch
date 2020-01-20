@@ -72,6 +72,9 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     private Location mCurrentLocation;
     // TODO: 16/01/2020 Not useful, should pass by LocationLiveData
 
+    @NonNull
+    private final FragmentListener mFragmentListener;
+
     private boolean mIsFirstLocation = true;
     private boolean mIsLocatedOnUser = true;
 
@@ -81,7 +84,13 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
-    public LunchMapFragment() {}
+    /**
+     * Constructor with an argument
+     * @param fragmentListener a {@link FragmentListener}
+     */
+    public LunchMapFragment(@NonNull final FragmentListener fragmentListener) {
+        this.mFragmentListener = fragmentListener;
+    }
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -194,7 +203,14 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     @Override
     public void onClickOnDetailsButton(@Nullable final Marker marker) {
-        Log.d(TAG, "onClickOnDetailsButton: DETAILS");
+        // POI
+        final POI poi = (POI) marker.getTag();
+
+        // Place Id
+        final String placeId = poi.getPlaceId();
+
+        // Callback to Activity
+        this.mFragmentListener.onSelectedRestaurant(placeId);
     }
 
     @Override
@@ -400,10 +416,11 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     /**
      * Gets a new instance of {@link LunchMapFragment}
+     * @param fragmentListener a {@link FragmentListener}
      * @return a {@link LunchMapFragment}
      */
     @NonNull
-    public static LunchMapFragment newInstance() {
-        return new LunchMapFragment();
+    public static LunchMapFragment newInstance(@NonNull final FragmentListener fragmentListener) {
+        return new LunchMapFragment(fragmentListener);
     }
 }

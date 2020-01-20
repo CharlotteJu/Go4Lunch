@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -68,7 +69,20 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void configureToolBar() {
         // If ToolBar exists
         if (this.getToolbar() != null) {
-            setSupportActionBar(this.getToolbar());
+            this.setSupportActionBar(this.getToolbar());
+        }
+    }
+
+    /**
+     * Configures the Up button of the {@link Toolbar}
+     */
+    protected void configureUpButtonOfToolBar() {
+        // Gets a Support ActionBar corresponding to this ToolBar
+        final ActionBar actionBar = this.getSupportActionBar();
+
+        // Enables the Up Button
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 

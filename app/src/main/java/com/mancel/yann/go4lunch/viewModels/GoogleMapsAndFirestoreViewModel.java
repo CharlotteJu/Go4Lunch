@@ -17,6 +17,7 @@ import com.mancel.yann.go4lunch.liveDatas.POIsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsWithUsersLiveData;
 import com.mancel.yann.go4lunch.liveDatas.UsersLiveData;
+import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.NearbySearch;
 import com.mancel.yann.go4lunch.models.POI;
@@ -52,6 +53,9 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
     @Nullable
     private UsersLiveData mUsersLiveData = null;
+
+    @Nullable
+    private UsersLiveData mUsersLiveDataWithSameRestaurant = null;
 
     @Nullable
     private LocationLiveData mLocationLiveData = null;
@@ -112,6 +116,20 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         }
 
         return this.mUsersLiveData;
+    }
+
+    /**
+     * Gets all users from Firebase Firestore which selected the same restaurant
+     * @param placeIdOfRestaurant a {@link String} that contains the Place Id of restaurant
+     * @return a {@link LiveData} of {@link List<User>}
+     */
+    @NonNull
+    public LiveData<List<User>> getUsersWithSameRestaurant(@NonNull final String placeIdOfRestaurant) {
+        if (this.mUsersLiveDataWithSameRestaurant == null) {
+            this.mUsersLiveDataWithSameRestaurant = new UsersLiveData(this.mUserRepository.getAllUsersFromThisRestaurant(placeIdOfRestaurant));
+        }
+
+        return this.mUsersLiveDataWithSameRestaurant;
     }
 
     // -- LocationLiveData --
@@ -196,6 +214,14 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         // Updates LiveData for the NearbySearch
         this.mNearbySearchLiveData.getNearbySearchWithObservable(observable);
     }
+
+    // -- DetailsLiveData --
+
+    @NonNull
+    public LiveData<Details> getDetails() {
+        return null;
+    }
+
 
     // -- POIsLiveData --
 
@@ -377,26 +403,6 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
                             );
 
         return user;
-    }
-
-    /**
-     * Gets all users into the collection
-     * @return a {@link Query} that contains the users
-     */
-    @NonNull
-    public Query getAllUsers() {
-        return this.mUserRepository.getAllUsers();
-    }
-
-    /**
-     * Gets all users  who have selected the same restaurant
-     * If the argument is null, {@link Query} returns the users that do not selected a restaurant
-     * @param placeIdOfRestaurant a {@link String} that contains the place_id of the restaurant
-     * @return a {@link Query} that contains the users
-     */
-    @NonNull
-    public Query getAllUsersFromThisRestaurant(@Nullable String placeIdOfRestaurant) {
-        return this.mUserRepository.getAllUsersFromThisRestaurant(placeIdOfRestaurant);
     }
 
     // -- Update (User) --

@@ -50,6 +50,11 @@
     <string name="distance_item_restaurant" translatable="false">120m</string>
     <string name="people_item_restaurant" translatable="false">(2)</string>
 
+    <!-- marker_info_window.xml -->
+    <string name="details_info_window">Details</string>
+    <string name="way_info_window">Way</string>
+    <string name="description_image_info_window" translatable="false">Image_info_window</string>
+
     <!-- AuthActivity.java -->
     <string name="google_sign_in">Sign in with Google</string>
     <string name="google_sign_in_success">Google sign in success</string>

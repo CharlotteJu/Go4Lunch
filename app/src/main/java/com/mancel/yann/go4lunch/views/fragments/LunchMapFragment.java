@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -25,13 +26,17 @@ import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.POI;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
+import com.mancel.yann.go4lunch.utils.CustomRelativeLayout;
 import com.mancel.yann.go4lunch.utils.GeneratorBitmap;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
+import com.mancel.yann.go4lunch.views.adapters.InfoWindowAdapter;
+import com.mancel.yann.go4lunch.views.adapters.OnClickButtonInfoWindowListener;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -40,15 +45,19 @@ import butterknife.OnClick;
  * Name of the package: com.mancel.yann.go4lunch.views.fragments
  *
  * A {@link BaseFragment} subclass which implements {@link OnMapReadyCallback},
- * {@link GoogleMap.OnCameraMoveStartedListener}, {@link GoogleMap.OnCameraIdleListener} and
- * {@link GoogleMap.OnMarkerClickListener}.
+ * {@link GoogleMap.OnCameraMoveStartedListener}, {@link GoogleMap.OnCameraIdleListener},
+ * {@link GoogleMap.OnMarkerClickListener} and {@link OnClickButtonInfoWindowListener}.
  */
 public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback,
                                                               GoogleMap.OnCameraMoveStartedListener,
                                                               GoogleMap.OnCameraIdleListener,
-                                                              GoogleMap.OnMarkerClickListener {
+                                                              GoogleMap.OnMarkerClickListener,
+                                                              OnClickButtonInfoWindowListener {
 
     // FIELDS --------------------------------------------------------------------------------------
+
+    @BindView(R.id.fragment_lunch_map_RelativeLayout)
+    CustomRelativeLayout mRelativeLayout;
 
     @SuppressWarnings("NullableProblems")
     @NonNull
@@ -99,7 +108,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     // -- Actions --
 
     @OnClick(R.id.fragment_lunch_map_FAB)
-    public void onFABClicked(View view) {
+    public void onFABClicked(@NonNull final View view) {
         // Focusing on vision against the current position
         if (!this.mIsLocatedOnUser) {
             this.animateCamera();
@@ -121,6 +130,15 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
         // Markers
         this.mGoogleMap.setOnMarkerClickListener(this);
+
+        // Event of CustomRelativeLayout (Info Window)
+        // 39 - default marker height
+        // 20 - offset between the default InfoWindow bottom edge and it's content bottom edge
+        final float scale = this.getContext().getResources().getDisplayMetrics().density;
+        this.mRelativeLayout.init(this.mGoogleMap, (int) ((39.0F + 20.0F) * scale + 0.5F));
+
+        // Info window
+        this.mGoogleMap.setInfoWindowAdapter(new InfoWindowAdapter(this.getContext(), this.mRelativeLayout, this));
 
         // Configure the style of the GoogleMap
         this.configureGoogleMapStyle();
@@ -170,6 +188,18 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         // The default behavior (return false) for a marker click event is to show its info window (if available)
         // and move the camera such that the marker is centered on the map.
         return false;
+    }
+
+    // -- OnClickButtonInfoWindowListener --
+
+    @Override
+    public void onClickOnDetailsButton(@Nullable final Marker marker) {
+        Log.d(TAG, "onClickOnDetailsButton: DETAILS");
+    }
+
+    @Override
+    public void onClickOnWayButton(@Nullable final Marker marker) {
+        Log.d(TAG, "onClickOnWayButton: WAY");
     }
 
     // -- Google Maps --
@@ -341,29 +371,28 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
      * @param poiList a {@link List<POI>}
      */
     private void onChangedPOIsData(@NonNull final List<POI> poiList) {
-        Log.d(TAG, "onChangedPOIsData: POIs");
         // No POI
         if (poiList.size() == 0) {
             return;
         }
 
         // Remove Markers
-        // TODO: 16/01/2020 remove markers
+        this.mGoogleMap.clear();
 
+        // Adds Markers
         for (POI poi : poiList) {
-            int drawableValue = poi.getIsSelected() ? R.drawable.ic_star :
-                                                      R.drawable.ic_close;
+            int drawableValue = poi.getIsSelected() ? R.drawable.ic_location_user_select :
+                                                      R.drawable.ic_location_user_unselect;
 
             final BitmapDescriptor bitmapDescriptor = GeneratorBitmap.bitmapDescriptorFromVector(this.getContext(),
                                                                                                  drawableValue);
 
-            this.mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(poi.getLatitude(),
-                                                                              poi.getLongitude()))
-                           .title(poi.getName())
-                           .snippet("test to add marker")
-                           .icon(bitmapDescriptor));
+            final Marker marker = this.mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(poi.getLatitude(),
+                                                                                                    poi.getLongitude()))
+                                                                               .icon(bitmapDescriptor));
 
-            // TODO: 16/01/2020 add info windows 
+            // TAG
+            marker.setTag(poi);
         }
     }
 

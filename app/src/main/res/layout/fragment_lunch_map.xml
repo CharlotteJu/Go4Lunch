@@ -10,16 +10,24 @@
     android:layout_height="match_parent"
     tools:context=".views.fragments.LunchListFragment">
 
-    <!-- fragment: Google Maps -->
-    <fragment
-        android:id="@+id/fragment_lunch_map_fragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+    <!-- CustomRelativeLayout: To receive the event of InfoWindow -->
+    <com.mancel.yann.go4lunch.utils.CustomRelativeLayout
+        android:id="@+id/fragment_lunch_map_RelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- fragment: Google Maps -->
+        <fragment
+            android:id="@+id/fragment_lunch_map_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+    </com.mancel.yann.go4lunch.utils.CustomRelativeLayout>
 
     <!-- FloatingActionButton: Action -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -13,6 +13,7 @@
     <dimen name="image_view_menu_size">150dp</dimen>
     <dimen name="image_view_item_workmate_size">60dp</dimen>
     <dimen name="image_view_item_restaurant_size">80dp</dimen>
+    <dimen name="image_view_info_window_size">50dp</dimen>
 
     <!-- ContentLoadingProgressBar Size -->
     <dimen name="progress_bar_size">100dp</dimen>

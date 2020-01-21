@@ -15,6 +15,7 @@ import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.apis.GoogleMapsService;
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.Restaurant;
+import com.mancel.yann.go4lunch.utils.DetailsUtils;
 import com.mancel.yann.go4lunch.utils.RestaurantUtils;
 
 import java.util.Calendar;
@@ -88,7 +89,8 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         this.mName.setText(restaurant.getDetails().getResult().getName());
 
         // Food type & Address
-        this.updateFoodTypeAndAddress(restaurant.getDetails().getResult().getAddressComponents());
+        this.mTypeAndAddress.setText(DetailsUtils.createStringOfFoodTypeAndAddress(itemView.getContext(),
+                                                                                   restaurant.getDetails().getResult().getAddressComponents()));
 
         // Opening hours
         this.updateOpeningHours(restaurant.getDetails().getResult().getOpeningHours());
@@ -104,64 +106,6 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
         // Image
         this.updateImage(glide, restaurant.getDetails().getResult().getPhotos());
-    }
-
-    /**
-     * Updates the {@link TextView} on food type and address
-     * @param addressComponents a {@link List<Details.AddressComponent>} that contains the address data
-     */
-    private void updateFoodTypeAndAddress(@Nullable final List<Details.AddressComponent> addressComponents) {
-        final StringBuilder stringBuilder = new StringBuilder();
-
-        // TODO: 06/01/2020 Add food type
-        stringBuilder.append("Food - ");
-
-
-        // No addressComponents
-        if (addressComponents == null) {
-            stringBuilder.append(itemView.getContext().getString(R.string.no_address));
-
-            this.mTypeAndAddress.setText(stringBuilder);
-
-            return;
-        }
-
-        // Research street_number and route
-        String streetNumber = null;
-        String route = null;
-
-        for (Details.AddressComponent addressComponent : addressComponents) {
-            // street_number
-            if (addressComponent.getTypes().get(0).contains("street_number")) {
-                streetNumber = addressComponent.getShortName() + " ";
-            }
-
-            // route
-            if (addressComponent.getTypes().get(0).contains("route")) {
-                route = addressComponent.getShortName();
-            }
-        }
-
-        // No streetNumber and no route
-        if (streetNumber == null && route == null) {
-            stringBuilder.append(itemView.getContext().getString(R.string.no_specific_address));
-
-            this.mTypeAndAddress.setText(stringBuilder);
-
-            return;
-        }
-
-        // streetNumber
-        if (streetNumber != null) {
-            stringBuilder.append(streetNumber);
-        }
-
-        // route
-        if (route != null) {
-            stringBuilder.append(route);
-        }
-
-        this.mTypeAndAddress.setText(stringBuilder);
     }
 
     /**

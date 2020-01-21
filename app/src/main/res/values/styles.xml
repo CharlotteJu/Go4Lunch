@@ -115,6 +115,20 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <!-- TextView style (level 2, black, normal) -->
+    <style name="TextViewStyle12" parent="TextViewSubStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <!-- TextView style (level 1, black, normal) -->
+    <style name="TextViewStyle13" parent="TextViewSubStyle">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <!-- *********************************** NavigationView ************************************ -->
 
     <!-- NavigationView style -->
@@ -146,6 +160,14 @@
         <item name="android:progressTint" tools:targetApi="21">@color/colorPrimary</item>
     </style>
 
+    <!-- RatingBar 2 style -->
+    <style name="RatingBarStyle2" parent="Widget.AppCompat.RatingBar.Small">
+        <item name="android:isIndicator">true</item>
+        <item name="android:numStars">@integer/max_stars_rating_bar</item>
+        <item name="android:rating">@integer/max_stars_rating_bar</item>
+        <item name="android:progressTint" tools:targetApi="21">@color/colorRating</item>
+    </style>
+
     <!-- *********************************** Button ******************************************** -->
 
     <!-- Base Button style -->
@@ -173,6 +195,13 @@
     <!-- Borderless Button style -->
     <style name="BorderlessButtonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <!-- Borderless Button style -->
+    <style name="BorderlessButtonStyle2" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:background">@android:color/transparent</item>
     </style>

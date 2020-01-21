@@ -18,4 +18,7 @@
     <color name="ColorGoogle">#FA1400</color>
     <color name="ColorFacebook">#0056FF</color>
 
+    <!-- Rating bar -->
+    <color name="colorRating">#FFC107</color>
+
 </resources>

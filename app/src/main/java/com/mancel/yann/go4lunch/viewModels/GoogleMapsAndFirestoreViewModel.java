@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.Query;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.liveDatas.DetailsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.liveDatas.NearbySearchLiveData;
 import com.mancel.yann.go4lunch.liveDatas.POIsLiveData;
@@ -62,6 +63,9 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
     @Nullable
     private NearbySearchLiveData mNearbySearchLiveData = null;
+
+    @Nullable
+    private DetailsLiveData mDetailsLiveData = null;
 
     @Nullable
     private POIsLiveData mPOIsLiveData = null;
@@ -217,10 +221,59 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
     // -- DetailsLiveData --
 
+    /**
+     * Gets the details from Google Maps
+     * @param context               a {@link Context}
+     * @param placeIdOfRestaurant   a {@link String} that contains the Place Id of restaurant
+     * @return a {@link DetailsLiveData}
+     */
     @NonNull
-    public LiveData<Details> getDetails() {
-        return null;
+    public DetailsLiveData getDetails(@NonNull final Context context,
+                                      @NonNull final String placeIdOfRestaurant) {
+        if (this.mDetailsLiveData == null) {
+            this.mDetailsLiveData = new DetailsLiveData();
+        }
+
+        // Fetches the details
+        this.fetchDetails(context, placeIdOfRestaurant);
+
+        return this.mDetailsLiveData;
     }
+
+    /**
+     * Loads the {@link Details}
+     * @param context               a {@link Context}
+     * @param placeIdOfRestaurant   a {@link String} that contains the Place Id of restaurant
+     */
+    public void fetchDetails(@NonNull final Context context,
+                             @NonNull final String placeIdOfRestaurant) {
+        // Retrieves Google Maps Key
+        final String key = context.getResources()
+                                  .getString(R.string.google_maps_key);
+
+        // Observable
+        final Observable<Details> observable;
+        observable = this.mPlaceRepository.getStreamToFetchDetails(placeIdOfRestaurant, key);
+
+        // Updates LiveData for the Details
+        this.mDetailsLiveData.getDetailsWithObservable(observable);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // -- POIsLiveData --
@@ -241,31 +294,6 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
         return this.mPOIsLiveData;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //    // -- SwitchMap: LocationLiveData then NearbySearchLiveData
 //    @NonNull

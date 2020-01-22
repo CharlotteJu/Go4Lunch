@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.Query;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.DetailsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;

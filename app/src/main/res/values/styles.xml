@@ -202,7 +202,7 @@
     <!-- Borderless Button style -->
     <style name="BorderlessButtonStyle2" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@drawable/button_text_color_style</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 

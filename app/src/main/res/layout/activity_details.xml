@@ -132,7 +132,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/activity_details_like_button"
                 android:text="@string/call"
-                android:drawableTop="@drawable/ic_call"
+                android:drawableTop="@drawable/button_call_drawable_style"
                 style="@style/BorderlessButtonStyle2"/>
 
             <!-- Button: Like button -->
@@ -145,7 +145,7 @@
                 app:layout_constraintStart_toEndOf="@id/activity_details_call_button"
                 app:layout_constraintEnd_toStartOf="@id/activity_details_website_button"
                 android:text="@string/like"
-                android:drawableTop="@drawable/ic_star"
+                android:drawableTop="@drawable/button_like_drawable_style"
                 style="@style/BorderlessButtonStyle2"/>
 
             <!-- Button: Website button -->
@@ -158,7 +158,7 @@
                 app:layout_constraintStart_toEndOf="@id/activity_details_like_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="@string/website"
-                android:drawableTop="@drawable/ic_public"
+                android:drawableTop="@drawable/button_website_drawable_style"
                 style="@style/BorderlessButtonStyle2"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,9 +2,11 @@ package com.mancel.yann.go4lunch.views.bases;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -205,6 +207,47 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected <T extends Activity> void startAnotherActivity(final Class<T> classActivity) {
         final Intent intent = new Intent(this, classActivity);
+        this.startActivity(intent);
+    }
+
+    // -- Phone --
+
+    /**
+     * Starts a phone call with phone number in argument
+     * @param phoneNumber a {@link String} that contains the phone number to call
+     */
+    protected void startPhoneCall(@NonNull final String phoneNumber) {
+        final Intent intent = new Intent(Intent.ACTION_DIAL);
+
+        if (phoneNumber.contains(" ")) {
+            final String newPhoneNumber = phoneNumber.replace(" ", "");
+
+            intent.setData(Uri.parse("tel:" + newPhoneNumber));
+        }
+        else {
+            intent.setData(Uri.parse("tel:" + phoneNumber));
+        }
+
+        this.startActivity(intent);
+    }
+
+    // -- Website --
+
+    /**
+     * Starts the opening of a website thanks to the URL in argument
+     * @param url a {@link String} that contains the website URL
+     */
+    protected void startOpenWebsite(@NonNull final String url) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        // Starts just by www...
+        if (!url.startsWith("https://") && !url.startsWith("http://")) {
+            intent.setData(Uri.parse("https://" + url));
+        }
+        else {
+            intent.setData(Uri.parse(url));
+        }
+
         this.startActivity(intent);
     }
 }

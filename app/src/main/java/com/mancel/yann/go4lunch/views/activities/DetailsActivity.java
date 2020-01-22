@@ -19,16 +19,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.MultiTransformation;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.apis.GoogleMapsService;
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
-import com.mancel.yann.go4lunch.utils.BlurTransformation;
 import com.mancel.yann.go4lunch.utils.DetailsUtils;
+import com.mancel.yann.go4lunch.utils.RestaurantUtils;
 import com.mancel.yann.go4lunch.utils.ShowMessage;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
@@ -36,7 +34,6 @@ import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.WorkmateAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
 
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -67,6 +64,8 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     TextView mFoodTypeAndAddress;
     @BindView(R.id.activity_details_call_button)
     Button mCallButton;
+    @BindView(R.id.activity_details_like_button)
+    Button mLikeButton;
     @BindView(R.id.activity_details_website_button)
     Button mWebsiteButton;
     @BindView(R.id.activity_details_recycler_view)
@@ -122,24 +121,6 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         // LiveData
         this.configureDetailsLiveData();
         this.configureUsersLiveData();
-
-        // Just for test
-        final List<User> userList = Arrays.asList(new User("1", "Yann", null),
-                new User("2", "Mel", null),
-                new User("3", "Nico", null),
-                new User("4", "Julien", null),
-                new User("4", "Julien", null),
-                new User("4", "Julien", null),
-                new User("4", "Julien", null),
-                new User("4", "Julien", null),
-                new User("4", "Julien", null),
-                new User("4", "Julien", null),
-                new User("4", "Julien", null),
-                new User("4", "Julien", null),
-                new User("4", "Julien", null),
-                new User("5", "Kamel", null));
-
-        this.mAdapter.updateData(userList);
     }
 
     // -- AdapterListener --
@@ -160,24 +141,28 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         switch (view.getId()) {
             // CALL
             case R.id.activity_details_call_button:
-                Log.d(TAG, "CALL");
-                ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout, this.mPhoneNumber);
+                this.startPhoneCall(this.mPhoneNumber);
                 break;
 
             // LIKE
             case R.id.activity_details_like_button:
-                Log.d(TAG, "LIKE");
+                ShowMessage.showMessageWithSnackbarWithButton(this.mCoordinatorLayout,
+                                                             "LIKE",
+                                                             "Undo",
+                                                              (v) ->{Log.d(TAG, "UNDO");});
                 break;
 
             // WEBSITE
             case R.id.activity_details_website_button:
-                Log.d(TAG, "WEBSITE");
-                ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout, this.mWebsite);
+                this.startOpenWebsite(this.mWebsite);
                 break;
 
             // FAB
             case R.id.activity_details_FAB:
-                Log.d(TAG, "FAB");
+                ShowMessage.showMessageWithSnackbarWithButton(this.mCoordinatorLayout,
+                                                             "FAB",
+                                                             "Undo",
+                                                              (v) ->{Log.d(TAG, "UNDO");});
         }
     }
 
@@ -232,6 +217,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
      * Configures the {@link LiveData} of {@link List<User>}
      */
     private void configureDetailsLiveData() {
+        // Bind between liveData of ViewModel and the UI
         if (this.mPlaceIdOfRestaurant != null) {
             this.mViewModel.getDetails(this.getApplicationContext(), this.mPlaceIdOfRestaurant)
                            .observe(this,
@@ -247,7 +233,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         if (this.mPlaceIdOfRestaurant != null) {
             this.mViewModel.getUsersWithSameRestaurant(this.mPlaceIdOfRestaurant)
                            .observe(this,
-                                     users -> {}/*this.mAdapter.updateData(users)*/ );
+                                     users -> this.mAdapter.updateData(users));
         }
     }
 
@@ -274,6 +260,18 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         // Name
         this.mName.setText(details.getResult().getName());
 
+        // Rating
+        if (details.getResult().getRating() == null) {
+            this.mRatingBar.setVisibility(View.GONE);
+        }
+        else {
+            float floatValue = RestaurantUtils.calculateRating(details.getResult().getRating().floatValue());
+
+            // TODO: 22/01/2020 Change the number stars of RatingBar
+            //this.mRatingBar.setNumStars((int) floatValue);
+            this.mRatingBar.setRating(floatValue);
+        }
+
         // Food type & Address
         this.mFoodTypeAndAddress.setText(DetailsUtils.createStringOfFoodTypeAndAddress(this.getApplicationContext(),
                                                                                        details.getResult().getAddressComponents()));
@@ -285,9 +283,6 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         else {
             this.mPhoneNumber = details.getResult().getInternationalPhoneNumber();
         }
-
-        // Rating
-        // TODO: 21/01/2020 add Rating
 
         // Website
         if (details.getResult().getWebsite() == null || details.getResult().getWebsite().isEmpty()) {

@@ -182,7 +182,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_normal"
-        android:src="@drawable/ic_close"
+        tools:src="@drawable/ic_add"
         app:layout_anchor="@id/activity_details_AppBarLayout"
         app:layout_anchorGravity="bottom|end"/>
 

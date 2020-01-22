@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.apis.GoogleMapsService;
 import com.mancel.yann.go4lunch.models.Details;
@@ -70,6 +71,8 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     Button mWebsiteButton;
     @BindView(R.id.activity_details_recycler_view)
     RecyclerView mRecyclerView;
+    @BindView(R.id.activity_details_FAB)
+    FloatingActionButton mFAB;
 
     @Nullable
     private String mPlaceIdOfRestaurant = null;
@@ -87,6 +90,12 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
 
     @Nullable
     private String mWebsite = null;
+
+    @Nullable
+    private User mLastUser = null;
+
+    @Nullable
+    private User mCurrentUser = null;
 
     private static final String TAG = DetailsActivity.class.getSimpleName();
 
@@ -117,6 +126,9 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
 
         // ViewModel
         this.configureViewModel();
+
+        // Current User [warning it is asynchronous so warning with DetailsLiveData]
+        this.configureCurrentUser();
 
         // LiveData
         this.configureDetailsLiveData();
@@ -159,10 +171,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
 
             // FAB
             case R.id.activity_details_FAB:
-                ShowMessage.showMessageWithSnackbarWithButton(this.mCoordinatorLayout,
-                                                             "FAB",
-                                                             "Undo",
-                                                              (v) ->{Log.d(TAG, "UNDO");});
+                this.configureEvenOfFAB();
         }
     }
 
@@ -177,6 +186,16 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         if (intent != null) {
             this.mPlaceIdOfRestaurant = intent.getStringExtra(MainActivity.INTENT_PLACE_ID);
         }
+    }
+
+    // -- Current User --
+
+    /**
+     * Configure the current {@link User}
+     */
+    private void configureCurrentUser() {
+        // Current User from Firebase Firestore
+        this.mCurrentUser = this.mViewModel.getUser(this.getCurrentUser().getUid());
     }
 
     // -- RecyclerView --
@@ -291,5 +310,71 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         else {
             this.mWebsite = details.getResult().getWebsite();
         }
+
+        // FAB [warning user data are asynchronous]
+        this.mFAB.setImageResource( (this.mPlaceIdOfRestaurant.equals(this.mCurrentUser.getPlaceIdOfRestaurant()) ?
+                R.drawable.ic_check :
+                R.drawable.ic_add));
+    }
+
+    // -- FAB --
+
+    /**
+     * Configures the enevnts of {@link FloatingActionButton}
+     */
+    private void configureEvenOfFAB() {
+        // Check if the restaurant is selected
+        boolean isChecked = false;
+
+        // Last User
+        this.mLastUser = this.mCurrentUser;
+
+        // No selected restaurant or different restaurant
+        if (this.mCurrentUser.getPlaceIdOfRestaurant() == null ||
+            !this.mCurrentUser.getPlaceIdOfRestaurant().equals(this.mPlaceIdOfRestaurant)) {
+            // Update restaurant data on current user
+            this.mViewModel.updateRestaurant(this.getCurrentUser().getUid(),
+                                             this.mPlaceIdOfRestaurant,
+                                             this.mName.getText().toString(),
+                                            null);
+
+            isChecked = true;
+        }
+        else {
+            // Removes restaurant data on current user
+            this.mViewModel.updateRestaurant(this.getCurrentUser().getUid(),
+                                            null,
+                                            null,
+                                            null);
+        }
+
+        // Current User (Update restaurant data) [warning it is asynchronous]
+        this.mCurrentUser = this.mViewModel.getUser(this.getCurrentUser().getUid());
+
+        // FAB
+        this.mFAB.setImageResource( isChecked ? R.drawable.ic_check :
+                                                R.drawable.ic_add);
+
+        // Snackbar
+        ShowMessage.showMessageWithSnackbarWithButton(this.mCoordinatorLayout,
+                                                      isChecked ? this.getString(R.string.restaurant_selected) :
+                                                                  this.getString(R.string.restaurant_no_selected),
+                                                      this.getString(R.string.undo),
+                                                      (v) ->{
+            // Update restaurant data on current user
+            this.mViewModel.updateRestaurant(this.getCurrentUser().getUid(),
+                                             this.mLastUser.getPlaceIdOfRestaurant(),
+                                             this.mLastUser.getNameOfRestaurant(),
+                                             this.mLastUser.getFoodTypeOfRestaurant());
+
+            // Current User
+            this.mCurrentUser = this.mLastUser;
+
+            // FAB
+            this.mFAB.setImageResource( (this.mLastUser.getPlaceIdOfRestaurant() != null &&
+                                         this.mLastUser.getPlaceIdOfRestaurant().equals(this.mPlaceIdOfRestaurant) ?
+                    R.drawable.ic_check :
+                    R.drawable.ic_add));
+        });
     }
 }

@@ -66,6 +66,10 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     @Nullable
     private DetailsLiveData mDetailsLiveData = null;
 
+    // *********************************************************************************************
+    // ************************************** VERIFICATION *****************************************
+    // *********************************************************************************************
+
     @Nullable
     private POIsLiveData mPOIsLiveData = null;
 
@@ -258,22 +262,9 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         this.mDetailsLiveData.getDetailsWithObservable(observable);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // *********************************************************************************************
+    // ************************************** VERIFICATION *****************************************
+    // *********************************************************************************************
 
     // -- POIsLiveData --
 
@@ -392,16 +383,16 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
                                                                     currentUser.getDisplayName(),
                                                                     currentUser.getPhotoUrl().toString())
                                                         .addOnSuccessListener( aVoid ->
-                                                                Log.d(TAG, "--> createUser (onSuccess)")
+                                                            Log.d(TAG, "--> createUser (onSuccess)")
                                                         )
                                                         .addOnFailureListener( e ->
-                                                                Log.d(TAG, "--> createUser (onFailure): " + e.getMessage())
+                                                            Log.d(TAG, "--> createUser (onFailure): " + e.getMessage())
                                                         );
 
                                 }
                             })
                             .addOnFailureListener( e ->
-                                    Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
+                                Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
                             );
     }
 
@@ -426,7 +417,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
                                 user.copy(userFromFirestore);
                             })
                             .addOnFailureListener( e ->
-                                    Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
+                                Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
                             );
 
         return user;
@@ -443,10 +434,10 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         Log.d(TAG, "updateUsername: " + uid);
         this.mUserRepository.updateUsername(uid, username)
                             .addOnSuccessListener( aVoid ->
-                                    Log.d(TAG, "--> updateUsername (onSuccess)")
+                                Log.d(TAG, "--> updateUsername (onSuccess)")
                             )
                             .addOnFailureListener( e ->
-                                    Log.e(TAG, "--> updateUsername (onFailure): " + e.getMessage())
+                                Log.e(TAG, "--> updateUsername (onFailure): " + e.getMessage())
                             );
     }
 
@@ -462,10 +453,10 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         Log.d(TAG, "updateRestaurant: " + uid);
         this.mUserRepository.updateRestaurant(uid, placeIdOfRestaurant, nameOfRestaurant, foodTypeOfRestaurant)
                             .addOnSuccessListener( aVoid ->
-                                    Log.d(TAG, "--> updateRestaurant (onSuccess)")
+                                Log.d(TAG, "--> updateRestaurant (onSuccess)")
                             )
                             .addOnFailureListener( e ->
-                                    Log.e(TAG, "--> updateRestaurant (onFailure): " + e.getMessage())
+                                Log.e(TAG, "--> updateRestaurant (onFailure): " + e.getMessage())
                             );
     }
 
@@ -484,10 +475,10 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         Log.d(TAG, "deleteUser: " + currentUser.getUid());
         this.mUserRepository.deleteUser(currentUser.getUid())
                             .addOnSuccessListener( aVoid ->
-                                    Log.d(TAG, "--> deleteUser (onSuccess)")
+                                Log.d(TAG, "--> deleteUser (onSuccess)")
                             )
                             .addOnFailureListener( e ->
-                                    Log.e(TAG, "--> deleteUser (onFailure): " + e.getMessage())
+                                Log.e(TAG, "--> deleteUser (onFailure): " + e.getMessage())
                             );
     }
 }

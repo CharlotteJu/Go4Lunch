@@ -30,6 +30,12 @@
     <string name="content_description_authentication_logo_image" translatable="false">authentication_logo_image</string>
     <string name="subtitle_authentication">Find a nice restaurant and invite your co-workers for lunch!</string>
 
+    <!-- activity_details.xml -->
+    <string name="call">CALL</string>
+    <string name="like">LIKE</string>
+    <string name="website">WEBSITE</string>
+    <string name="Details">Details</string>
+
     <!-- fragment_lunch_list.xml -->
     <string name="message_if_no_restaurant">No restaurant in the area!</string>
 
@@ -71,15 +77,16 @@
     <string name="info_no_username_found">"No username found"</string>
     <string name="info_no_email_found">"No email found"</string>
 
+    <!-- DetailsActivity.java -->
+    <string name="undo">"Undo"</string>
+    <string name="restaurant_selected">"Restaurant selected"</string>
+    <string name="restaurant_no_selected">"Restaurant not selected"</string>
+
     <!-- LunchViewHolder.java -->
     <string name="no_address">"No address"</string>
     <string name="no_specific_address">"No specific address"</string>
     <string name="no_data_on_the_opening_hours">"No data on the opening hours"</string>
     <string name="currently_open">"Currently open (No opening hours)"</string>
     <string name="not_currently_open">"Not currently open (No opening hours)"</string>
-    <string name="call">CALL</string>
-    <string name="like">LIKE</string>
-    <string name="website">WEBSITE</string>
-    <string name="Details">Details</string>
 
 </resources>

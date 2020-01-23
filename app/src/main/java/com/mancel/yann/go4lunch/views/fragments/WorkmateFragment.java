@@ -6,7 +6,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +14,7 @@ import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
+import com.mancel.yann.go4lunch.utils.InsetDivider;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
@@ -127,13 +127,19 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
         this.mAdapter = new WorkmateAdapter(this,
                                             Glide.with(this));
 
+        // InsetDivider
+        final RecyclerView.ItemDecoration divider = new InsetDivider.Builder(this.getContext())
+                                                                    .orientation(InsetDivider.VERTICAL_LIST)
+                                                                    .dividerHeight(getResources().getDimensionPixelSize(R.dimen.divider_height))
+                                                                    .color(getResources().getColor(R.color.ColorSeparator))
+                                                                    .insets(getResources().getDimensionPixelSize(R.dimen.divider_inset), 0)
+                                                                    .overlay(true)
+                                                                    .build();
+
         // RecyclerView
         this.mRecyclerView.setAdapter(this.mAdapter);
         this.mRecyclerView.setHasFixedSize(true);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        this.mRecyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(),
-                                                                       DividerItemDecoration.VERTICAL));
-
-        // TODO: 02/01/2020 Replace DividerItemDecoration by a new class (inset divider)
+        this.mRecyclerView.addItemDecoration(divider);
     }
 }

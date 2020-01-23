@@ -8,4 +8,8 @@
     <!-- RatingBar -->
     <integer name="max_stars_rating_bar">3</integer>
 
+    <!-- Gradient filter -->
+    <integer name="gradient_filter">180</integer>
+    <item name="opacity_filter" type="integer" format="float">0.7</item>
+
 </resources>

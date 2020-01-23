@@ -31,6 +31,7 @@
     <dimen name="margin_little">8dp</dimen>
     <dimen name="margin_normal">16dp</dimen>
     <dimen name="margin_big">48dp</dimen>
+    <dimen name="margin_heavy">88dp</dimen>
 
     <!-- PADDING -->
     <dimen name="padding_normal">16dp</dimen>
@@ -38,5 +39,9 @@
 
     <!-- ELEVATION -->
     <dimen name="elevation_toolbar">6dp</dimen>
+    
+    <!-- Inset divider -->
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="divider_inset">92dp</dimen>
 
 </resources>

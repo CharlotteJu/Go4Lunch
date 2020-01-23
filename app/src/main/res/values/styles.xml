@@ -211,6 +211,7 @@
     <style name="FloatingActionButtonStyle" parent="@style/Widget.MaterialComponents.FloatingActionButton">
         <item name="android:backgroundTint" tools:targetApi="21">@android:color/white</item>
         <item name="android:src">@drawable/ic_gps_fixed</item>
+        <item name="borderWidth">0dp</item>
     </style>
 
     <!-- *********************************** ImageView ***************************************** -->

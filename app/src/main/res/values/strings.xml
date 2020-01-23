@@ -11,23 +11,14 @@
     <string name="menu_drawer_settings">SETTINGS</string>
     <string name="menu_drawer_logout">LOGOUT</string>
 
-    <!-- activity_main_header_drawer.xml -->
-    <string name="header_drawer_username" translatable="false">John Smith</string>
-    <string name="header_drawer_email" translatable="false">jsmith.1337@gmail.com</string>
-    <string name="content_description_header_drawer_user_image" translatable="false">header_drawer_user_image</string>
-    <string name="content_description_header_drawer_image_background" translatable="false">header_drawer_image_background</string>
-
     <!-- activity_main.xml -->
     <string name="bottom_navigation_menu_map">Map View</string>
     <string name="bottom_navigation_menu_list">List View</string>
     <string name="bottom_navigation_menu_workmate">Workmates</string>
     <string name="toolbar_menu_search">Search</string>
     <string name="title_toolbar">I\'m Hungry!</string>
-    <string name="content_description_logo_image" translatable="false">menu_drawer_logo_image</string>
 
     <!-- activity_auth.xml -->
-    <string name="content_description_authentication_image_background" translatable="false">authentication_image_background</string>
-    <string name="content_description_authentication_logo_image" translatable="false">authentication_logo_image</string>
     <string name="subtitle_authentication">Find a nice restaurant and invite your co-workers for lunch!</string>
 
     <!-- activity_details.xml -->
@@ -43,23 +34,12 @@
     <string name="message_if_no_workmate">No workmate!</string>
 
     <!-- item_workmate.xml -->
-    <string name="content_description_item_logo_user" translatable="false">item_logo_user</string>
     <string name="text_item_workmate_no_choice">%s hasn\'t decided yet</string>
     <string name="text_item_workmate_choice">%s is eating %s (%s)</string>
-
-    <!-- item_restaurant.xml -->
-    <string name="content_description_item_restaurant_image" translatable="false">restaurant_image</string>
-    <string name="content_description_item_person_image" translatable="false">person_icon</string>
-    <string name="name_item_restaurant" translatable="false">Le Zinc</string>
-    <string name="type_and_address_item_restaurant" translatable="false">French - 12 rue du Faubourg Poissonnière</string>
-    <string name="opening_hours_item_restaurant" translatable="false">Open until 7pm</string>
-    <string name="distance_item_restaurant" translatable="false">120m</string>
-    <string name="people_item_restaurant" translatable="false">(2)</string>
 
     <!-- marker_info_window.xml -->
     <string name="details_info_window">Details</string>
     <string name="way_info_window">Way</string>
-    <string name="description_image_info_window" translatable="false">Image_info_window</string>
 
     <!-- AuthActivity.java -->
     <string name="google_sign_in">Sign in with Google</string>

@@ -147,21 +147,13 @@
         <item name="menu">@menu/bottom_navigation_menu</item>
         <item name="itemIconTint">@drawable/bottom_navigation_color</item>
         <item name="itemTextColor">@drawable/bottom_navigation_color</item>
-        <item name="android:elevation" tools:targetApi="21">@dimen/elevation_bottom_navigation_view</item>
+        <item name="android:background">@android:color/white</item>
     </style>
 
     <!-- *********************************** RatingBar ***************************************** -->
 
     <!-- RatingBar style -->
     <style name="RatingBarStyle" parent="Widget.AppCompat.RatingBar.Small">
-        <item name="android:isIndicator">true</item>
-        <item name="android:numStars">@integer/max_stars_rating_bar</item>
-        <item name="android:rating">@integer/max_stars_rating_bar</item>
-        <item name="android:progressTint" tools:targetApi="21">@color/colorPrimary</item>
-    </style>
-
-    <!-- RatingBar 2 style -->
-    <style name="RatingBarStyle2" parent="Widget.AppCompat.RatingBar.Small">
         <item name="android:isIndicator">true</item>
         <item name="android:numStars">@integer/max_stars_rating_bar</item>
         <item name="android:rating">@integer/max_stars_rating_bar</item>
@@ -226,7 +218,6 @@
     <!-- ImageView style -->
     <style name="ImageViewStyle">
         <item name="android:scaleType">centerCrop</item>
-        <item name="android:background">@drawable/image_view_background</item>
     </style>
 
 </resources>

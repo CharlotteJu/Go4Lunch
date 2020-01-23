@@ -13,8 +13,8 @@
     <!-- CustomRelativeLayout: To receive the event of InfoWindow -->
     <com.mancel.yann.go4lunch.utils.CustomRelativeLayout
         android:id="@+id/fragment_lunch_map_RelativeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

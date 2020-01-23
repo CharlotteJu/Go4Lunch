@@ -4,6 +4,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -19,7 +20,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/content_description_item_logo_user"/>
+        android:contentDescription="@null"
+        tools:background="@color/colorAccent"/>
 
     <!-- TextView: Description -->
     <TextView
@@ -31,7 +33,7 @@
         app:layout_constraintBottom_toBottomOf="@id/item_workmate_image"
         app:layout_constraintStart_toEndOf="@id/item_workmate_image"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/text_item_workmate_no_choice"
+        tools:text="User hasn\'t decided yet"
         style="@style/TextViewStyle2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

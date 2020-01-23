@@ -4,6 +4,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -16,7 +18,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/description_image_info_window"
+        android:contentDescription="@null"
+        tools:background="@drawable/button_go4lunch"
         style="@style/ImageViewStyle"/>
 
     <!-- TextView: Name of restaurant -->
@@ -29,19 +32,18 @@
         app:layout_constraintTop_toTopOf="@id/marker_info_window_Image"
         app:layout_constraintStart_toEndOf="@id/marker_info_window_Image"
         app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Name"
         style="@style/TextViewStyle1"/>
 
     <!-- Button: Details of restaurant -->
     <Button
         android:id="@+id/marker_info_window_Details"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="@dimen/button_height_info_window_size"
         android:layout_marginEnd="@dimen/margin_little"
-        app:layout_constraintTop_toBottomOf="@id/marker_info_window_Name"
         app:layout_constraintBottom_toBottomOf="@id/marker_info_window_Image"
         app:layout_constraintStart_toEndOf="@id/marker_info_window_Way"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         android:text="@string/details_info_window"
@@ -51,14 +53,12 @@
     <Button
         android:id="@+id/marker_info_window_Way"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="@dimen/button_height_info_window_size"
         android:layout_marginStart="@dimen/margin_little"
         android:layout_marginEnd="@dimen/margin_little"
-        app:layout_constraintTop_toBottomOf="@id/marker_info_window_Name"
         app:layout_constraintBottom_toBottomOf="@id/marker_info_window_Image"
         app:layout_constraintStart_toEndOf="@id/marker_info_window_Image"
         app:layout_constraintEnd_toStartOf="@id/marker_info_window_Details"
-        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         android:text="@string/way_info_window"

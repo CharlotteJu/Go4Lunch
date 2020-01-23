@@ -49,7 +49,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     @NonNull
     private final PlaceRepository mPlaceRepository;
 
-    // -- LiveData --
+    // -- LiveData (Simple) --
 
     @Nullable
     private UsersLiveData mUsersLiveData = null;
@@ -66,12 +66,14 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     @Nullable
     private DetailsLiveData mDetailsLiveData = null;
 
-    // *********************************************************************************************
-    // ************************************** VERIFICATION *****************************************
-    // *********************************************************************************************
+    // -- LiveData (Complex) --
 
     @Nullable
     private POIsLiveData mPOIsLiveData = null;
+
+    // *********************************************************************************************
+    // ************************************** VERIFICATION *****************************************
+    // *********************************************************************************************
 
     // TODO: 15/01/2020 add the LiveData which couples LocationLiveData and NearbySearchLiveData
 
@@ -168,18 +170,20 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
      * Gets the nearby search from Google Maps
      * @param context       a {@link Context}
      * @param locationData  a {@link LocationData}
+     * @param radius        a double that contains the radius of research
      * @return a {@link NearbySearchLiveData}
      */
     @NonNull
     public NearbySearchLiveData getNearbySearch(@NonNull final Context context,
-                                                @Nullable final LocationData locationData) {
+                                                @Nullable final LocationData locationData,
+                                                final double radius) {
         if (this.mNearbySearchLiveData == null) {
             this.mNearbySearchLiveData = new NearbySearchLiveData();
         }
 
         // Fetches the nearbySearch
         if (locationData != null) {
-            this.fetchNearbySearch(context, locationData);
+            this.fetchNearbySearch(context, locationData, radius);
         }
 
         return this.mNearbySearchLiveData;
@@ -189,9 +193,11 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
      * Loads the {@link NearbySearch}
      * @param context       a {@link Context}
      * @param locationData  a {@link LocationData}
+     * @param radius        a double that contains the radius of research
      */
     public void fetchNearbySearch(@NonNull final Context context,
-                                  @NonNull final LocationData locationData) {
+                                  @NonNull final LocationData locationData,
+                                  final double radius) {
         // No location
         if (locationData.getLocation() == null) {
             return;
@@ -204,9 +210,6 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         // Location
         final String location = locationData.getLocation().getLatitude() + "," +
                                 locationData.getLocation().getLongitude();
-
-        // Radius
-        double radius = 200.0;
 
         // Types
         final String types = "restaurant";
@@ -262,28 +265,31 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         this.mDetailsLiveData.getDetailsWithObservable(observable);
     }
 
-    // *********************************************************************************************
-    // ************************************** VERIFICATION *****************************************
-    // *********************************************************************************************
-
     // -- POIsLiveData --
 
     /**
      * Gets a {@link List<POI>} from Google Maps and Firebase Firestore
      * @param context       a {@link Context}
      * @param locationData  a {@link LocationData}
+     * @param radius        a double that contains the radius of research
      * @return a {@link LiveData} of {@link List<POI>}
      */
     @NonNull
     public LiveData<List<POI>> getPOIs(@NonNull final Context context,
-                                       @Nullable final LocationData locationData) {
+                                       @Nullable final LocationData locationData,
+                                       final double radius) {
         if (this.mPOIsLiveData == null) {
-            this.mPOIsLiveData = new POIsLiveData(this.getNearbySearch(context, locationData),
+            this.mPOIsLiveData = new POIsLiveData(this.getNearbySearch(context, locationData, radius),
                                                   this.getUsers());
         }
 
         return this.mPOIsLiveData;
     }
+
+
+    // *********************************************************************************************
+    // ************************************** VERIFICATION *****************************************
+    // *********************************************************************************************
 
 //    // -- SwitchMap: LocationLiveData then NearbySearchLiveData
 //    @NonNull

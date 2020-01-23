@@ -79,6 +79,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     private boolean mIsLocatedOnUser = true;
 
     private static final float DEFAULT_ZOOM = 17F;
+    private static final double NEARBY_SEARCH_RADIUS = 200.0;
 
     private static final String TAG = LunchMapFragment.class.getSimpleName();
 
@@ -187,7 +188,24 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     @Override
     public void onCameraIdle() {
-        Log.d(TAG, "onCameraIdle: The camera has stopped moving.");
+        // When the camera has stopped moving
+
+        // Test on Radius for nearby search
+        // TODO: 23/01/2020 Test on radius
+        if (!this.mIsLocatedOnUser) {
+            // Location
+            final Location location = new Location("Actual Location");
+            location.setLatitude(this.mGoogleMap.getProjection().getVisibleRegion().latLngBounds.getCenter().latitude);
+            location.setLongitude(this.mGoogleMap.getProjection().getVisibleRegion().latLngBounds.getCenter().longitude);
+
+            // LocationData
+            final LocationData locationData = new LocationData(location, null);
+
+            // POIs
+//            this.mViewModel.fetchNearbySearch(this.getContext(),
+//                                              locationData,
+//                                              NEARBY_SEARCH_RADIUS);
+        }
     }
 
     // -- GoogleMap.OnMarkerClickListener --
@@ -216,6 +234,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     @Override
     public void onClickOnWayButton(@Nullable final Marker marker) {
         Log.d(TAG, "onClickOnWayButton: WAY");
+        // TODO: 23/01/2020 Pass by Road API 
     }
 
     // -- Google Maps --
@@ -274,6 +293,9 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         // MY LOCATION
         this.mGoogleMap.setMyLocationEnabled(true);
         this.mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+        // TOOLBAR
+        this.mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
     }
 
     /**
@@ -343,7 +365,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     private void configurePOIsLiveData() {
         // Bind between liveData of ViewModel and the SupportMapFragment
         // TODO: 16/01/2020 Add LocationLiveData to source of POIsLiveData for remove the reference of this LiveData
-        this.mViewModel.getPOIs(this.getContext(), null)
+        this.mViewModel.getPOIs(this.getContext(), null, NEARBY_SEARCH_RADIUS)
                        .observe(this.getActivity(), this::onChangedPOIsData);
     }
 
@@ -367,7 +389,9 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         this.mCurrentLocation = locationData.getLocation();
 
         // POIs
-        this.mViewModel.fetchNearbySearch(this.getContext(), locationData);
+        this.mViewModel.fetchNearbySearch(this.getContext(),
+                                          locationData,
+                                          NEARBY_SEARCH_RADIUS);
 
         // Focus on the current location of user
         if (this.mIsLocatedOnUser) {

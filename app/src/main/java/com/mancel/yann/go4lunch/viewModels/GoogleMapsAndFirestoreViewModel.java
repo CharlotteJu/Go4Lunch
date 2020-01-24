@@ -8,7 +8,9 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.DetailsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
@@ -370,31 +372,25 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         // FirebaseUser must not be null to create an user
         if (currentUser == null) throw new Exception("FirebaseUser is null");
 
-        Log.d(TAG, "createUser: " + currentUser.getUid());
         this.mUserRepository.getUser(currentUser.getUid())
                             .addOnSuccessListener( documentSnapshot -> {
-                                Log.d(TAG, "--> getUser (onSuccess)");
-
                                 final User user = documentSnapshot.toObject(User.class);
 
                                 if (user != null) {
-                                    Log.d(TAG, "----> user is already present");
+                                    // Do nothing because user is already present
                                 }
                                 else {
-                                    Log.d(TAG, "----> user is not present");
-
                                     // Firebase Firestore has checked that user is not present.
                                     // So we can create a new document (user) in the collection (users).
                                     this.mUserRepository.createUser(currentUser.getUid(),
                                                                     currentUser.getDisplayName(),
                                                                     currentUser.getPhotoUrl().toString())
-                                                        .addOnSuccessListener( aVoid ->
-                                                            Log.d(TAG, "--> createUser (onSuccess)")
-                                                        )
+                                                        .addOnSuccessListener( aVoid -> {
+                                                            // Do nothing because user is created
+                                                        })
                                                         .addOnFailureListener( e ->
                                                             Log.d(TAG, "--> createUser (onFailure): " + e.getMessage())
                                                         );
-
                                 }
                             })
                             .addOnFailureListener( e ->
@@ -405,62 +401,66 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     // -- Read (User) --
 
     /**
-     * Gets a {@link User} with its uid field
-     * @param uid a {@link String} that contains the uid
-     * @return a {@link User}
+     * Reads the current user (authenticated) of Firebase Firestore
+     * thanks to {@link UserRepository}
+     * @param currentUser a {@link FirebaseUser} that contains the data of the last authenticated
+     * @throws Exception if the {@link FirebaseUser} is null
      */
-    @Nullable
-    public User getUser(@NonNull String uid) {
-        final User user = new User();
+    @NonNull
+    public Task<DocumentSnapshot> getUser(@Nullable final FirebaseUser currentUser) throws Exception {
+        // FirebaseUser must not be null to read an user
+        if (currentUser == null) throw new Exception("FirebaseUser is null");
 
-        Log.d(TAG, "getUser: " + uid);
-        this.mUserRepository.getUser(uid)
-                            .addOnSuccessListener( documentSnapshot -> {
-                                Log.d(TAG, "--> deleteUser (onSuccess)");
-
-                                final User userFromFirestore = documentSnapshot.toObject(User.class);
-
-                                user.copy(userFromFirestore);
-                            })
-                            .addOnFailureListener( e ->
-                                Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
-                            );
-
-        return user;
+        return this.mUserRepository.getUser(currentUser.getUid())
+                                   .addOnFailureListener( e ->
+                                       Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
+                                   );
     }
 
     // -- Update (User) --
 
     /**
-     * Update the username field of a {@link com.mancel.yann.go4lunch.models.User} with its uid field
-     * @param uid       a {@link String} that contains the uid
-     * @param username  a {@link String} that contains the username
+     * Updates the username field of the current user (authenticated) of Firebase Firestore
+     * @param currentUser   a {@link FirebaseUser} that contains the data of the last authenticated
+     * @param username      a {@link String} that contains the username
+     * @throws Exception if the {@link FirebaseUser} is null
      */
-    public void updateUsername(@NonNull String uid, @NonNull String username) {
-        Log.d(TAG, "updateUsername: " + uid);
-        this.mUserRepository.updateUsername(uid, username)
-                            .addOnSuccessListener( aVoid ->
-                                Log.d(TAG, "--> updateUsername (onSuccess)")
-                            )
+    public void updateUsername(@Nullable final FirebaseUser currentUser,
+                               @NonNull String username) throws Exception {
+        // FirebaseUser must not be null to read an user
+        if (currentUser == null) throw new Exception("FirebaseUser is null");
+
+        this.mUserRepository.updateUsername(currentUser.getUid(), username)
+                            .addOnSuccessListener( aVoid -> {
+                                // Do nothing because username is updated
+                            })
                             .addOnFailureListener( e ->
                                 Log.e(TAG, "--> updateUsername (onFailure): " + e.getMessage())
                             );
     }
 
     /**
-     * Update the restaurant field of a {@link com.mancel.yann.go4lunch.models.User} with its uid field
-     * @param uid                   a {@link String} that contains the uid
+     * Updates the restaurant fields of the current user (authenticated) of Firebase Firestore
+     * @param currentUser           a {@link FirebaseUser} that contains the data of the last authenticated
      * @param placeIdOfRestaurant   a {@link String} that contains the place_id of the restaurant
      * @param nameOfRestaurant      a {@link String} that contains the name of the restaurant
      * @param foodTypeOfRestaurant  a {@link String} that contains the food type of the restaurant
+     * @throws Exception if the {@link FirebaseUser} is null
      */
-    public void updateRestaurant(@NonNull String uid, @Nullable String placeIdOfRestaurant,
-                                 @Nullable String nameOfRestaurant,@Nullable String foodTypeOfRestaurant) {
-        Log.d(TAG, "updateRestaurant: " + uid);
-        this.mUserRepository.updateRestaurant(uid, placeIdOfRestaurant, nameOfRestaurant, foodTypeOfRestaurant)
-                            .addOnSuccessListener( aVoid ->
-                                Log.d(TAG, "--> updateRestaurant (onSuccess)")
-                            )
+    public void updateRestaurant(@Nullable final FirebaseUser currentUser,
+                                 @Nullable String placeIdOfRestaurant,
+                                 @Nullable String nameOfRestaurant,
+                                 @Nullable String foodTypeOfRestaurant) throws Exception {
+        // FirebaseUser must not be null to read an user
+        if (currentUser == null) throw new Exception("FirebaseUser is null");
+
+        this.mUserRepository.updateRestaurant(currentUser.getUid(),
+                                              placeIdOfRestaurant,
+                                              nameOfRestaurant,
+                                              foodTypeOfRestaurant)
+                            .addOnSuccessListener( aVoid -> {
+                                // Do nothing because restaurant is updated
+                            })
                             .addOnFailureListener( e ->
                                 Log.e(TAG, "--> updateRestaurant (onFailure): " + e.getMessage())
                             );
@@ -469,7 +469,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     // -- Delete (User) --
 
     /**
-     * Delete the current user (authenticated) of Firebase Firestore
+     * Deletes the current user (authenticated) of Firebase Firestore
      * thanks to {@link UserRepository}
      * @param currentUser a {@link FirebaseUser} that contains the data of the last authenticated
      * @throws Exception if the {@link FirebaseUser} is null
@@ -478,11 +478,10 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         // FirebaseUser must not be null to create an user
         if (currentUser == null) throw new Exception("FirebaseUser is null");
 
-        Log.d(TAG, "deleteUser: " + currentUser.getUid());
         this.mUserRepository.deleteUser(currentUser.getUid())
-                            .addOnSuccessListener( aVoid ->
-                                Log.d(TAG, "--> deleteUser (onSuccess)")
-                            )
+                            .addOnSuccessListener( aVoid -> {
+                                // Do nothing because user is deleted
+                            })
                             .addOnFailureListener( e ->
                                 Log.e(TAG, "--> deleteUser (onFailure): " + e.getMessage())
                             );

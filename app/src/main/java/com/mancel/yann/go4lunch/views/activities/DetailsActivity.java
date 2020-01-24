@@ -195,7 +195,17 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
      */
     private void configureCurrentUser() {
         // Current User from Firebase Firestore
-        this.mCurrentUser = this.mViewModel.getUser(this.getCurrentUser().getUid());
+        try {
+            this.mViewModel.getUser(this.getCurrentUser())
+                           .addOnSuccessListener( documentSnapshot -> {
+                               this.mCurrentUser = documentSnapshot.toObject(User.class);
+                                        Log.d(TAG, "configureCurrentUser: " + this.mCurrentUser.getPlaceIdOfRestaurant());
+                                   }
+                           );
+        }
+        catch (Exception e) {
+            Log.e(TAG, "getUser: " + e.getMessage());
+        }
     }
 
     // -- RecyclerView --
@@ -317,8 +327,12 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
             this.mWebsite = details.getResult().getWebsite();
         }
 
+        Log.d(TAG, "updateDetails: "+ (this.mCurrentUser == null));
+        this.mCurrentUser = new User();
+
         // FAB [warning user data are asynchronous]
-        this.mFAB.setImageResource( (this.mPlaceIdOfRestaurant.equals(this.mCurrentUser.getPlaceIdOfRestaurant()) ?
+        this.mFAB.setImageResource( (this.mCurrentUser.getPlaceIdOfRestaurant() != null &&
+                                     this.mPlaceIdOfRestaurant.equals(this.mCurrentUser.getPlaceIdOfRestaurant()) ?
                 R.drawable.ic_check :
                 R.drawable.ic_add));
     }
@@ -339,23 +353,33 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         if (this.mCurrentUser.getPlaceIdOfRestaurant() == null ||
             !this.mCurrentUser.getPlaceIdOfRestaurant().equals(this.mPlaceIdOfRestaurant)) {
             // Update restaurant data on current user
-            this.mViewModel.updateRestaurant(this.getCurrentUser().getUid(),
-                                             this.mPlaceIdOfRestaurant,
-                                             this.mName.getText().toString(),
-                                            null);
+            try {
+                this.mViewModel.updateRestaurant(this.getCurrentUser(),
+                                                 this.mPlaceIdOfRestaurant,
+                                                 this.mName.getText().toString(),
+                                                null);
+            }
+            catch (Exception e) {
+                Log.e(TAG, "updateRestaurant: " + e.getMessage());
+            }
 
             isChecked = true;
         }
         else {
             // Removes restaurant data on current user
-            this.mViewModel.updateRestaurant(this.getCurrentUser().getUid(),
-                                            null,
-                                            null,
-                                            null);
+            try {
+                this.mViewModel.updateRestaurant(this.getCurrentUser(),
+                                                null,
+                                                null,
+                                                null);
+            }
+            catch (Exception e) {
+                Log.e(TAG, "updateRestaurant: " + e.getMessage());
+            }
         }
 
         // Current User (Update restaurant data) [warning it is asynchronous]
-        this.mCurrentUser = this.mViewModel.getUser(this.getCurrentUser().getUid());
+        this.configureCurrentUser();
 
         // FAB
         this.mFAB.setImageResource( isChecked ? R.drawable.ic_check :
@@ -368,10 +392,14 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
                                                       this.getString(R.string.undo),
                                                       (v) ->{
             // Update restaurant data on current user
-            this.mViewModel.updateRestaurant(this.getCurrentUser().getUid(),
-                                             this.mLastUser.getPlaceIdOfRestaurant(),
-                                             this.mLastUser.getNameOfRestaurant(),
-                                             this.mLastUser.getFoodTypeOfRestaurant());
+            try {
+                this.mViewModel.updateRestaurant(this.getCurrentUser(),
+                                                 this.mLastUser.getPlaceIdOfRestaurant(),
+                                                 this.mLastUser.getNameOfRestaurant(),
+                                                 this.mLastUser.getFoodTypeOfRestaurant());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             // Current User
             this.mCurrentUser = this.mLastUser;

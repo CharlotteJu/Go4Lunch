@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,9 +26,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.BlurTransformation;
+import com.mancel.yann.go4lunch.utils.ShowMessage;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
@@ -50,6 +53,8 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
     // FIELDS --------------------------------------------------------------------------------------
 
+    @BindView(R.id.activity_main_CoordinatorLayout)
+    CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.activity_main_toolbar)
     Toolbar mToolbar;
     @BindView(R.id.activity_main_drawer_layout)
@@ -58,11 +63,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     NavigationView mNavigationView;
     @BindView(R.id.activity_main_bottom_navigation_view)
     BottomNavigationView mBottomNavigationView;
-
-    private ImageView mBackgroundImageFromHeader;
-    private ImageView mUserImageFromHeader;
-    private TextView mUsernameFromHeader;
-    private TextView mEmailFromHeader;
 
     @SuppressWarnings("NullableProblems")
     @NonNull
@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         this.createUser();
 
         // Fragment
-        this.configureFragment(this.mFragmentType);
+        this.configureLunchMapFragment();
     }
 
     // -- Activity --
@@ -169,12 +169,15 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
                 break;
         }
+
+        // TODO: 24/01/2020 Make this method in BaseActivity and make startLocationUpdate in protected method in BaseFragment
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // TODO: 24/01/2020 Make this method in BaseActivity and make startLocationUpdate in protected method in BaseFragment
         // Check settings to location
         if (requestCode == LunchMapFragment.RC_CHECK_SETTINGS_TO_LOCATION && resultCode == RESULT_OK) {
             this.mLunchMapFragment.startLocationUpdate();
@@ -197,26 +200,39 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
     private boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            // NavigationView
+
+            // NavigationView ----------------------------------------------------------------------
+
+            // Lunch
             case R.id.menu_drawer_lunch:
-                Log.e(this.getClass().getSimpleName(), "Lunch");
+                this.startDetailsOfLunch();
                 break;
+
+            // Setting
             case R.id.menu_drawer_setting:
                 Log.e(this.getClass().getSimpleName(), "Setting");
                 break;
+
+            // Logout
             case R.id.menu_drawer_logout:
                 this.logout();
                 break;
 
-            // BottomNavigationView
+            // BottomNavigationView ----------------------------------------------------------------
+
+            // Maps fragment
             case R.id.bottom_navigation_menu_map:
                 this.mFragmentType = FragmentType.MAP;
                 this.configureLunchMapFragment();
                 break;
+
+            // List fragment
             case R.id.bottom_navigation_menu_list:
                 this.mFragmentType = FragmentType.LIST;
                 this.configureLunchListFragment();
                 break;
+
+            // Workmate fragment
             case R.id.bottom_navigation_menu_workmate:
                 this.mFragmentType = FragmentType.WORKMATE;
                 this.configureWorkmateFragment();
@@ -272,43 +288,43 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         // Gets the only header of NavigationView
         final View headerView = this.mNavigationView.getHeaderView(0);
 
-        // Header of XML file
-        this.mBackgroundImageFromHeader = headerView.findViewById(R.id.activity_main_header_drawer_image_background);
-        this.mUserImageFromHeader = headerView.findViewById(R.id.activity_main_header_drawer_user_image);
-        this.mUsernameFromHeader = headerView.findViewById(R.id.activity_main_header_drawer_username);
-        this.mEmailFromHeader = headerView.findViewById(R.id.activity_main_header_drawer_email);
-
-        // Using to Glide library
+        // ImageView: Background image (Using to Glide library)
+        final ImageView imageBackgroundFromXML = headerView.findViewById(R.id.activity_main_header_drawer_image_background);
         Glide.with(this)
              .load(R.drawable.background_image)
              .transform(new MultiTransformation<>(new CenterCrop(),
                                                   new BlurTransformation(this)))
              .error(R.drawable.ic_close)
-             .into(this.mBackgroundImageFromHeader);
+             .into(imageBackgroundFromXML);
 
-        // From Firebase
+        // From Firebase Authentication
         final FirebaseUser user = this.getCurrentUser();
 
         if (user != null) {
-            // ImageView: User image
+            // ImageView: User image (Using to Glide library)
+            final ImageView imageUserFromXML = headerView.findViewById(R.id.activity_main_header_drawer_user_image);
+
             if (user.getPhotoUrl() != null) {
                 Glide.with(this)
                      .load(user.getPhotoUrl())
                      .circleCrop()
                      .fallback(R.drawable.ic_person)
                      .error(R.drawable.ic_close)
-                     .into(this.mUserImageFromHeader);
+                     .into(imageUserFromXML);
             }
 
             // TextView: Username and email
-            final String username = TextUtils.isEmpty(user.getDisplayName()) ? getString(R.string.info_no_username_found) :
+            final TextView usernameFromXML = headerView.findViewById(R.id.activity_main_header_drawer_username);
+            final TextView emailFromXML = headerView.findViewById(R.id.activity_main_header_drawer_email);
+
+            final String username = TextUtils.isEmpty(user.getDisplayName()) ? this.getString(R.string.info_no_username_found) :
                                                                                user.getDisplayName();
 
-            final String email = TextUtils.isEmpty(user.getEmail()) ? getString(R.string.info_no_email_found) :
+            final String email = TextUtils.isEmpty(user.getEmail()) ? this.getString(R.string.info_no_email_found) :
                                                                       user.getEmail();
 
-            this.mUsernameFromHeader.setText(username);
-            this.mEmailFromHeader.setText(email);
+            usernameFromXML.setText(username);
+            emailFromXML.setText(email);
         }
     }
 
@@ -338,27 +354,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     // -- Fragment --
 
     /**
-     * Configures the {@link androidx.fragment.app.Fragment}
-     * @param fragmentType a {@link FragmentType}
-     */
-    private void configureFragment(@NonNull final FragmentType fragmentType) {
-        // TODO: 10/01/2020 refactor and delete field not useful
-        switch (fragmentType) {
-            case MAP:
-                this.configureLunchMapFragment();
-                break;
-
-            case LIST:
-                this.configureLunchListFragment();
-                break;
-
-            case WORKMATE:
-                this.configureWorkmateFragment();
-                break;
-        }
-    }
-
-    /**
      * Configures the {@link LunchMapFragment}
      */
     private void configureLunchMapFragment() {
@@ -367,6 +362,8 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
 
         this.replaceFragment(this.mLunchMapFragment, R.id.activity_main_frame_layout);
+
+
     }
 
     /**
@@ -378,6 +375,8 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
 
         this.replaceFragment(this.mLunchListFragment, R.id.activity_main_frame_layout);
+
+        this.mLunchMapFragment = null;
     }
 
     /**
@@ -389,6 +388,8 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
 
         this.replaceFragment(this.mWorkmateFragment, R.id.activity_main_frame_layout);
+
+        this.mLunchMapFragment = null;
     }
 
     // -- User --
@@ -404,6 +405,36 @@ public class MainActivity extends BaseActivity implements FragmentListener {
             Log.e(TAG, "createUser: " + e.getMessage());
         }
     }
+
+    // -- Lunch --
+
+    /**
+     * Displays the details of selected restaurant
+     */
+    private void startDetailsOfLunch() {
+        try {
+            this.mViewModel.getUser(this.getCurrentUser())
+                           .addOnSuccessListener( documentSnapshot -> {
+                               final User user = documentSnapshot.toObject(User.class);
+
+                               if (user != null) {
+                                   // User has already selected a restaurant (-> place id is not null)
+                                   if (user.getPlaceIdOfRestaurant() != null) {
+                                       this.onSelectedRestaurant(user.getPlaceIdOfRestaurant());
+                                   }
+                                   else {
+                                       ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
+                                               this.getString(R.string.restaurant_no_selected));
+                                   }
+                               }
+                           });
+        }
+        catch (Exception e) {
+            Log.e(TAG, "getUser: " + e.getMessage());
+        }
+    }
+
+    // -- Logout --
 
     /**
      * Logout the current user

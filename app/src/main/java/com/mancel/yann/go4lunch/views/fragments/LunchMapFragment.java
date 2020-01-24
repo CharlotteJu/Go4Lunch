@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -221,6 +222,9 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     @Override
     public void onClickOnDetailsButton(@Nullable final Marker marker) {
+        // InfoWindow
+        marker.hideInfoWindow();
+
         // POI
         final POI poi = (POI) marker.getTag();
 
@@ -234,7 +238,10 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     @Override
     public void onClickOnWayButton(@Nullable final Marker marker) {
         Log.d(TAG, "onClickOnWayButton: WAY");
-        // TODO: 23/01/2020 Pass by Road API 
+        // TODO: 23/01/2020 Pass by Road API
+
+        // InfoWindow
+        marker.hideInfoWindow();
     }
 
     // -- Google Maps --
@@ -243,14 +250,14 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
      * Configures the {@link SupportMapFragment}
      */
     private void configureSupportMapFragment() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_lunch_map_fragment);
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.fragment_lunch_map_fragment);
 
         if (mapFragment == null) {
             mapFragment = SupportMapFragment.newInstance();
 
-            getFragmentManager().beginTransaction()
-                                .add(R.id.fragment_lunch_map_fragment, mapFragment)
-                                .commit();
+            this.getFragmentManager().beginTransaction()
+                                     .add(R.id.fragment_lunch_map_fragment, mapFragment)
+                                     .commit();
         }
 
         mapFragment.getMapAsync(this);
@@ -339,7 +346,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
-        this.mViewModel = ViewModelProviders.of(this.getActivity(), factory)
+        this.mViewModel = ViewModelProviders.of(this, factory)
                                             .get(GoogleMapsAndFirestoreViewModel.class);
     }
 
@@ -357,16 +364,6 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         // Bind between liveData of ViewModel and the SupportMapFragment
         this.mViewModel.getLocation(this.getContext())
                        .observe(this.getActivity(), this::onChangedLocationData);
-    }
-
-    /**
-     * Configures the {@link LiveData} of {@link List<POI>}
-     */
-    private void configurePOIsLiveData() {
-        // Bind between liveData of ViewModel and the SupportMapFragment
-        // TODO: 16/01/2020 Add LocationLiveData to source of POIsLiveData for remove the reference of this LiveData
-        this.mViewModel.getPOIs(this.getContext(), null, NEARBY_SEARCH_RADIUS)
-                       .observe(this.getActivity(), this::onChangedPOIsData);
     }
 
     /**
@@ -388,11 +385,6 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         // TODO: 16/01/2020 add LocationLiveData to do a getValue()
         this.mCurrentLocation = locationData.getLocation();
 
-        // POIs
-        this.mViewModel.fetchNearbySearch(this.getContext(),
-                                          locationData,
-                                          NEARBY_SEARCH_RADIUS);
-
         // Focus on the current location of user
         if (this.mIsLocatedOnUser) {
             // First Location
@@ -403,7 +395,22 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
             else {
                 this.animateCamera();
             }
+
+            // Fetches POIs
+            this.mViewModel.fetchNearbySearch(this.getContext(),
+                                              locationData,
+                                              NEARBY_SEARCH_RADIUS);
         }
+    }
+
+    /**
+     * Configures the {@link LiveData} of {@link List<POI>}
+     */
+    private void configurePOIsLiveData() {
+        // Bind between liveData of ViewModel and the SupportMapFragment
+        // TODO: 16/01/2020 Add LocationLiveData to source of POIsLiveData for remove the reference of this LiveData
+        this.mViewModel.getPOIs(this.getContext(), null, NEARBY_SEARCH_RADIUS)
+                       .observe(this.getActivity(), this::onChangedPOIsData);
     }
 
     /**
@@ -411,6 +418,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
      * @param poiList a {@link List<POI>}
      */
     private void onChangedPOIsData(@NonNull final List<POI> poiList) {
+        Log.d(TAG, "onChangedPOIsData: POI DATA");
         // No POI
         if (poiList.size() == 0) {
             return;

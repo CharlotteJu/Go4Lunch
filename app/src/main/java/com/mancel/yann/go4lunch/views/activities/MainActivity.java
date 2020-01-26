@@ -78,6 +78,7 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     private WorkmateFragment mWorkmateFragment;
 
     public static final String INTENT_PLACE_ID = "INTENT_PLACE_ID";
+    public static final String INTENT_CURRENT_USER = "INTENT_CURRENT_USER";
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -187,13 +188,28 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     // -- FragmentListener --
 
     @Override
-    public void onSelectedRestaurant(@NonNull String placeIdOfRestaurant) {
-        final Intent intent = new Intent(this.getApplicationContext(), DetailsActivity.class);
+    public void onSelectedRestaurant(@NonNull final String placeIdOfRestaurant) {
+        try {
+            this.mViewModel.getUser(this.getCurrentUser())
+                           .addOnSuccessListener( documentSnapshot -> {
+                               final User user = documentSnapshot.toObject(User.class);
 
-        // Place Id
-        intent.putExtra(INTENT_PLACE_ID, placeIdOfRestaurant);
+                               if (user != null) {
+                                   final Intent intent = new Intent(this.getApplicationContext(), DetailsActivity.class);
 
-        this.startActivity(intent);
+                                   // EXTRA: String on [Place Id]
+                                   intent.putExtra(INTENT_PLACE_ID, placeIdOfRestaurant);
+
+                                   // EXTRA: Current user
+                                   intent.putExtra(INTENT_CURRENT_USER, user);
+
+                                   this.startActivity(intent);
+                               }
+                           });
+        }
+        catch (Exception e) {
+            Log.e(TAG, "getUser: " + e.getMessage());
+        }
     }
 
     // -- Actions --
@@ -420,11 +436,19 @@ public class MainActivity extends BaseActivity implements FragmentListener {
                                if (user != null) {
                                    // User has already selected a restaurant (-> place id is not null)
                                    if (user.getPlaceIdOfRestaurant() != null) {
-                                       this.onSelectedRestaurant(user.getPlaceIdOfRestaurant());
+                                       final Intent intent = new Intent(this.getApplicationContext(), DetailsActivity.class);
+
+                                       // EXTRA: String on [Place Id]
+                                       intent.putExtra(INTENT_PLACE_ID, user.getPlaceIdOfRestaurant());
+
+                                       // EXTRA: Current user
+                                       intent.putExtra(INTENT_CURRENT_USER, user);
+
+                                       this.startActivity(intent);
                                    }
                                    else {
                                        ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
-                                               this.getString(R.string.restaurant_no_selected));
+                                                                           this.getString(R.string.restaurant_no_selected));
                                    }
                                }
                            });

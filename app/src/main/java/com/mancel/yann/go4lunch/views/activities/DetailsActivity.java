@@ -19,8 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseUser;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.apis.GoogleMapsService;
+import com.mancel.yann.go4lunch.liveDatas.DetailsLiveData;
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
@@ -77,25 +79,23 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     @Nullable
     private String mPlaceIdOfRestaurant = null;
 
+    @Nullable
+    private User mCurrentUser = null;
+
+    @Nullable
+    private User mLastUser = null;
+
     @SuppressWarnings("NullableProblems")
     @NonNull
     private GoogleMapsAndFirestoreViewModel mViewModel;
 
     @SuppressWarnings("NullableProblems")
     @NonNull
+    private DetailsLiveData mDetailsLiveData;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
     private WorkmateAdapter mAdapter;
-
-    @Nullable
-    private String mPhoneNumber = null;
-
-    @Nullable
-    private String mWebsite = null;
-
-    @Nullable
-    private User mLastUser = null;
-
-    @Nullable
-    private User mCurrentUser = null;
 
     private static final String TAG = DetailsActivity.class.getSimpleName();
 
@@ -117,7 +117,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     @Override
     protected void configureDesign() {
         // Intent
-        this.fetchPlaceIdOfRestaurantFromIntent();
+        this.fetchDataFromIntent();
 
         // UI
         this.configureToolBar();
@@ -126,9 +126,6 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
 
         // ViewModel
         this.configureViewModel();
-
-        // Current User [warning it is asynchronous so warning with DetailsLiveData]
-        this.configureCurrentUser();
 
         // LiveData
         this.configureDetailsLiveData();
@@ -153,7 +150,8 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         switch (view.getId()) {
             // CALL
             case R.id.activity_details_call_button:
-                this.startPhoneCall(this.mPhoneNumber);
+                this.startPhoneCall(this.mDetailsLiveData.getValue()
+                                                         .getResult().getInternationalPhoneNumber());
                 break;
 
             // LIKE
@@ -166,7 +164,8 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
 
             // WEBSITE
             case R.id.activity_details_website_button:
-                this.startOpenWebsite(this.mWebsite);
+                this.startOpenWebsite(this.mDetailsLiveData.getValue()
+                                                           .getResult().getWebsite());
                 break;
 
             // FAB
@@ -178,33 +177,14 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     // -- Intent --
 
     /**
-     * Fetches the Place Id of restaurant from {@link Intent}
+     * Fetches data from {@link Intent}
      */
-    private void fetchPlaceIdOfRestaurantFromIntent() {
+    private void fetchDataFromIntent() {
         final Intent intent = this.getIntent();
 
         if (intent != null) {
             this.mPlaceIdOfRestaurant = intent.getStringExtra(MainActivity.INTENT_PLACE_ID);
-        }
-    }
-
-    // -- Current User --
-
-    /**
-     * Configure the current {@link User}
-     */
-    private void configureCurrentUser() {
-        // Current User from Firebase Firestore
-        try {
-            this.mViewModel.getUser(this.getCurrentUser())
-                           .addOnSuccessListener( documentSnapshot -> {
-                               this.mCurrentUser = documentSnapshot.toObject(User.class);
-                                        Log.d(TAG, "configureCurrentUser: " + this.mCurrentUser.getPlaceIdOfRestaurant());
-                                   }
-                           );
-        }
-        catch (Exception e) {
-            Log.e(TAG, "getUser: " + e.getMessage());
+            this.mCurrentUser = intent.getParcelableExtra(MainActivity.INTENT_CURRENT_USER);
         }
     }
 
@@ -254,9 +234,10 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     private void configureDetailsLiveData() {
         // Bind between liveData of ViewModel and the UI
         if (this.mPlaceIdOfRestaurant != null) {
-            this.mViewModel.getDetails(this.getApplicationContext(), this.mPlaceIdOfRestaurant)
-                           .observe(this,
-                                     this::updateDetails);
+            this.mDetailsLiveData = this.mViewModel.getDetails(this.getApplicationContext(),
+                                                               this.mPlaceIdOfRestaurant);
+            this.mDetailsLiveData.observe(this,
+                                           this::updateDetails);
         }
     }
 
@@ -315,20 +296,11 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         if (details.getResult().getInternationalPhoneNumber() == null || details.getResult().getInternationalPhoneNumber().isEmpty()) {
             this.mCallButton.setEnabled(false);
         }
-        else {
-            this.mPhoneNumber = details.getResult().getInternationalPhoneNumber();
-        }
 
         // Website
         if (details.getResult().getWebsite() == null || details.getResult().getWebsite().isEmpty()) {
             this.mWebsiteButton.setEnabled(false);
         }
-        else {
-            this.mWebsite = details.getResult().getWebsite();
-        }
-
-        Log.d(TAG, "updateDetails: "+ (this.mCurrentUser == null));
-        this.mCurrentUser = new User();
 
         // FAB [warning user data are asynchronous]
         this.mFAB.setImageResource( (this.mCurrentUser.getPlaceIdOfRestaurant() != null &&
@@ -340,75 +312,95 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     // -- FAB --
 
     /**
-     * Configures the enevnts of {@link FloatingActionButton}
+     * Configures the events of {@link FloatingActionButton}
      */
     private void configureEvenOfFAB() {
         // Check if the restaurant is selected
-        boolean isChecked = false;
+        boolean isChecked;
 
         // Last User
-        this.mLastUser = this.mCurrentUser;
+        this.mLastUser = new User();
+        this.mLastUser.copy(this.mCurrentUser);
 
         // No selected restaurant or different restaurant
         if (this.mCurrentUser.getPlaceIdOfRestaurant() == null ||
             !this.mCurrentUser.getPlaceIdOfRestaurant().equals(this.mPlaceIdOfRestaurant)) {
-            // Update restaurant data on current user
-            try {
-                this.mViewModel.updateRestaurant(this.getCurrentUser(),
-                                                 this.mPlaceIdOfRestaurant,
-                                                 this.mName.getText().toString(),
-                                                null);
-            }
-            catch (Exception e) {
-                Log.e(TAG, "updateRestaurant: " + e.getMessage());
-            }
 
-            isChecked = true;
+            isChecked = this.updateUserAndFAB(this.getCurrentUser(),
+                                              this.mPlaceIdOfRestaurant,
+                                              this.mName.getText().toString(),
+                                             null);
         }
         else {
-            // Removes restaurant data on current user
-            try {
-                this.mViewModel.updateRestaurant(this.getCurrentUser(),
-                                                null,
-                                                null,
-                                                null);
-            }
-            catch (Exception e) {
-                Log.e(TAG, "updateRestaurant: " + e.getMessage());
-            }
+
+            isChecked = this.updateUserAndFAB(this.getCurrentUser(),
+                                             null,
+                                             null,
+                                             null);
         }
-
-        // Current User (Update restaurant data) [warning it is asynchronous]
-        this.configureCurrentUser();
-
-        // FAB
-        this.mFAB.setImageResource( isChecked ? R.drawable.ic_check :
-                                                R.drawable.ic_add);
 
         // Snackbar
         ShowMessage.showMessageWithSnackbarWithButton(this.mCoordinatorLayout,
                                                       isChecked ? this.getString(R.string.restaurant_selected) :
                                                                   this.getString(R.string.restaurant_no_selected),
                                                       this.getString(R.string.undo),
-                                                      (v) ->{
-            // Update restaurant data on current user
-            try {
-                this.mViewModel.updateRestaurant(this.getCurrentUser(),
-                                                 this.mLastUser.getPlaceIdOfRestaurant(),
-                                                 this.mLastUser.getNameOfRestaurant(),
-                                                 this.mLastUser.getFoodTypeOfRestaurant());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                                                      this.getOnClickListenerForMessage());
+    }
 
-            // Current User
-            this.mCurrentUser = this.mLastUser;
+    // -- Update User & FAB --
 
-            // FAB
-            this.mFAB.setImageResource( (this.mLastUser.getPlaceIdOfRestaurant() != null &&
-                                         this.mLastUser.getPlaceIdOfRestaurant().equals(this.mPlaceIdOfRestaurant) ?
-                    R.drawable.ic_check :
-                    R.drawable.ic_add));
-        });
+    /**
+     * Updates the {@link FloatingActionButton} and restaurant fields of
+     * the current user (authenticated) of Firebase Firestore
+     * @param currentUser           a {@link FirebaseUser} that contains the data of the last authenticated
+     * @param placeIdOfRestaurant   a {@link String} that contains the place_id of the restaurant
+     * @param nameOfRestaurant      a {@link String} that contains the name of the restaurant
+     * @param foodTypeOfRestaurant  a {@link String} that contains the food type of the restaurant
+     * @return a boolean to check if the restaurant is selected
+     */
+    private boolean updateUserAndFAB(@Nullable final FirebaseUser currentUser,
+                                     @Nullable final String placeIdOfRestaurant,
+                                     @Nullable final String nameOfRestaurant,
+                                     @Nullable final String foodTypeOfRestaurant) {
+        // Firebase Firestore: Updates restaurant data on current user
+        try {
+            this.mViewModel.updateRestaurant(currentUser,
+                                             placeIdOfRestaurant,
+                                             nameOfRestaurant,
+                                             foodTypeOfRestaurant);
+        }
+        catch (Exception e) {
+            Log.e(TAG, "updateRestaurant: " + e.getMessage());
+        }
+
+        // Activity: Updates restaurant data on current user
+        this.mCurrentUser.setPlaceIdOfRestaurant(placeIdOfRestaurant);
+        this.mCurrentUser.setNameOfRestaurant(nameOfRestaurant);
+        this.mCurrentUser.setFoodTypeOfRestaurant(foodTypeOfRestaurant);
+
+        // Boolean to check if the restaurant is selected
+        final boolean isSelectedRestaurant = this.mCurrentUser.getPlaceIdOfRestaurant() != null &&
+                                             this.mCurrentUser.getPlaceIdOfRestaurant().equals(this.mPlaceIdOfRestaurant);
+
+        // FAB
+        this.mFAB.setImageResource( isSelectedRestaurant ? R.drawable.ic_check :
+                                                           R.drawable.ic_add);
+
+        return isSelectedRestaurant;
+    }
+
+    // -- Listener --
+
+    /**
+     * Gets a {@link View.OnClickListener} for the message of {@link com.google.android.material.snackbar.Snackbar}
+     * @return a {@link View.OnClickListener}
+     */
+    private View.OnClickListener getOnClickListenerForMessage() {
+        return ( (v) ->
+            this.updateUserAndFAB(this.getCurrentUser(),
+                    this.mLastUser.getPlaceIdOfRestaurant(),
+                    this.mLastUser.getNameOfRestaurant(),
+                    this.mLastUser.getFoodTypeOfRestaurant())
+        );
     }
 }

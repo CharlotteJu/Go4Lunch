@@ -426,7 +426,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
      * @throws Exception if the {@link FirebaseUser} is null
      */
     public void updateUsername(@Nullable final FirebaseUser currentUser,
-                               @NonNull String username) throws Exception {
+                               @NonNull final String username) throws Exception {
         // FirebaseUser must not be null to read an user
         if (currentUser == null) throw new Exception("FirebaseUser is null");
 
@@ -448,9 +448,9 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
      * @throws Exception if the {@link FirebaseUser} is null
      */
     public void updateRestaurant(@Nullable final FirebaseUser currentUser,
-                                 @Nullable String placeIdOfRestaurant,
-                                 @Nullable String nameOfRestaurant,
-                                 @Nullable String foodTypeOfRestaurant) throws Exception {
+                                 @Nullable final String placeIdOfRestaurant,
+                                 @Nullable final String nameOfRestaurant,
+                                 @Nullable final String foodTypeOfRestaurant) throws Exception {
         // FirebaseUser must not be null to read an user
         if (currentUser == null) throw new Exception("FirebaseUser is null");
 

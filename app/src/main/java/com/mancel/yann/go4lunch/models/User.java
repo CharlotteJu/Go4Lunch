@@ -1,5 +1,8 @@
 package com.mancel.yann.go4lunch.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -12,9 +15,9 @@ import java.util.Objects;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.models
  *
- * Pojo class to Firebase Firestore.
+ * Pojo class to Firebase Firestore which implements {@link Parcelable}.
  */
-public class User {
+public class User implements Parcelable {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -57,6 +60,44 @@ public class User {
     }
 
     // METHODS -------------------------------------------------------------------------------------
+
+    // -- Parcelable interface --
+
+    protected User(Parcel in) {
+        this.mUid = in.readString();
+        this.mUsername = in.readString();
+        this.mUrlPicture = in.readString();
+        this.mPlaceIdOfRestaurant = in.readString();
+        this.mNameOfRestaurant = in.readString();
+        this.mFoodTypeOfRestaurant = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mUid);
+        dest.writeString(this.mUsername);
+        dest.writeString(this.mUrlPicture);
+        dest.writeString(this.mPlaceIdOfRestaurant);
+        dest.writeString(this.mNameOfRestaurant);
+        dest.writeString(this.mFoodTypeOfRestaurant);
+    }
 
     // -- Getter --
 

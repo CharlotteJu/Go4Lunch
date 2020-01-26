@@ -238,19 +238,16 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
             // Maps fragment
             case R.id.bottom_navigation_menu_map:
-                this.mFragmentType = FragmentType.MAP;
                 this.configureLunchMapFragment();
                 break;
 
             // List fragment
             case R.id.bottom_navigation_menu_list:
-                this.mFragmentType = FragmentType.LIST;
                 this.configureLunchListFragment();
                 break;
 
             // Workmate fragment
             case R.id.bottom_navigation_menu_workmate:
-                this.mFragmentType = FragmentType.WORKMATE;
                 this.configureWorkmateFragment();
                 break;
 
@@ -373,6 +370,8 @@ public class MainActivity extends BaseActivity implements FragmentListener {
      * Configures the {@link LunchMapFragment}
      */
     private void configureLunchMapFragment() {
+        this.mFragmentType = FragmentType.MAP;
+
         if (this.mLunchMapFragment == null) {
             this.mLunchMapFragment = LunchMapFragment.newInstance(this);
         }
@@ -386,6 +385,8 @@ public class MainActivity extends BaseActivity implements FragmentListener {
      * Configures the {@link LunchListFragment}
      */
     private void configureLunchListFragment() {
+        this.mFragmentType = FragmentType.LIST;
+
         if (this.mLunchListFragment == null) {
             this.mLunchListFragment = LunchListFragment.newInstance();
         }
@@ -399,6 +400,8 @@ public class MainActivity extends BaseActivity implements FragmentListener {
      * Configures the {@link WorkmateFragment}
      */
     private void configureWorkmateFragment() {
+        this.mFragmentType = FragmentType.WORKMATE;
+
         if (this.mWorkmateFragment == null) {
             this.mWorkmateFragment = WorkmateFragment.newInstance();
         }

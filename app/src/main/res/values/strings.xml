@@ -69,4 +69,9 @@
     <string name="currently_open">"Currently open (No opening hours)"</string>
     <string name="not_currently_open">"Not currently open (No opening hours)"</string>
 
+    <!-- NotificationsService.java -->
+    <string name="notification_content_text">Notification Go4Lunch</string>
+    <string name="notification_channel_name">Notification from Firebase for Go4Lunch</string>
+    <string name="notification_channel_description">This channel is the channel for Go4Lunch.</string>
+
 </resources>

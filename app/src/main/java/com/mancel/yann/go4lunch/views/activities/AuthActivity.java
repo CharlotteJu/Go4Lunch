@@ -80,8 +80,13 @@ public class AuthActivity extends BaseActivity {
 
     @Override
     protected void configureDesign() {
+        // UI
         this.configureBackgroundImage();
+
+        // Google
         this.configureGoogleSignIn();
+
+        // Facebook
         this.configureFacebookSignIn();
     }
 
@@ -176,7 +181,7 @@ public class AuthActivity extends BaseActivity {
      */
     private void signInWithGoogle() {
         final Intent signInIntent = this.mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
+        this.startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
     }
 
     /**
@@ -196,7 +201,7 @@ public class AuthActivity extends BaseActivity {
         catch (ApiException e) {
             // Google Sign In failed
             ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
-                                                getString(R.string.google_sign_in_failed));
+                                                this.getString(R.string.google_sign_in_failed));
         }
     }
 
@@ -218,7 +223,7 @@ public class AuthActivity extends BaseActivity {
                               }
                               else {
                                   ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
-                                                                      getString(R.string.google_sign_in_failed));
+                                                                      this.getString(R.string.google_sign_in_failed));
                               }
 
                               // The end of action
@@ -284,7 +289,7 @@ public class AuthActivity extends BaseActivity {
                               }
                               else {
                                   ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
-                                                                      getString(R.string.facebook_sign_in_failed));
+                                                                      this.getString(R.string.facebook_sign_in_failed));
                               }
 
                               // The end of action

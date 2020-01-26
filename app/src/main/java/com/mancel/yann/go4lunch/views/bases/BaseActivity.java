@@ -35,6 +35,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     // FIELDS --------------------------------------------------------------------------------------
 
+    @SuppressWarnings("NullableProblems")
+    @NonNull
     protected FirebaseAuth mFirebaseAuth;
 
     // METHODS -------------------------------------------------------------------------------------
@@ -51,7 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Associates the layout file to this class
-        setContentView(this.getActivityLayout());
+        this.setContentView(this.getActivityLayout());
 
         // Using the ButterKnife library
         ButterKnife.bind(this);
@@ -192,9 +194,9 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected void replaceFragment(final Fragment fragment, final int idFrameLayout) {
         if (!fragment.isVisible()) {
-            getSupportFragmentManager().beginTransaction()
-                                       .replace(idFrameLayout, fragment)
-                                       .commit();
+            this.getSupportFragmentManager().beginTransaction()
+                                            .replace(idFrameLayout, fragment)
+                                            .commit();
         }
     }
 
@@ -205,7 +207,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param classActivity a {@link Class}
      * @param <T> a parameter type
      */
-    protected <T extends Activity> void startAnotherActivity(final Class<T> classActivity) {
+    protected <T extends Activity> void startAnotherActivity(@NonNull final Class<T> classActivity) {
         final Intent intent = new Intent(this, classActivity);
         this.startActivity(intent);
     }

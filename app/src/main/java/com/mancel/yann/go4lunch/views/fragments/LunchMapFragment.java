@@ -8,7 +8,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,6 +24,7 @@ import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.POI;
+import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.CustomRelativeLayout;
@@ -342,8 +342,9 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
      * Configures the {@link GoogleMapsAndFirestoreViewModel}
      */
     private void configureViewModel() {
-        // TODO: 09/01/2020 UserRepository and PlaceRepository must be removed thanks to Dagger 2
+        // TODO: 09/01/2020 UserRepositories must be removed thanks to Dagger 2
         final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
+                                                                                                          new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
         this.mViewModel = ViewModelProviders.of(this, factory)

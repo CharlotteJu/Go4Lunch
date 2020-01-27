@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.Restaurant;
+import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
@@ -102,8 +103,9 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
      * Configures the {@link GoogleMapsAndFirestoreViewModel}
      */
     private void configureViewModel() {
-        // TODO: 09/01/2020 UserRepository and PlaceRepository must be removed thanks to Dagger 2
+        // TODO: 09/01/2020 UserRepositories must be removed thanks to Dagger 2
         final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
+                                                                                                          new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
         this.mViewModel = ViewModelProviders.of(this.getActivity(), factory)

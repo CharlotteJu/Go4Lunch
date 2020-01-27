@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.DetailsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
+import com.mancel.yann.go4lunch.liveDatas.MessagesLiveData;
 import com.mancel.yann.go4lunch.liveDatas.NearbySearchLiveData;
 import com.mancel.yann.go4lunch.liveDatas.POIsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsLiveData;
@@ -21,13 +22,16 @@ import com.mancel.yann.go4lunch.liveDatas.RestaurantsWithUsersLiveData;
 import com.mancel.yann.go4lunch.liveDatas.UsersLiveData;
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.LocationData;
+import com.mancel.yann.go4lunch.models.Message;
 import com.mancel.yann.go4lunch.models.NearbySearch;
 import com.mancel.yann.go4lunch.models.POI;
 import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.models.User;
+import com.mancel.yann.go4lunch.repositories.MessageRepository;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.UserRepository;
 
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -49,15 +53,21 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     private final UserRepository mUserRepository;
 
     @NonNull
+    private final MessageRepository mMessageRepository;
+
+    @NonNull
     private final PlaceRepository mPlaceRepository;
 
     // -- LiveData (Simple) --
 
     @Nullable
-    private UsersLiveData mUsersLiveData = null;
+    private LiveData<List<User>> mUsersLiveData = null;
 
     @Nullable
-    private UsersLiveData mUsersLiveDataWithSameRestaurant = null;
+    private LiveData<List<User>> mUsersLiveDataWithSameRestaurant = null;
+
+    @Nullable
+    private LiveData<List<Message>> mMessagesLiveData = null;
 
     @Nullable
     private LocationLiveData mLocationLiveData = null;
@@ -94,13 +104,16 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     /**
      * Constructor with 2 repositories
      * @param userRepository    a {@link UserRepository} for data from Firebase Firestore
+     * @param messageRepository a {@link MessageRepository} for data from Firebase Firestore
      * @param placeRepository   a {@link PlaceRepository} for data from Google Maps
      */
     public GoogleMapsAndFirestoreViewModel(@NonNull final UserRepository userRepository,
+                                           @NonNull final MessageRepository messageRepository,
                                            @NonNull final PlaceRepository placeRepository) {
         Log.d(TAG, "GoogleMapsAndFirestoreViewModel");
 
         this.mUserRepository = userRepository;
+        this.mMessageRepository = messageRepository;
         this.mPlaceRepository = placeRepository;
     }
 
@@ -141,6 +154,21 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         }
 
         return this.mUsersLiveDataWithSameRestaurant;
+    }
+
+    // -- MessagesLiveData --
+
+    /**
+     * Gets all messages from Firebase Firestore
+     * @return a {@link LiveData} of {@link List<Message>}
+     */
+    @NonNull
+    public LiveData<List<Message>> getMessages() {
+        if (this.mMessagesLiveData == null) {
+            this.mMessagesLiveData = new MessagesLiveData(this.mMessageRepository.getAllMessages());
+        }
+
+        return this.mMessagesLiveData;
     }
 
     // -- LocationLiveData --
@@ -485,5 +513,25 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
                             .addOnFailureListener( e ->
                                 Log.e(TAG, "--> deleteUser (onFailure): " + e.getMessage())
                             );
+    }
+
+    // -- Create (Message) --
+
+    /**
+     * Creates the message into Firebase Firestore
+     * @param message       a {@link String} that contains the message
+     * @param dateCreated   a {@link Date} that contains the date created
+     * @param user          a {@link User} that contains the user who has created the message
+     */
+    public void createMessage(@NonNull final String message,
+                              @NonNull final Date dateCreated,
+                              @NonNull final User user) {
+        this.mMessageRepository.createMessage(message, dateCreated, user)
+                .addOnSuccessListener( aVoid -> {
+                    // Do nothing because user is created
+                })
+                .addOnFailureListener( e ->
+                    Log.e(TAG, "--> createMessage (onFailure): " + e.getMessage())
+                );
     }
 }

@@ -27,6 +27,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.User;
+import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.BlurTransformation;
@@ -189,6 +190,7 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
     @Override
     public void onSelectedRestaurant(@NonNull final String placeIdOfRestaurant) {
+        // Fetches the data of current user
         try {
             this.mViewModel.getUser(this.getCurrentUser())
                            .addOnSuccessListener( documentSnapshot -> {
@@ -227,6 +229,11 @@ public class MainActivity extends BaseActivity implements FragmentListener {
             // Setting
             case R.id.menu_drawer_setting:
                 Log.e(this.getClass().getSimpleName(), "Setting");
+                break;
+
+            // Chat
+            case R.id.menu_drawer_chat:
+                this.startAnotherActivity(ChatActivity.class);
                 break;
 
             // Logout
@@ -356,8 +363,9 @@ public class MainActivity extends BaseActivity implements FragmentListener {
      * Configures the {@link GoogleMapsAndFirestoreViewModel}
      */
     private void configureViewModel() {
-        // TODO: 10/01/2020 UserRepository and PlaceRepository must be removed thanks to Dagger 2
+        // TODO: 27/01/2020 UserRepositories must be removed thanks to Dagger 2
         final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
+                                                                                                          new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
         this.mViewModel = ViewModelProviders.of(this, factory)
@@ -431,6 +439,7 @@ public class MainActivity extends BaseActivity implements FragmentListener {
      * Displays the details of selected restaurant
      */
     private void startDetailsOfLunch() {
+        // Fetches the data of current user
         try {
             this.mViewModel.getUser(this.getCurrentUser())
                            .addOnSuccessListener( documentSnapshot -> {

@@ -68,9 +68,9 @@ public class NotificationsService extends FirebaseMessagingService {
                                                                          .setSmallIcon(R.drawable.ic_go4lunch_white)
                                                                          .setContentTitle(this.getString(R.string.app_name))
                                                                          .setContentText(this.getString(R.string.notification_content_text))
-                                                                         .setAutoCancel(true)
                                                                          .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                                                                          .setContentIntent(pendingIntent)
+                                                                         .setAutoCancel(true)
                                                                          .setStyle(inboxStyle);
 
         // API level >= API 26
@@ -87,10 +87,10 @@ public class NotificationsService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-        // Notification Manager
+        // Notification Manager Compat
         final NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this.getApplicationContext());
 
-        // Show notification
+        // Shows notification
         notificationManagerCompat.notify(NOTIFICATION_ID,
                                          builder.build());
     }

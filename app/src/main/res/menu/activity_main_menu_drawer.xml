@@ -20,6 +20,11 @@
             android:title="@string/menu_drawer_settings"/>
 
         <item
+            android:id="@+id/menu_drawer_chat"
+            android:icon="@drawable/ic_chat"
+            android:title="@string/menu_drawer_chat"/>
+
+        <item
             android:id="@+id/menu_drawer_logout"
             android:icon="@drawable/ic_logout"
             android:title="@string/menu_drawer_logout"/>

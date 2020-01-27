@@ -9,6 +9,7 @@
     <!-- activity_main_menu_drawer.xml -->
     <string name="menu_drawer_your_lunch">YOUR LUNCH</string>
     <string name="menu_drawer_settings">SETTINGS</string>
+    <string name="menu_drawer_chat">CHAT</string>
     <string name="menu_drawer_logout">LOGOUT</string>
 
     <!-- activity_main.xml -->
@@ -37,6 +38,9 @@
     <string name="text_item_workmate_no_choice">%s hasn\'t decided yet</string>
     <string name="text_item_workmate_choice">%s is eating %s (%s)</string>
 
+    <!-- item_chat.xml -->
+    <string name="send_button_text">Send</string>
+
     <!-- marker_info_window.xml -->
     <string name="details_info_window">Details</string>
     <string name="way_info_window">Way</string>
@@ -61,6 +65,10 @@
     <string name="undo">"Undo"</string>
     <string name="restaurant_selected">"Restaurant selected"</string>
     <string name="restaurant_no_selected">"Restaurant not selected"</string>
+
+    <!-- ChatActivity.java -->
+    <string name="message_if_no_message">No message!</string>
+    <string name="write_your_message_here">Write your message here</string>
 
     <!-- LunchViewHolder.java -->
     <string name="no_address">"No address"</string>

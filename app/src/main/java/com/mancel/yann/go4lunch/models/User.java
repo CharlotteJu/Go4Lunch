@@ -51,9 +51,9 @@ public class User implements Parcelable {
      * @param username      a {@link String} that contains the username
      * @param urlPicture    a {@link String} that contains the Url of the picture
      */
-    public User(@NonNull String uid,
-                @NonNull String username,
-                @Nullable String urlPicture) {
+    public User(@NonNull final String uid,
+                @NonNull final String username,
+                @Nullable final String urlPicture) {
         this.mUid = uid;
         this.mUsername = username;
         this.mUrlPicture = urlPicture;

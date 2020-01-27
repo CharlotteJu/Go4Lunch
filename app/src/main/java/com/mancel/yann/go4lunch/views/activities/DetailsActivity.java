@@ -25,6 +25,7 @@ import com.mancel.yann.go4lunch.apis.GoogleMapsService;
 import com.mancel.yann.go4lunch.liveDatas.DetailsLiveData;
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.User;
+import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.DetailsUtils;
@@ -148,6 +149,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     public void onFABClicked(@NonNull final View view) {
         // According to the View's Id [Buttons are only enable if their data are not null]
         switch (view.getId()) {
+
             // CALL
             case R.id.activity_details_call_button:
                 this.startPhoneCall(this.mDetailsLiveData.getValue()
@@ -220,8 +222,9 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
      * Configures the {@link GoogleMapsAndFirestoreViewModel}
      */
     private void configureViewModel() {
-        // TODO: 20/01/2020 UserRepository and PlaceRepository must be removed thanks to Dagger 2
+        // TODO: 27/01/2020 UserRepositories must be removed thanks to Dagger 2
         final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
+                                                                                                          new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
         this.mViewModel = ViewModelProviders.of(this, factory)

@@ -31,7 +31,6 @@ import com.mancel.yann.go4lunch.repositories.MessageRepository;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.UserRepository;
 
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -520,13 +519,11 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     /**
      * Creates the message into Firebase Firestore
      * @param message       a {@link String} that contains the message
-     * @param dateCreated   a {@link Date} that contains the date created
      * @param user          a {@link User} that contains the user who has created the message
      */
     public void createMessage(@NonNull final String message,
-                              @NonNull final Date dateCreated,
                               @NonNull final User user) {
-        this.mMessageRepository.createMessage(message, dateCreated, user)
+        this.mMessageRepository.createMessage(message, user)
                 .addOnSuccessListener( aVoid -> {
                     // Do nothing because user is created
                 })

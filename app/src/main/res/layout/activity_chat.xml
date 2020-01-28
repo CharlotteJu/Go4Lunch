@@ -55,11 +55,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/activity_chat_add_button"
         app:layout_constraintEnd_toStartOf="@id/activity_chat_send_button"
+        app:hintEnabled="false"
         app:errorEnabled="true">
 
         <!-- TextInputEditText: Message -->
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/activity_chat_TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/write_your_message_here"

@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.mancel.yann.go4lunch.models.Message;
-import com.mancel.yann.go4lunch.models.User;
 
 import java.util.List;
 import java.util.Objects;
@@ -55,31 +54,27 @@ public class MessageDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        // Comparison based on the user's Uid
-//        final String oldName = this.mOldUsers.get(oldItemPosition).getUid();
-//        final String newName = this.mNewUsers.get(newItemPosition).getUid();
-//
-//        return oldName.equals(newName);
+        // Comparison based on:
+        //  - the content of message
+        //  - the date of creation of message
+        //  - the user's Uid
 
-        return false;
+        return Objects.equals(this.mOldMessages.get(oldItemPosition).getMessage(),
+                              this.mNewMessages.get(newItemPosition).getMessage()) &&
+
+               Objects.equals(this.mOldMessages.get(oldItemPosition).getDateCreated(),
+                              this.mNewMessages.get(newItemPosition).getDateCreated()) &&
+
+               Objects.equals(this.mOldMessages.get(oldItemPosition).getUser().getUid(),
+                              this.mNewMessages.get(newItemPosition).getUser().getUid());
     }
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         // Comparison based on:
-        //  - the name of user
         //  - the photo's url of user
-        //  - the place Id of selected restaurant
 
-//        return Objects.equals(this.mOldUsers.get(oldItemPosition).getUsername(),
-//                              this.mNewUsers.get(newItemPosition).getUsername()) &&
-//
-//               Objects.equals(this.mOldUsers.get(oldItemPosition).getUrlPicture(),
-//                              this.mNewUsers.get(newItemPosition).getUrlPicture()) &&
-//
-//               Objects.equals(this.mOldUsers.get(oldItemPosition).getPlaceIdOfRestaurant(),
-//                              this.mNewUsers.get(newItemPosition).getPlaceIdOfRestaurant());
-
-        return false;
+        return Objects.equals(this.mOldMessages.get(oldItemPosition).getUser().getUrlPicture(),
+                              this.mNewMessages.get(newItemPosition).getUser().getUrlPicture());
     }
 }

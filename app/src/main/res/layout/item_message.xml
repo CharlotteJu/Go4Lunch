@@ -6,21 +6,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
+    android:id="@+id/item_chat_ConstraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/padding_little"
+    android:paddingEnd="@dimen/padding_little">
 
     <!-- ImageView: Logo of workmate -->
     <ImageView
         android:id="@+id/item_chat_image"
         android:layout_width="@dimen/image_view_item_chat_size"
         android:layout_height="@dimen/image_view_item_chat_size"
-        android:layout_marginTop="@dimen/margin_little"
-        android:layout_marginBottom="@dimen/margin_little"
-        android:layout_marginStart="@dimen/margin_normal"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/margin_little"
+        android:layout_marginEnd="@dimen/margin_little"
+        app:layout_constraintTop_toTopOf="@id/item_chat_message"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_chat_message"
+        app:layout_constraintVertical_bias="0.0"
         android:contentDescription="@null"
         tools:background="@color/colorAccent"/>
+
+    <!-- ImageView: Message -->
+    <TextView
+        android:id="@+id/item_chat_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_little"
+        android:layout_marginStart="@dimen/margin_little"
+        android:layout_marginEnd="@dimen/margin_little"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/item_chat_hours"
+        app:layout_constraintStart_toEndOf="@id/item_chat_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/message_go4lunch"
+        android:padding="@dimen/padding_little"
+        tools:text="Message to test the displaying of the TextView"/>
+
+    <!-- ImageView: Hours -->
+    <TextView
+        android:id="@+id/item_chat_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_little"
+        app:layout_constraintTop_toBottomOf="@id/item_chat_message"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/item_chat_message"
+        app:layout_constraintEnd_toEndOf="@id/item_chat_message"
+        app:layout_constraintHorizontal_bias="1.0"
+        tools:text="00h00"
+        style="@style/TextViewStyle4"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

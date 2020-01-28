@@ -24,4 +24,7 @@
     <!-- Rating bar -->
     <color name="colorRating">#FFC107</color>
 
+    <!-- Message -->
+    <color name="colorOtherUser">@android:color/darker_gray</color>
+
 </resources>

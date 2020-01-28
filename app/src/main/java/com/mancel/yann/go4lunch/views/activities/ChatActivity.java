@@ -1,5 +1,7 @@
 package com.mancel.yann.go4lunch.views.activities;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -13,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.User;
@@ -50,8 +51,6 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
     TextView mNoMessage;
     @BindView(R.id.activity_chat_TextInputLayout)
     TextInputLayout mTextInputLayout;
-    @BindView(R.id.activity_chat_TextInputEditText)
-    TextInputEditText mTextInputEditText;
 
     @SuppressWarnings("NullableProblems")
     @NonNull
@@ -84,6 +83,7 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
         this.configureToolBar();
         this.configureUpButtonOfToolBar();
         this.configureRecyclerView();
+        this.configureTextInput();
 
         // ViewModel
         this.configureViewModel();
@@ -127,12 +127,30 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
     private void configureRecyclerView() {
         // Adapter
         this.mAdapter = new MessageAdapter(this,
-                                            Glide.with(this));
+                                            Glide.with(this),
+                                            this.getCurrentUser().getUid());
 
         // RecyclerView
         this.mRecyclerView.setAdapter(this.mAdapter);
-        this.mRecyclerView.setHasFixedSize(true);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getApplicationContext()));
+    }
+
+    // -- TextInput --
+
+    private void configureTextInput() {
+        this.mTextInputLayout.getEditText()
+                             .addTextChangedListener(new TextWatcher() {
+                                 @Override
+                                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                                 @Override
+                                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    mTextInputLayout.setError(null);
+                                 }
+
+                                 @Override
+                                 public void afterTextChanged(Editable s) {}
+                             });
     }
 
     // -- GoogleMapsAndFirestoreViewModel --
@@ -166,6 +184,12 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
      * Sends the {@link com.mancel.yann.go4lunch.models.Message} into Firebase Firestore
      */
     private void sendMessage() {
+        // No message
+        if (this.mTextInputLayout.getEditText().getText().toString().isEmpty()) {
+            this.mTextInputLayout.setError(this.getString(R.string.error_message));
+            return;
+        }
+
         // Fetches the data of current user
         try {
             this.mViewModel.getUser(this.getCurrentUser())
@@ -173,8 +197,8 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
                                final User user = documentSnapshot.toObject(User.class);
 
                                if (user != null) {
-                                   // TODO: 27/01/2020 create message
-                                   //this.mViewModel.createMessage();
+                                   this.mViewModel.createMessage(this.mTextInputLayout.getEditText().getText().toString(),
+                                                                 user);
                                }
                            });
         }

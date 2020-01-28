@@ -9,8 +9,6 @@ import com.google.firebase.firestore.Query;
 import com.mancel.yann.go4lunch.models.Message;
 import com.mancel.yann.go4lunch.models.User;
 
-import java.util.Date;
-
 /**
  * Created by Yann MANCEL on 27/01/2020.
  * Name of the project: Go4Lunch
@@ -67,9 +65,8 @@ public class MessageRepositoryImpl implements MessageRepository {
     @NonNull
     @Override
     public Task<Void> createMessage(@NonNull final String message,
-                                    @NonNull final Date dateCreated,
                                     @NonNull final User user) {
-        final Message messageToCreate = new Message(message, dateCreated, user);
+        final Message messageToCreate = new Message(message, user);
         return this.getMessagesCollection().document()
                                            .set(messageToCreate);
     }

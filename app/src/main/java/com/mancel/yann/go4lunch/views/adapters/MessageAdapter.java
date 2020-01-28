@@ -34,19 +34,25 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
     private final RequestManager mGlide;
 
     @NonNull
+    private final String mUidOfCurrentUser;
+
+    @NonNull
     private List<Message> mMessages;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.
-     * @param callback  a {@link AdapterListener} for the callback system
-     * @param glide     a {@link RequestManager}
+     * @param callback          a {@link AdapterListener} for the callback system
+     * @param glide             a {@link RequestManager}
+     * @param uidOfCurrentUser  a {@link String} that contains the uid of current user
      */
     public MessageAdapter(@NonNull final AdapterListener callback,
-                          @NonNull final RequestManager glide) {
+                          @NonNull final RequestManager glide,
+                          @NonNull final String uidOfCurrentUser) {
         this.mCallback = callback;
         this.mGlide = glide;
+        this.mUidOfCurrentUser = uidOfCurrentUser;
         this.mMessages = new ArrayList<>();
     }
 
@@ -69,7 +75,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        holder.updateMessage(this.mMessages.get(position), this.mGlide);
+        holder.updateMessage(this.mMessages.get(position), this.mGlide, this.mUidOfCurrentUser);
     }
 
     @Override

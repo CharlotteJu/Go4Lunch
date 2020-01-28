@@ -13,6 +13,8 @@ import java.util.Objects;
  * Created by Yann MANCEL on 27/01/2020.
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.models
+ *
+ * Pojo class to Firebase Firestore.
  */
 public class Message {
 
@@ -21,7 +23,8 @@ public class Message {
     @NonNull
     private String mMessage;
 
-    @NonNull
+    // Firebase Firestore will initialises this field thanks to @ServerTimestamp
+    @Nullable
     private Date mDateCreated;
 
     @NonNull
@@ -35,21 +38,17 @@ public class Message {
      */
     public Message() {
         this.mMessage = "";
-        this.mDateCreated = new Date();
         this.mUser = new User();
     }
 
     /**
      * Constructor
      * @param message       a {@link String} that contains the message
-     * @param dateCreated   a {@link Date} that contains the date created
      * @param user          a {@link User} that contains the user who has created the message
      */
     public Message(@NonNull final String message,
-                   @NonNull final Date dateCreated,
                    @NonNull final User user) {
         this.mMessage = message;
-        this.mDateCreated = dateCreated;
         this.mUser = user;
     }
 
@@ -65,7 +64,7 @@ public class Message {
 
     @PropertyName("date_created")
     @ServerTimestamp
-    @NonNull
+    @Nullable
     public Date getDateCreated() {
         return this.mDateCreated;
     }
@@ -84,7 +83,7 @@ public class Message {
     }
 
     @PropertyName("date_created")
-    public void setDateCreated(@NonNull Date dateCreated) {
+    public void setDateCreated(@Nullable Date dateCreated) {
         this.mDateCreated = dateCreated;
     }
 

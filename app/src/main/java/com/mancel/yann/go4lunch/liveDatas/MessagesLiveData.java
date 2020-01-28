@@ -78,7 +78,14 @@ public class MessagesLiveData extends LiveData<List<Message>> {
             if (queryDocumentSnapshots != null) {
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     if (doc != null) {
-                        messages.add(doc.toObject(Message.class));
+                        final Message message = doc.toObject(Message.class);
+
+                        // To avoid the value equal to null by Firebase Firestore
+                        if (message.getDateCreated() == null) {
+                            return;
+                        }
+
+                        messages.add(message);
                     }
                 }
             }

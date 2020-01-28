@@ -7,8 +7,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 import com.mancel.yann.go4lunch.models.User;
 
-import java.util.Date;
-
 /**
  * Created by Yann MANCEL on 27/01/2020.
  * Name of the project: Go4Lunch
@@ -32,13 +30,11 @@ public interface MessageRepository {
     /**
      * Creates or sets a {@link com.mancel.yann.go4lunch.models.Message}
      * @param message       a {@link String} that contains the message
-     * @param dateCreated   a {@link Date} that contains the date created
      * @param user          a {@link User} that contains the user who has created the message
      * @return a {@link Task} of {@link Void}
      */
     @NonNull
     Task<Void> createMessage(@NonNull final String message,
-                             @NonNull final Date dateCreated,
                              @NonNull final User user);
 
     // -- Read --

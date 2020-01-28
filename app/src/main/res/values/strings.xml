@@ -68,7 +68,8 @@
 
     <!-- ChatActivity.java -->
     <string name="message_if_no_message">No message!</string>
-    <string name="write_your_message_here">Write your message here</string>
+    <string name="write_your_message_here">Write message</string>
+    <string name="error_message">Field cannot be empty</string>
 
     <!-- LunchViewHolder.java -->
     <string name="no_address">"No address"</string>

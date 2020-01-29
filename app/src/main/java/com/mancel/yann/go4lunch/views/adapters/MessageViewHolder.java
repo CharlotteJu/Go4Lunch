@@ -101,7 +101,7 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * Configures the positions of UI
-     * @param isCurrentUser a boolean that is true if the current user has send the message
+     * @param isCurrentUser a boolean that is true if the current user has sent the message
      */
     private void configurePositionsOfUI(final boolean isCurrentUser) {
         // ConstraintSet

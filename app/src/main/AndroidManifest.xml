@@ -57,7 +57,7 @@
 
         <activity
             android:name=".views.activities.AuthActivity"
-            android:theme="@style/AppTheme.AuthActivity">
+            android:theme="@style/AppTheme.NoActionBar.GrayTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -67,18 +67,19 @@
 
         <activity
             android:name=".views.activities.MainActivity"
-            android:theme="@style/AppTheme.MainActivity" />
+            android:theme="@style/AppTheme.NoActionBar.PrimaryTheme" />
 
         <activity
             android:name=".views.activities.DetailsActivity"
-            android:theme="@style/AppTheme.AuthActivity"
+            android:theme="@style/AppTheme.NoActionBar.GrayTheme"
             android:parentActivityName=".views.activities.MainActivity" />
 
         <activity
             android:name=".views.activities.ChatActivity"
+            android:label="@string/text_toolbar_chat"
             android:parentActivityName=".views.activities.MainActivity"/>
 
-        <!-- ************************** Notifications Service ********************************** -->
+        <!-- ************************** Services *********************************************** -->
 
         <service
             android:name=".notifications.NotificationsService"

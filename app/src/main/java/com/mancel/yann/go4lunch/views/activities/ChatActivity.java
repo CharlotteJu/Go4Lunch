@@ -43,8 +43,6 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
 
     // FIELDS --------------------------------------------------------------------------------------
 
-    @BindView(R.id.activity_chat_toolbar)
-    Toolbar mToolbar;
     @BindView(R.id.activity_chat_recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.activity_chat_no_message)
@@ -74,14 +72,12 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
     @Nullable
     @Override
     protected Toolbar getToolbar() {
-        return this.mToolbar;
+        return null;
     }
 
     @Override
     protected void configureDesign() {
         // UI
-        this.configureToolBar();
-        this.configureUpButtonOfToolBar();
         this.configureRecyclerView();
         this.configureTextInput();
 
@@ -200,6 +196,9 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
                                    this.mViewModel.createMessage(this.mTextInputLayout.getEditText().getText().toString(),
                                                                  user);
                                }
+
+                               // Clears the message area
+                               this.mTextInputLayout.getEditText().setText("");
                            });
         }
         catch (Exception e) {

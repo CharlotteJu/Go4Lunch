@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
 
         <!-- Color theme -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -14,14 +14,20 @@
 
     </style>
 
+    <!-- NoActionBar with DarkActionBar theme. -->
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <!-- AuthActivity theme -->
-    <style name="AppTheme.AuthActivity">
+    <style name="AppTheme.NoActionBar.GrayTheme">
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
         <item name="android:statusBarColor" tools:targetApi="21">@color/statusBarColor_AuthActivity</item>
     </style>
 
     <!-- MainActivity theme -->
-    <style name="AppTheme.MainActivity">
+    <style name="AppTheme.NoActionBar.PrimaryTheme">
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
         <item name="android:statusBarColor" tools:targetApi="21">@color/statusBarColor_MainActivity</item>
     </style>
@@ -35,7 +41,7 @@
     </style>
 
     <!-- Toolbar style -->
-    <style name="ToolbarStyle">
+    <style name="ToolbarStyle" parent="ThemeOverlay.AppCompat.Dark">
         <item name="title">@string/title_toolbar</item>
         <item name="titleTextColor">@android:color/white</item>
         <item name="android:background">@color/colorPrimary</item>

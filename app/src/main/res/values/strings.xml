@@ -28,6 +28,9 @@
     <string name="website">WEBSITE</string>
     <string name="Details">Details</string>
 
+    <!-- activity_chat.xml -->
+    <string name="text_toolbar_chat">Chat</string>
+
     <!-- fragment_lunch_list.xml -->
     <string name="message_if_no_restaurant">No restaurant in the area!</string>
 
@@ -37,9 +40,6 @@
     <!-- item_workmate.xml -->
     <string name="text_item_workmate_no_choice">%s hasn\'t decided yet</string>
     <string name="text_item_workmate_choice">%s is eating %s (%s)</string>
-
-    <!-- item_chat.xml -->
-    <string name="send_button_text">Send</string>
 
     <!-- marker_info_window.xml -->
     <string name="details_info_window">Details</string>

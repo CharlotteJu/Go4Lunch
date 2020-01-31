@@ -40,6 +40,7 @@ import com.mancel.yann.go4lunch.views.fragments.FragmentListener;
 import com.mancel.yann.go4lunch.views.fragments.LunchListFragment;
 import com.mancel.yann.go4lunch.views.fragments.LunchMapFragment;
 import com.mancel.yann.go4lunch.views.fragments.WorkmateFragment;
+import com.mancel.yann.go4lunch.workers.WorkerController;
 
 import butterknife.BindView;
 
@@ -114,6 +115,10 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
         // Fragment
         this.configureLunchMapFragment();
+
+        // WorkManager
+        WorkerController.startWorkRequestIntoWorkManager(this.getApplicationContext(),
+                                                         this.getCurrentUser().getUid());
     }
 
     // -- Activity --
@@ -228,7 +233,9 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
             // Setting
             case R.id.menu_drawer_setting:
-                Log.e(this.getClass().getSimpleName(), "Setting");
+                Log.e(this.getClass().getSimpleName(), "Setting ");
+                // TODO: 31/01/2020 Remove the method below
+                WorkerController.stopWorkRequestIntoWorkManager(this.getApplicationContext());
                 break;
 
             // Chat

@@ -78,7 +78,14 @@
     <string name="currently_open">"Currently open (No opening hours)"</string>
     <string name="not_currently_open">"Not currently open (No opening hours)"</string>
 
-    <!-- NotificationsService.java -->
+    <!-- AsyncWorker.java -->
+    <string name="no_restaurant_notification">You have not selected a restaurant.</string>
+    <string name="only_one_user_notification">You are the only one who selected %s.</string>
+    <string name="not_alone_notification">You are not alone to go to %s.\n%s</string>
+<!--    <string name="only_one_user_notification">You are the only one who selected %s.\nIts address is %s.</string>-->
+<!--    <string name="not_alone_notification">You are not alone to go to %s.\nIts address is %s.\n%s</string>-->
+
+    <!-- AlarmNotification.java -->
     <string name="notification_content_text">Notification Go4Lunch</string>
     <string name="notification_channel_name">Notification from Firebase for Go4Lunch</string>
     <string name="notification_channel_description">This channel is the channel for Go4Lunch.</string>

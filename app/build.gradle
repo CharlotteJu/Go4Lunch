@@ -44,8 +44,16 @@ dependencies {
     implementation "androidx.multidex:multidex:$multidex_version"
 
     // ViewModel + LiveData
-    def lifecycle_version = "2.1.0"
+    def lifecycle_version = "2.2.0"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+
+    // WorkManager
+    def work_version = "2.3.0"
+    implementation "androidx.work:work-runtime:$work_version"
+
+    // Concurrent
+    def concurrent_version = "1.0.0"
+    implementation "androidx.concurrent:concurrent-futures:$concurrent_version"
 
     // GSON
     def gson_version = "2.8.6"
@@ -101,7 +109,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     // Test for ViewModel + LiveData
-    testImplementation "androidx.arch.core:core-testing:$lifecycle_version"
+    def lifecycle_test_version = "2.1.0"
+    testImplementation "androidx.arch.core:core-testing:$lifecycle_test_version"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

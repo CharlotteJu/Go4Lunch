@@ -12,62 +12,53 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.views.activities.AuthActivity;
 
 /**
- * Created by Yann MANCEL on 26/01/2020.
+ * Created by Yann MANCEL on 31/01/2020.
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.notifications
- *
- * A {@link FirebaseMessagingService} subclass.
  */
-public class NotificationsService extends FirebaseMessagingService {
+public abstract class AlarmNotification {
 
     // FIELDS --------------------------------------------------------------------------------------
 
-    public static final int NOTIFICATION_ID = 2020;
-    public static final String NOTIFICATION_CHANNEL = "com.mancel.yann.go4lunch.notifications.NotificationsService";
+    private static final int NOTIFICATION_ID = 2020;
+    private static final String NOTIFICATION_CHANNEL = "com.mancel.yann.go4lunch.workers.AlarmWorker";
 
     // METHODS -------------------------------------------------------------------------------------
 
-    // -- FirebaseMessagingService --
-
-    @Override
-    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        super.onMessageReceived(remoteMessage);
-
-        if (remoteMessage.getNotification() != null) {
-            this.sendVisualNotification(remoteMessage.getNotification().getBody());
-        }
-    }
-
     // -- Notification --
 
-    private void sendVisualNotification(final String messageBody) {
+    /**
+     * Sends a notification with the message in argument
+     * @param context       a {@link Context}
+     * @param messageBody   a {@link String} that contains the message
+     */
+    public static void sendVisualNotification(@NonNull final Context context,
+                                              @NonNull final String messageBody) {
         // Intent & PendingIntent
-        final Intent intent = new Intent(this.getApplicationContext(),
+        final Intent intent = new Intent(context,
                                          AuthActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        final PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(),
+        final PendingIntent pendingIntent = PendingIntent.getActivity(context,
                                                                      0,
                                                                       intent,
                                                                       PendingIntent.FLAG_ONE_SHOT);
 
         // Style for the Notification
         final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle()
-                                                                               .setBigContentTitle(this.getString(R.string.notification_content_text))
+                                                                               .setBigContentTitle(context.getString(R.string.notification_content_text))
                                                                                .addLine(messageBody);
 
         // Notification Compat
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this.getApplicationContext(),
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context,
                                                                                   NOTIFICATION_CHANNEL)
                                                                          .setSmallIcon(R.drawable.ic_go4lunch_white)
-                                                                         .setContentTitle(this.getString(R.string.app_name))
-                                                                         .setContentText(this.getString(R.string.notification_content_text))
+                                                                         .setContentTitle(context.getString(R.string.app_name))
+                                                                         .setContentText(context.getString(R.string.notification_content_text))
                                                                          .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                                                                          .setContentIntent(pendingIntent)
                                                                          .setAutoCancel(true)
@@ -76,19 +67,19 @@ public class NotificationsService extends FirebaseMessagingService {
         // API level >= API 26
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL,
-                                                                                    this.getString(R.string.notification_channel_name),
+                                                                                    context.getString(R.string.notification_channel_name),
                                                                                     NotificationManager.IMPORTANCE_DEFAULT);
 
-            notificationChannel.setDescription(this.getString(R.string.notification_channel_description));
+            notificationChannel.setDescription(context.getString(R.string.notification_channel_description));
 
-            final NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
             // Notification Manager
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
         // Notification Manager Compat
-        final NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this.getApplicationContext());
+        final NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
 
         // Shows notification
         notificationManagerCompat.notify(NOTIFICATION_ID,

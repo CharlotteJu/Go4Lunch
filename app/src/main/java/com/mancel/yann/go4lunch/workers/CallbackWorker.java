@@ -18,10 +18,12 @@ public interface CallbackWorker {
 
     /**
      * Method that is called when the action is a success
-     * @param nameOfRestaurant  a {@link String} that contains the name of restaurant
-     * @param users             a {@link List<User>} that contains all users who have selected the restaurant
+     * @param nameOfRestaurant      a {@link String} that contains the name of restaurant
+     * @param addressOfRestaurant   a {@link String} that contains the address of restaurant
+     * @param users                 a {@link List<User>} that contains all users who have selected the restaurant
      */
     void onSuccess(@Nullable final String nameOfRestaurant,
+                   @Nullable final String addressOfRestaurant,
                    @Nullable final List<User> users);
 
     /**

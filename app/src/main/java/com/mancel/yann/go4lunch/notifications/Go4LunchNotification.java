@@ -20,12 +20,12 @@ import com.mancel.yann.go4lunch.views.activities.AuthActivity;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.notifications
  */
-public abstract class AlarmNotification {
+public abstract class Go4LunchNotification {
 
     // FIELDS --------------------------------------------------------------------------------------
 
     private static final int NOTIFICATION_ID = 2020;
-    private static final String NOTIFICATION_CHANNEL = "com.mancel.yann.go4lunch.workers.AlarmWorker";
+    private static final String NOTIFICATION_CHANNEL = "com.mancel.yann.go4lunch.notifications.Go4LunchNotification";
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -49,20 +49,18 @@ public abstract class AlarmNotification {
                                                                       PendingIntent.FLAG_ONE_SHOT);
 
         // Style for the Notification
-        final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle()
-                                                                               .setBigContentTitle(context.getString(R.string.notification_content_text))
-                                                                               .addLine(messageBody);
+        final NotificationCompat.BigTextStyle notificationStyle = new NotificationCompat.BigTextStyle()
+                                                                                        .bigText(messageBody);
 
         // Notification Compat
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context,
                                                                                   NOTIFICATION_CHANNEL)
                                                                          .setSmallIcon(R.drawable.ic_go4lunch_white)
-                                                                         .setContentTitle(context.getString(R.string.app_name))
-                                                                         .setContentText(context.getString(R.string.notification_content_text))
+                                                                         .setContentTitle(context.getString(R.string.notification_content_title))
                                                                          .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                                                                          .setContentIntent(pendingIntent)
                                                                          .setAutoCancel(true)
-                                                                         .setStyle(inboxStyle);
+                                                                         .setStyle(notificationStyle);
 
         // API level >= API 26
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -39,7 +39,7 @@
 
     <!-- item_workmate.xml -->
     <string name="text_item_workmate_no_choice">%s hasn\'t decided yet</string>
-    <string name="text_item_workmate_choice">%s is eating %s (%s)</string>
+    <string name="text_item_workmate_choice">%s is eating at %s</string>
 
     <!-- marker_info_window.xml -->
     <string name="details_info_window">Details</string>

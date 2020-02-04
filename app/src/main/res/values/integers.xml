@@ -3,7 +3,8 @@
 <resources>
 
     <!-- TextView -->
-    <integer name="max_lines_text_view">1</integer>
+    <integer name="one_line_text_view">1</integer>
+    <integer name="multiple_lines_text_view">2</integer>
 
     <!-- RatingBar -->
     <integer name="max_stars_rating_bar">3</integer>

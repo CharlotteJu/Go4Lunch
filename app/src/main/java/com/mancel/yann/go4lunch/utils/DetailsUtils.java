@@ -25,13 +25,9 @@ public abstract class DetailsUtils {
      * @param addressComponents a {@link List < Details.AddressComponent>} that contains the address data
      * @return a {@link String} that contains the couple of food type and address
      */
-    public static String createStringOfFoodTypeAndAddress(@NonNull final Context context,
-                                                          @Nullable final List<Details.AddressComponent> addressComponents) {
+    public static String createStringOfAddress(@NonNull final Context context,
+                                               @Nullable final List<Details.AddressComponent> addressComponents) {
         final StringBuilder stringBuilder = new StringBuilder();
-
-        // TODO: 21/01/2020 Add food type
-        stringBuilder.append("Food - ");
-
 
         // No addressComponents
         if (addressComponents == null) {

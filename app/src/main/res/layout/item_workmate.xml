@@ -33,7 +33,6 @@
         app:layout_constraintBottom_toBottomOf="@id/item_workmate_image"
         app:layout_constraintStart_toEndOf="@id/item_workmate_image"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="User hasn\'t decided yet"
-        style="@style/TextViewStyle2"/>
+        tools:text="User hasn\'t decided yet"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

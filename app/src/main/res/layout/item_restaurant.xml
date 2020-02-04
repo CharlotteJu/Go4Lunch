@@ -41,7 +41,7 @@
         app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        tools:text="French - 12 rue du Faubourg Poissonnière"
+        tools:text="12 rue du Faubourg Poissonnière"
         style="@style/TextViewStyle3"/>
 
     <!-- TextView: Opening hours -->

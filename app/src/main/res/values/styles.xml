@@ -52,8 +52,13 @@
 
     <!-- TextView sub-style -->
     <style name="TextViewSubStyle" parent="AppTheme">
-        <item name="android:maxLines">@integer/max_lines_text_view</item>
+        <item name="android:maxLines">@integer/one_line_text_view</item>
         <item name="android:ellipsize">end</item>
+    </style>
+
+    <!-- TextView sub-style -->
+    <style name="TextViewSubStyle2" parent="TextViewSubStyle">
+        <item name="android:maxLines">@integer/multiple_lines_text_view</item>
     </style>
 
     <!-- TextView style (level 1, black, normal) -->
@@ -133,6 +138,20 @@
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">normal</item>
+    </style>
+
+    <!-- TextView style (level 1, black, normal) -->
+    <style name="TextViewStyle14" parent="TextViewSubStyle2">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <!-- TextView style (level 1, darker gray, italic) -->
+    <style name="TextViewStyle15" parent="TextViewSubStyle2">
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">italic</item>
     </style>
 
     <!-- *********************************** NavigationView ************************************ -->

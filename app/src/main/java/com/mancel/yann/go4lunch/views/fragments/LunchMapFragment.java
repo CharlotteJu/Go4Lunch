@@ -73,9 +73,6 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     private Location mCurrentLocation;
     // TODO: 16/01/2020 Not useful, should pass by LocationLiveData
 
-    @NonNull
-    private final FragmentListener mFragmentListener;
-
     private boolean mIsFirstLocation = true;
     private boolean mIsLocatedOnUser = true;
 
@@ -87,12 +84,9 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
-     * Constructor with an argument
-     * @param fragmentListener a {@link FragmentListener}
+     * Default constructor
      */
-    public LunchMapFragment(@NonNull final FragmentListener fragmentListener) {
-        this.mFragmentListener = fragmentListener;
-    }
+    public LunchMapFragment() {}
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -150,9 +144,6 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
         // Info window
         this.mGoogleMap.setInfoWindowAdapter(new InfoWindowAdapter(this.getContext(), this.mRelativeLayout, this));
-
-        // Configure the style of the GoogleMap
-        this.configureGoogleMapStyle();
     }
 
     // -- GoogleMap.OnCameraMoveStartedListener interface --
@@ -232,7 +223,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         final String placeId = poi.getPlaceId();
 
         // Callback to Activity
-        this.mFragmentListener.onSelectedRestaurant(placeId);
+        this.mCallbackFromFragmentToActivity.onSelectedRestaurant(placeId);
     }
 
     @Override
@@ -242,6 +233,17 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
         // InfoWindow
         marker.hideInfoWindow();
+    }
+
+    // -- Instances --
+
+    /**
+     * Gets a new instance of {@link LunchMapFragment}
+     * @return a {@link LunchMapFragment}
+     */
+    @NonNull
+    public static LunchMapFragment newInstance() {
+        return new LunchMapFragment();
     }
 
     // -- Google Maps --
@@ -364,7 +366,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     private void configureLocationLiveData() {
         // Bind between liveData of ViewModel and the SupportMapFragment
         this.mViewModel.getLocation(this.getContext())
-                       .observe(this.getActivity(), this::onChangedLocationData);
+                       .observe(this.getViewLifecycleOwner(), this::onChangedLocationData);
     }
 
     /**
@@ -391,6 +393,12 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
             // First Location
             if (this.mIsFirstLocation) {
                 this.mIsFirstLocation = false;
+
+                // This method is put in place here and not in onMapReady method
+                // because the MyLocation parameter of GoogleMap must have the permission.ACCESS_FINE_LOCATION.
+                // This permission is already asked with LocationLiveData.
+                this.configureGoogleMapStyle();
+
                 this.configureCamera();
             }
             else {
@@ -411,7 +419,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         // Bind between liveData of ViewModel and the SupportMapFragment
         // TODO: 16/01/2020 Add LocationLiveData to source of POIsLiveData for remove the reference of this LiveData
         this.mViewModel.getPOIs(this.getContext(), null, NEARBY_SEARCH_RADIUS)
-                       .observe(this.getActivity(), this::onChangedPOIsData);
+                       .observe(this.getViewLifecycleOwner(), this::onChangedPOIsData);
     }
 
     /**
@@ -419,7 +427,6 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
      * @param poiList a {@link List<POI>}
      */
     private void onChangedPOIsData(@NonNull final List<POI> poiList) {
-        Log.d(TAG, "onChangedPOIsData: POI DATA");
         // No POI
         if (poiList.size() == 0) {
             return;
@@ -443,17 +450,5 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
             // TAG
             marker.setTag(poi);
         }
-    }
-
-    // -- Instances --
-
-    /**
-     * Gets a new instance of {@link LunchMapFragment}
-     * @param fragmentListener a {@link FragmentListener}
-     * @return a {@link LunchMapFragment}
-     */
-    @NonNull
-    public static LunchMapFragment newInstance(@NonNull final FragmentListener fragmentListener) {
-        return new LunchMapFragment(fragmentListener);
     }
 }

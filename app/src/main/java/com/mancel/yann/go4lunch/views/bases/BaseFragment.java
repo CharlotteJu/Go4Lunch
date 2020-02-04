@@ -1,19 +1,21 @@
 package com.mancel.yann.go4lunch.views.bases;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.common.api.ResolvableApiException;
+import com.mancel.yann.go4lunch.views.fragments.FragmentListener;
 
 import butterknife.ButterKnife;
 
@@ -28,8 +30,12 @@ public abstract class BaseFragment extends Fragment {
 
     // FIELDS --------------------------------------------------------------------------------------
 
-    public static final int RC_PERMISSION_LOCATION_UPDATE_LOCATION = 1000;
-    public static final int RC_CHECK_SETTINGS_TO_LOCATION = 2000;
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    protected FragmentListener mCallbackFromFragmentToActivity;
+
+    public static final int REQUEST_CODE_PERMISSION_LOCATION = 1000;
+    public static final int REQUEST_CODE_CHECK_SETTINGS_TO_LOCATION = 2000;
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -37,6 +43,19 @@ public abstract class BaseFragment extends Fragment {
     protected abstract void configureDesign();
 
     // -- Fragment --
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        // Configures the callback to the parent activity
+        try {
+            this.mCallbackFromFragmentToActivity = (FragmentListener) context;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement FragmentListener");
+        }
+    }
 
     @Nullable
     @Override
@@ -62,16 +81,15 @@ public abstract class BaseFragment extends Fragment {
      * @param requestCode an integer that contains the request code
      * @return a boolean [true for PERMISSION_GRANTED - false to PERMISSION_DENIED]
      */
-    private boolean checkLocationPermission(int requestCode) {
-        int permissionResult = ContextCompat.checkSelfPermission(this.getContext(), // this.getApplicationContext()
-                                                                 Manifest.permission.ACCESS_FINE_LOCATION);
+    private boolean checkLocationPermission(final int requestCode) {
+        // ACCESS_FINE_LOCATION
+        final int permissionResult = ActivityCompat.checkSelfPermission(this.getContext(),
+                                                                        Manifest.permission.ACCESS_FINE_LOCATION);
 
-        // PackageManager.PERMISSION_DENIED
+        // PERMISSION_DENIED
         if (permissionResult != PackageManager.PERMISSION_GRANTED) {
-            final String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
-
             ActivityCompat.requestPermissions(this.getActivity(),
-                                              permissions,
+                                              new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
                                               requestCode);
 
             return false;
@@ -95,7 +113,7 @@ public abstract class BaseFragment extends Fragment {
         }
 
         if (exception instanceof SecurityException) {
-            this.checkLocationPermission(RC_PERMISSION_LOCATION_UPDATE_LOCATION);
+            this.checkLocationPermission(REQUEST_CODE_PERMISSION_LOCATION);
         }
 
         if (exception instanceof ResolvableApiException) {
@@ -106,7 +124,7 @@ public abstract class BaseFragment extends Fragment {
                 // and check the result in onActivityResult().
                 final ResolvableApiException resolvable = (ResolvableApiException) exception;
                 resolvable.startResolutionForResult(this.getActivity(),
-                                                    RC_CHECK_SETTINGS_TO_LOCATION);
+                                                    REQUEST_CODE_CHECK_SETTINGS_TO_LOCATION);
             }
             catch (IntentSender.SendIntentException sendEx) {
                 // Ignore the error.

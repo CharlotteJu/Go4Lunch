@@ -84,7 +84,6 @@ class WorkmateViewHolder extends RecyclerView.ViewHolder {
             // {User] is eating [food type] ([Name])
             text = itemView.getContext().getString(R.string.text_item_workmate_choice,
                                                    user.getUsername(),
-                                                   user.getFoodTypeOfRestaurant(),
                                                    user.getNameOfRestaurant());
         }
 
@@ -93,12 +92,12 @@ class WorkmateViewHolder extends RecyclerView.ViewHolder {
         // TextView: Style
         if (Build.VERSION.SDK_INT < 23) {
             this.mText.setTextAppearance(itemView.getContext(),
-                                         (user.getPlaceIdOfRestaurant() == null) ? R.style.TextViewStyle2 :
-                                                                                   R.style.TextViewStyle1);
+                                         (user.getPlaceIdOfRestaurant() == null) ? R.style.TextViewStyle15 :
+                                                                                   R.style.TextViewStyle14);
         }
         else {
-            this.mText.setTextAppearance( (user.getPlaceIdOfRestaurant() == null) ? R.style.TextViewStyle2 :
-                                                                                    R.style.TextViewStyle1);
+            this.mText.setTextAppearance( (user.getPlaceIdOfRestaurant() == null) ? R.style.TextViewStyle15 :
+                                                                                    R.style.TextViewStyle14);
         }
     }
 }

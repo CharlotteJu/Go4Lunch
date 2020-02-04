@@ -251,8 +251,8 @@ public class AsyncWorker extends ListenableWorker {
                                                        }
 
                                                        // After-treatment of address of restaurant
-                                                       mAddressOfRestaurant = DetailsUtils.createStringOfFoodTypeAndAddress(getApplicationContext(),
-                                                                                                                            details.getResult().getAddressComponents());
+                                                       mAddressOfRestaurant = DetailsUtils.createStringOfAddress(getApplicationContext(),
+                                                                                                                 details.getResult().getAddressComponents());
 
                                                        callback.onSuccess(mNameOfRestaurant,
                                                                           mAddressOfRestaurant,

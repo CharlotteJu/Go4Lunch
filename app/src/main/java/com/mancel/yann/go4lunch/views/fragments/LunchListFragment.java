@@ -55,6 +55,9 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
+    /**
+     * Default constructor
+     */
     public LunchListFragment() {}
 
     // METHODS -------------------------------------------------------------------------------------
@@ -108,7 +111,7 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
                                                                                                           new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
-        this.mViewModel = ViewModelProviders.of(this.getActivity(), factory)
+        this.mViewModel = ViewModelProviders.of(this, factory)
                                             .get(GoogleMapsAndFirestoreViewModel.class);
     }
 
@@ -118,7 +121,7 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
     private void configureRestaurantsWithUsersLiveData() {
         // Bind between liveData of ViewModel and the Adapter of RecyclerView
         this.mViewModel.getRestaurantsWithUsers(this.getContext())
-                       .observe(this.getActivity(),
+                       .observe(this.getViewLifecycleOwner(),
                                 restaurants -> {
                                     // The action can take a long time
                                     this.mProgressBar.show();

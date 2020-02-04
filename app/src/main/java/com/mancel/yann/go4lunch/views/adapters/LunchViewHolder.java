@@ -38,7 +38,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.item_restaurant_name)
     TextView mName;
     @BindView(R.id.item_restaurant_type_and_address)
-    TextView mTypeAndAddress;
+    TextView mAddress;
     @BindView(R.id.item_restaurant_opening_hours)
     TextView mOpeningHours;
     @BindView(R.id.item_restaurant_distance)
@@ -88,9 +88,9 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
         // Name
         this.mName.setText(restaurant.getDetails().getResult().getName());
 
-        // Food type & Address
-        this.mTypeAndAddress.setText(DetailsUtils.createStringOfFoodTypeAndAddress(itemView.getContext(),
-                                                                                   restaurant.getDetails().getResult().getAddressComponents()));
+        // Address
+        this.mAddress.setText(DetailsUtils.createStringOfAddress(itemView.getContext(),
+                                                                 restaurant.getDetails().getResult().getAddressComponents()));
 
         // Opening hours
         this.updateOpeningHours(restaurant.getDetails().getResult().getOpeningHours());
@@ -215,7 +215,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
         // Image (using to Glide library)
         glide.load(urlPhoto)
-             .fallback(R.drawable.ic_restaurant)
+             .fallback(R.drawable.ic_restaurant2)
              .error(R.drawable.ic_close)
              .into(this.mImage);
     }

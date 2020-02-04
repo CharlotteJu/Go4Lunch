@@ -65,7 +65,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     @BindView(R.id.activity_details_rating_bar)
     RatingBar mRatingBar;
     @BindView(R.id.activity_details_food_type_and_address)
-    TextView mFoodTypeAndAddress;
+    TextView mAddress;
     @BindView(R.id.activity_details_call_button)
     Button mCallButton;
     @BindView(R.id.activity_details_like_button)
@@ -291,9 +291,9 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
             this.mRatingBar.setRating(floatValue);
         }
 
-        // Food type & Address
-        this.mFoodTypeAndAddress.setText(DetailsUtils.createStringOfFoodTypeAndAddress(this.getApplicationContext(),
-                                                                                       details.getResult().getAddressComponents()));
+        // Address
+        this.mAddress.setText(DetailsUtils.createStringOfAddress(this.getApplicationContext(),
+                                                                 details.getResult().getAddressComponents()));
 
         // Phone
         if (details.getResult().getInternationalPhoneNumber() == null || details.getResult().getInternationalPhoneNumber().isEmpty()) {

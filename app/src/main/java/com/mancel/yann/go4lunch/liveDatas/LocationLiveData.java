@@ -157,10 +157,13 @@ public class LocationLiveData extends LiveData<LocationData> {
      */
     private void requestLastLocation() {
         this.mFusedLocationProviderClient.getLastLocation()
-                                         .addOnSuccessListener( location ->
-                                             // Notify
-                                             this.setValue(new LocationData(location, null))
-                                         )
+                                         .addOnSuccessListener( location -> {
+                                             // Got last known location. In some rare situations this can be null.
+                                             if (location != null) {
+                                                 // Notify
+                                                 this.setValue(new LocationData(location, null));
+                                             }
+                                         })
                                          .addOnFailureListener( exception ->
                                              // Notify
                                              this.setValue(new LocationData(null, exception))
@@ -188,7 +191,7 @@ public class LocationLiveData extends LiveData<LocationData> {
     }
 
     /**
-     * Requests the location
+     * Requests the location to create the looper
      */
     private void requestLocation() {
         this.mFusedLocationProviderClient.requestLocationUpdates(this.mLocationRequest,

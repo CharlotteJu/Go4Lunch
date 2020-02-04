@@ -52,6 +52,9 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
+    /**
+     * Default constructor
+     */
     public WorkmateFragment() {}
 
     // METHODS -------------------------------------------------------------------------------------
@@ -105,7 +108,7 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
                                                                                                           new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
-        this.mViewModel = ViewModelProviders.of(this.getActivity(), factory)
+        this.mViewModel = ViewModelProviders.of(this, factory)
                                             .get(GoogleMapsAndFirestoreViewModel.class);
     }
 
@@ -115,7 +118,7 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
     private void configureUsersLiveData() {
         // Bind between liveData of ViewModel and the Adapter of RecyclerView
         this.mViewModel.getUsers()
-                       .observe(this.getActivity(),
+                       .observe(this.getViewLifecycleOwner(),
                                 users -> this.mAdapter.updateData(users));
     }
 

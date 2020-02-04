@@ -75,9 +75,14 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     @NonNull
     private FragmentType mFragmentType = FragmentType.MAP;
 
-    private LunchMapFragment mLunchMapFragment;
-    private LunchListFragment mLunchListFragment;
-    private WorkmateFragment mWorkmateFragment;
+    @Nullable
+    private LunchMapFragment mLunchMapFragment = null;
+
+    @Nullable
+    private LunchListFragment mLunchListFragment = null;
+
+    @Nullable
+    private WorkmateFragment mWorkmateFragment = null;
 
     public static final String INTENT_PLACE_ID = "INTENT_PLACE_ID";
     public static final String INTENT_CURRENT_USER = "INTENT_CURRENT_USER";
@@ -156,8 +161,9 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            // Access update location
-            case BaseFragment.RC_PERMISSION_LOCATION_UPDATE_LOCATION:
+
+            // ACCESS_FINE_LOCATION
+            case BaseFragment.REQUEST_CODE_PERMISSION_LOCATION:
                 // No permission
                 if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     Log.e("MainActivity", "No permission to access fine location");
@@ -186,10 +192,24 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
         // TODO: 24/01/2020 Make this method in BaseActivity and make startLocationUpdate in protected method in BaseFragment
         // Check settings to location
-        if (requestCode == LunchMapFragment.RC_CHECK_SETTINGS_TO_LOCATION && resultCode == RESULT_OK) {
+        if (requestCode == LunchMapFragment.REQUEST_CODE_CHECK_SETTINGS_TO_LOCATION && resultCode == RESULT_OK) {
             this.mLunchMapFragment.startLocationUpdate();
         }
     }
+
+//    @Override
+//    protected void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        this.getSupportFragmentManager().saveFragmentInstanceState(this.mLunchMapFragment);
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//
+//        this.mLunchMapFragment.setInitialSavedState();
+//    }
 
     // -- FragmentListener --
 
@@ -388,12 +408,10 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         this.mFragmentType = FragmentType.MAP;
 
         if (this.mLunchMapFragment == null) {
-            this.mLunchMapFragment = LunchMapFragment.newInstance(this);
+            this.mLunchMapFragment = LunchMapFragment.newInstance();
         }
 
         this.replaceFragment(this.mLunchMapFragment, R.id.activity_main_frame_layout);
-
-
     }
 
     /**
@@ -407,8 +425,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
 
         this.replaceFragment(this.mLunchListFragment, R.id.activity_main_frame_layout);
-
-        this.mLunchMapFragment = null;
     }
 
     /**
@@ -422,8 +438,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
 
         this.replaceFragment(this.mWorkmateFragment, R.id.activity_main_frame_layout);
-
-        this.mLunchMapFragment = null;
     }
 
     // -- User --

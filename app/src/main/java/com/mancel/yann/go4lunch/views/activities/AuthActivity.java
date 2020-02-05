@@ -1,6 +1,7 @@
 package com.mancel.yann.go4lunch.views.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -79,7 +80,7 @@ public class AuthActivity extends BaseActivity {
     }
 
     @Override
-    protected void configureDesign() {
+    protected void configureDesign(@Nullable Bundle savedInstanceState) {
         // UI
         this.configureBackgroundImage();
 

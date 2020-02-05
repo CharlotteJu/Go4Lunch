@@ -44,7 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract int getActivityLayout();
     @Nullable
     protected abstract Toolbar getToolbar();
-    protected abstract void configureDesign();
+    protected abstract void configureDesign(@Nullable Bundle savedInstanceState);
 
     // -- Activity --
 
@@ -62,7 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         this.configureFirebaseAuth();
 
         // Configures the design of the activity
-        this.configureDesign();
+        this.configureDesign(savedInstanceState);
     }
 
     // -- Toolbar --

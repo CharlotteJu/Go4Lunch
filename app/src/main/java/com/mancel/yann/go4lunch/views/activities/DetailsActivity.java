@@ -1,6 +1,7 @@
 package com.mancel.yann.go4lunch.views.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -116,7 +117,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     }
 
     @Override
-    protected void configureDesign() {
+    protected void configureDesign(@Nullable Bundle savedInstanceState) {
         // Intent
         this.fetchDataFromIntent();
 
@@ -227,8 +228,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
                                                                                                           new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
-        this.mViewModel = ViewModelProviders.of(this, factory)
-                                            .get(GoogleMapsAndFirestoreViewModel.class);
+        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
     }
 
     /**

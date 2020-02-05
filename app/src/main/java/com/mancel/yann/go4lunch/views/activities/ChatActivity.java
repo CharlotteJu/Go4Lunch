@@ -1,5 +1,6 @@
 package com.mancel.yann.go4lunch.views.activities;
 
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -10,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -76,7 +77,7 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
     }
 
     @Override
-    protected void configureDesign() {
+    protected void configureDesign(@Nullable Bundle savedInstanceState) {
         // UI
         this.configureRecyclerView();
         this.configureTextInput();
@@ -160,8 +161,7 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
                                                                                                           new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
-        this.mViewModel = ViewModelProviders.of(this, factory)
-                                            .get(GoogleMapsAndFirestoreViewModel.class);
+        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
     }
 
     /**

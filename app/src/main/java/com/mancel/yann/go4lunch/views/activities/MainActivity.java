@@ -2,6 +2,7 @@ package com.mancel.yann.go4lunch.views.activities;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -17,7 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
@@ -53,6 +54,16 @@ import butterknife.BindView;
  */
 public class MainActivity extends BaseActivity implements FragmentListener {
 
+    // ENUMS ---------------------------------------------------------------------------------------
+
+    private enum FragmentType {MAP, LIST, WORKMATE}
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private FragmentType mFragmentType;
+
+    public static final String BUNDLE_ENUM = "BUNDLE_ENUM";
+
     // FIELDS --------------------------------------------------------------------------------------
 
     @BindView(R.id.activity_main_CoordinatorLayout)
@@ -69,11 +80,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     @SuppressWarnings("NullableProblems")
     @NonNull
     private GoogleMapsAndFirestoreViewModel mViewModel;
-
-    private enum FragmentType {MAP, LIST, WORKMATE}
-
-    @NonNull
-    private FragmentType mFragmentType = FragmentType.MAP;
 
     @Nullable
     private LunchMapFragment mLunchMapFragment = null;
@@ -105,7 +111,10 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     }
 
     @Override
-    protected void configureDesign() {
+    protected void configureDesign(@Nullable Bundle savedInstanceState) {
+        // Bundle
+        this.fetchDataFromBundle(savedInstanceState);
+
         // UI
         this.configureToolBar();
         this.configureDrawerLayout();
@@ -119,7 +128,7 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         this.createUser();
 
         // Fragment
-        this.configureLunchMapFragment();
+        this.configureFragmentIntoOnCreate();
 
         // WorkManager
         WorkerController.startWorkRequestIntoWorkManager(this.getApplicationContext(),
@@ -197,19 +206,14 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
     }
 
-//    @Override
-//    protected void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
-//        this.getSupportFragmentManager().saveFragmentInstanceState(this.mLunchMapFragment);
-//    }
-//
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//
-//        this.mLunchMapFragment.setInitialSavedState();
-//    }
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        // Saves the current Fragment type
+        outState.putSerializable(BUNDLE_ENUM, this.mFragmentType);
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
+    }
 
     // -- FragmentListener --
 
@@ -272,21 +276,24 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
             // Maps fragment
             case R.id.bottom_navigation_menu_map:
+                this.mFragmentType = FragmentType.MAP;
                 this.configureLunchMapFragment();
                 break;
 
             // List fragment
             case R.id.bottom_navigation_menu_list:
+                this.mFragmentType = FragmentType.LIST;
                 this.configureLunchListFragment();
                 break;
 
             // Workmate fragment
             case R.id.bottom_navigation_menu_workmate:
+                this.mFragmentType = FragmentType.WORKMATE;
                 this.configureWorkmateFragment();
                 break;
 
             default:
-                Log.e(this.getClass().getSimpleName(), "onNavigationItemSelected: none of ids selected among the list");
+                Log.e(this.getClass().getSimpleName(), "onNavigationItemSelected: None of ids selected among the list");
         }
 
         // Closes the NavigationView at the end of the user action
@@ -295,6 +302,24 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
 
         return true;
+    }
+
+    // -- Bundle --
+
+    /**
+     * Configures data from {@link Bundle}
+     * @param savedInstanceState a {@link Bundle}
+     */
+    private void fetchDataFromBundle(@Nullable final Bundle savedInstanceState) {
+        // Restores the current Fragment type
+        FragmentType fragmentType = null;
+
+        if (savedInstanceState != null) {
+            fragmentType = (FragmentType) savedInstanceState.getSerializable(BUNDLE_ENUM);
+        }
+
+        this.mFragmentType = (fragmentType != null) ? fragmentType :
+                                                      FragmentType.MAP;
     }
 
     // -- DrawerLayout --
@@ -395,18 +420,38 @@ public class MainActivity extends BaseActivity implements FragmentListener {
                                                                                                           new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
-        this.mViewModel = ViewModelProviders.of(this, factory)
-                                            .get(GoogleMapsAndFirestoreViewModel.class);
+        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
     }
 
     // -- Fragment --
 
     /**
+     * Configures the current {@link androidx.fragment.app.Fragment}
+     */
+    private void configureFragmentIntoOnCreate() {
+        switch (this.mFragmentType) {
+
+            case MAP:
+                this.configureLunchMapFragment();
+                break;
+
+            case LIST:
+                this.configureLunchListFragment();
+                break;
+
+            case WORKMATE:
+                this.configureWorkmateFragment();
+                break;
+
+            default:
+                Log.e(TAG, "configureFragment: Error to configure the fragment");
+        }
+    }
+
+    /**
      * Configures the {@link LunchMapFragment}
      */
     private void configureLunchMapFragment() {
-        this.mFragmentType = FragmentType.MAP;
-
         if (this.mLunchMapFragment == null) {
             this.mLunchMapFragment = LunchMapFragment.newInstance();
         }
@@ -418,8 +463,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
      * Configures the {@link LunchListFragment}
      */
     private void configureLunchListFragment() {
-        this.mFragmentType = FragmentType.LIST;
-
         if (this.mLunchListFragment == null) {
             this.mLunchListFragment = LunchListFragment.newInstance();
         }
@@ -431,8 +474,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
      * Configures the {@link WorkmateFragment}
      */
     private void configureWorkmateFragment() {
-        this.mFragmentType = FragmentType.WORKMATE;
-
         if (this.mWorkmateFragment == null) {
             this.mWorkmateFragment = WorkmateFragment.newInstance();
         }

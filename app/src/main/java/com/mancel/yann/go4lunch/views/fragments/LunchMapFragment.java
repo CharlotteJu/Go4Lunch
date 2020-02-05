@@ -8,7 +8,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -108,6 +108,18 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         // LiveData
         this.configureLocationLiveData();
         this.configurePOIsLiveData();
+    }
+
+    // -- Fragment --
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Resets the configurations when the user navigates with the BottomNavigationView
+        // and go back to this Fragment
+        this.mIsFirstLocation = true;
+        this.mIsLocatedOnUser = true;
     }
 
     // -- Actions --
@@ -257,9 +269,9 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         if (mapFragment == null) {
             mapFragment = SupportMapFragment.newInstance();
 
-            this.getFragmentManager().beginTransaction()
-                                     .add(R.id.fragment_lunch_map_fragment, mapFragment)
-                                     .commit();
+            this.getChildFragmentManager().beginTransaction()
+                                          .add(R.id.fragment_lunch_map_fragment, mapFragment)
+                                          .commit();
         }
 
         mapFragment.getMapAsync(this);
@@ -349,8 +361,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
                                                                                                           new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
-        this.mViewModel = ViewModelProviders.of(this, factory)
-                                            .get(GoogleMapsAndFirestoreViewModel.class);
+        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
     }
 
     /**

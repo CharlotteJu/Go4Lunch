@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -108,8 +108,7 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
                                                                                                           new MessageRepositoryImpl(),
                                                                                                           new PlaceRepositoryImpl());
 
-        this.mViewModel = ViewModelProviders.of(this, factory)
-                                            .get(GoogleMapsAndFirestoreViewModel.class);
+        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
     }
 
     /**

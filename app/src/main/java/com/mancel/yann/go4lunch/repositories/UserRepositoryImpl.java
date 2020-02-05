@@ -53,7 +53,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @NonNull
     @Override
-    public Task<Void> createUser(@NonNull String uid, @NonNull String username, @Nullable String urlPicture) {
+    public Task<Void> createUser(@NonNull final String uid,
+                                 @NonNull final String username,
+                                 @Nullable final String urlPicture) {
         final User user = new User(uid, username, urlPicture);
         return this.getUsersCollection().document(uid)
                                         .set(user);
@@ -63,7 +65,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @NonNull
     @Override
-    public Task<DocumentSnapshot> getUser(@NonNull String uid) {
+    public Task<DocumentSnapshot> getUser(@NonNull final String uid) {
         return this.getUsersCollection().document(uid)
                                         .get();
     }
@@ -77,7 +79,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @NonNull
     @Override
-    public Query getAllUsersFromThisRestaurant(@Nullable String placeIdOfRestaurant) {
+    public Query getAllUsersFromThisRestaurant(@Nullable final String placeIdOfRestaurant) {
         return this.getUsersCollection().whereEqualTo("place_id_of_restaurant", placeIdOfRestaurant);
     }
 
@@ -85,15 +87,18 @@ public class UserRepositoryImpl implements UserRepository {
 
     @NonNull
     @Override
-    public Task<Void> updateUsername(@NonNull String uid, @NonNull String username) {
+    public Task<Void> updateUsername(@NonNull final String uid,
+                                     @NonNull final String username) {
         return this.getUsersCollection().document(uid)
                                         .update("username", username);
     }
 
     @NonNull
     @Override
-    public Task<Void> updateRestaurant(@NonNull String uid, @Nullable String placeIdOfRestaurant,
-                                       @Nullable String nameOfRestaurant,@Nullable String foodTypeOfRestaurant) {
+    public Task<Void> updateRestaurant(@NonNull final String uid,
+                                       @Nullable final String placeIdOfRestaurant,
+                                       @Nullable final String nameOfRestaurant,
+                                       @Nullable final String foodTypeOfRestaurant) {
         return this.getUsersCollection().document(uid)
                                         .update("place_id_of_restaurant", placeIdOfRestaurant,
                                                 "name_of_restaurant", nameOfRestaurant,
@@ -104,7 +109,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @NonNull
     @Override
-    public Task<Void> deleteUser(@NonNull String uid) {
+    public Task<Void> deleteUser(@NonNull final String uid) {
         return this.getUsersCollection().document(uid)
                                         .delete();
     }

@@ -191,58 +191,6 @@ public class PlaceRepositoryTest {
     }
 
     @Test
-    public void should_Fetch_NearbySearch_Then_should_Fetch_Details_For_Each_Restaurant() {
-        // Creates Observable
-        final Observable<Details> observable;
-        observable = this.mPlaceRepository.getStreamToFetchNearbySearchThenToFetchDetailsForEachRestaurant("45.9922027,4.7176896",
-                                                                                                           200.0,
-                                                                                                           "restaurant",
-                                                                                                            KEY);
-
-        // Creates Observer
-        final TestObserver<Details> observer = new TestObserver<>();
-
-        // Creates Stream
-        observable.subscribeWith(observer)
-                  .assertNoErrors()
-                  .assertNoTimeout()
-                  .awaitTerminalEvent();
-
-        // Fetches the result
-        final List<Details> detailsList = observer.values();
-
-        // TEST: results's size
-        assertEquals("results: Number of restaurant equals to 13", detailsList.size(), 13);
-    }
-
-    @Test
-    public void should_Fetch_NearbySearch_Then_should_Fetch_Restaurant() {
-        // Creates Observable
-        final Observable<Restaurant> observable;
-        observable = this.mPlaceRepository.getStreamToFetchNearbySearchThenToFetchRestaurant("45.9922027,4.7176896",
-                                                                                             200.0,
-                                                                                             "restaurant",
-                                                                                             "walking",
-                                                                                             "metric",
-                                                                                              KEY);
-
-        // Creates Observer
-        final TestObserver<Restaurant> observer = new TestObserver<>();
-
-        // Creates Stream
-        observable.subscribeWith(observer)
-                  .assertNoErrors()
-                  .assertNoTimeout()
-                  .awaitTerminalEvent();
-
-        // Fetches the result
-        final List<Restaurant> restaurants = observer.values();
-
-        // TEST: results's size
-        assertEquals("results: Number of restaurant equals to 13", restaurants.size(), 13);
-    }
-
-    @Test
     public void should_Fetch_NearbySearch_Then_should_Fetch_Restaurants() {
         // Creates Observable
         final Observable<List<Restaurant>> observable;

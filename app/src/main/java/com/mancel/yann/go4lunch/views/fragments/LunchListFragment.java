@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
+import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
@@ -53,6 +55,8 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
     @NonNull
     private LunchAdapter mAdapter;
 
+    private static final double NEARBY_SEARCH_RADIUS = 200.0;
+
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
@@ -78,6 +82,7 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
         this.configureViewModel();
 
         // LiveData
+        this.configureLocationLiveData();
         this.configureRestaurantsWithUsersLiveData();
     }
 
@@ -100,39 +105,6 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
         return new LunchListFragment();
     }
 
-    // -- GoogleMapsAndFirestoreViewModel --
-
-    /**
-     * Configures the {@link GoogleMapsAndFirestoreViewModel}
-     */
-    private void configureViewModel() {
-        // TODO: 09/01/2020 UserRepositories must be removed thanks to Dagger 2
-        final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
-                                                                                                          new MessageRepositoryImpl(),
-                                                                                                          new PlaceRepositoryImpl());
-
-        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
-    }
-
-    /**
-     * Configures the {@link LiveData} of {@link List<Restaurant>}
-     */
-    private void configureRestaurantsWithUsersLiveData() {
-        // Bind between liveData of ViewModel and the Adapter of RecyclerView
-        this.mViewModel.getRestaurantsWithUsers(this.getContext())
-                       .observe(this.getViewLifecycleOwner(),
-                                restaurants -> {
-                                    // The action can take a long time
-                                    this.mProgressBar.show();
-
-                                    // Updates adapter
-                                    this.mAdapter.updateData(restaurants);
-
-                                    // The end of action
-                                    this.mProgressBar.hide();
-                                });
-    }
-
     // -- RecyclerView --
 
     /**
@@ -148,5 +120,74 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.mRecyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(),
                                                                        DividerItemDecoration.VERTICAL));
+    }
+
+    // -- GoogleMapsAndFirestoreViewModel --
+
+    /**
+     * Configures the {@link GoogleMapsAndFirestoreViewModel}
+     */
+    private void configureViewModel() {
+        // TODO: 09/01/2020 UserRepositories must be removed thanks to Dagger 2
+        final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
+                                                                                                          new MessageRepositoryImpl(),
+                                                                                                          new PlaceRepositoryImpl());
+
+        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
+    }
+
+    /**
+     * Configures the {@link LiveData<LocationData>}
+     */
+    private void configureLocationLiveData() {
+        // Bind between liveData of ViewModel and the Fragment
+        this.mViewModel.getLocation(this.getContext())
+                       .observe(this.getViewLifecycleOwner(), this::onChangedLocationData);
+    }
+    /**
+     * Configures the {@link LiveData} of {@link List<Restaurant>}
+     */
+    private void configureRestaurantsWithUsersLiveData() {
+        // Bind between liveData of ViewModel and the Adapter of RecyclerView
+        this.mViewModel.getRestaurantsWithUsers(this.getContext(), null, NEARBY_SEARCH_RADIUS)
+                       .observe(this.getViewLifecycleOwner(),
+                                restaurants -> {
+                                    // The action can take a long time
+                                    this.mProgressBar.show();
+
+                                    // Updates adapter
+                                    this.mAdapter.updateData(restaurants);
+
+                                    // The end of action
+                                    this.mProgressBar.hide();
+                                });
+    }
+
+    /**
+     * Method to replace the {@link androidx.lifecycle.Observer} of {@link LocationData}
+     * @param locationData a {@link LocationData}
+     */
+    private void onChangedLocationData (@NonNull final LocationData locationData) {
+        // Exception
+        if (this.handleLocationException(locationData.getException())) {
+            return;
+        }
+
+        // No Location
+        if (locationData.getLocation() == null) {
+            return;
+        }
+
+        // Fetches Restaurants
+        this.mViewModel.fetchRestaurants(this.getContext(),
+                                         locationData,
+                                         NEARBY_SEARCH_RADIUS);
+    }
+
+    /**
+     * Starts the location update from {@link LocationLiveData}
+     */
+    public void startLocationUpdate() {
+        this.mViewModel.startLocationUpdate();
     }
 }

@@ -97,6 +97,31 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
         return new WorkmateFragment();
     }
 
+    // -- RecyclerView --
+
+    /**
+     * Configures the {@link RecyclerView}
+     */
+    private void configureRecyclerView() {
+        // Adapter
+        this.mAdapter = new WorkmateAdapter(this, Glide.with(this));
+
+        // InsetDivider
+        final RecyclerView.ItemDecoration divider = new InsetDivider.Builder(this.getContext())
+                                                                    .orientation(InsetDivider.VERTICAL_LIST)
+                                                                    .dividerHeight(getResources().getDimensionPixelSize(R.dimen.divider_height))
+                                                                    .color(getResources().getColor(R.color.ColorSeparator))
+                                                                    .insets(getResources().getDimensionPixelSize(R.dimen.divider_inset), 0)
+                                                                    .overlay(true)
+                                                                    .build();
+
+        // RecyclerView
+        this.mRecyclerView.setAdapter(this.mAdapter);
+        this.mRecyclerView.setHasFixedSize(true);
+        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        this.mRecyclerView.addItemDecoration(divider);
+    }
+
     // -- GoogleMapsAndFirestoreViewModel --
 
     /**
@@ -119,31 +144,5 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
         this.mViewModel.getUsers()
                        .observe(this.getViewLifecycleOwner(),
                                 users -> this.mAdapter.updateData(users));
-    }
-
-    // -- RecyclerView --
-
-    /**
-     * Configures the {@link RecyclerView}
-     */
-    private void configureRecyclerView() {
-        // Adapter
-        this.mAdapter = new WorkmateAdapter(this,
-                                            Glide.with(this));
-
-        // InsetDivider
-        final RecyclerView.ItemDecoration divider = new InsetDivider.Builder(this.getContext())
-                                                                    .orientation(InsetDivider.VERTICAL_LIST)
-                                                                    .dividerHeight(getResources().getDimensionPixelSize(R.dimen.divider_height))
-                                                                    .color(getResources().getColor(R.color.ColorSeparator))
-                                                                    .insets(getResources().getDimensionPixelSize(R.dimen.divider_inset), 0)
-                                                                    .overlay(true)
-                                                                    .build();
-
-        // RecyclerView
-        this.mRecyclerView.setAdapter(this.mAdapter);
-        this.mRecyclerView.setHasFixedSize(true);
-        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        this.mRecyclerView.addItemDecoration(divider);
     }
 }

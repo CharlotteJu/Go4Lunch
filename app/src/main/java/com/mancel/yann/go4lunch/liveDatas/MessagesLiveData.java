@@ -24,6 +24,9 @@ public class MessagesLiveData extends LiveData<List<Message>> {
 
     // FIELDS --------------------------------------------------------------------------------------
 
+    @NonNull
+    private final Query mQuery;
+
     @SuppressWarnings("NullableProblems")
     @NonNull
     private ListenerRegistration mListenerRegistration;
@@ -34,10 +37,10 @@ public class MessagesLiveData extends LiveData<List<Message>> {
 
     /**
      * Constructor with an argument
-     * @param query a {@link Query} to fetch all messages
+     * @param query a {@link Query} to fetch messages from Firebase Firestore
      */
     public MessagesLiveData(@NonNull final Query query) {
-        this.configureListenerRegistration(query);
+        this.mQuery = query;
     }
 
     // METHODS -------------------------------------------------------------------------------------
@@ -47,13 +50,12 @@ public class MessagesLiveData extends LiveData<List<Message>> {
     @Override
     protected void onActive() {
         super.onActive();
-        Log.d(TAG, "onActive");
+        this.configureListenerRegistration();
     }
 
     @Override
     protected void onInactive() {
         super.onInactive();
-        Log.d(TAG, "onInactive");
 
         // Stop listening to changes
         this.mListenerRegistration.remove();
@@ -63,11 +65,10 @@ public class MessagesLiveData extends LiveData<List<Message>> {
 
     /**
      * Configures the {@link ListenerRegistration}
-     * @param query a {@link Query} to fetch all users
      */
-    private void configureListenerRegistration(@NonNull final Query query) {
+    private void configureListenerRegistration() {
         // ListenerRegistration: SnapshotListener of Query
-        this.mListenerRegistration = query.addSnapshotListener( (queryDocumentSnapshots, e) -> {
+        this.mListenerRegistration = this.mQuery.addSnapshotListener( (queryDocumentSnapshots, e) -> {
             if (e != null) {
                 Log.e(TAG, "When addSnapshotListener to query (Update MessageAdapter): Listen failed.", e);
                 return;

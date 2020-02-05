@@ -36,7 +36,9 @@ public interface UserRepository {
      * @return a {@link Task} of {@link Void}
      */
     @NonNull
-    Task<Void> createUser(@NonNull String uid, @NonNull String username, @Nullable String urlPicture);
+    Task<Void> createUser(@NonNull final String uid,
+                          @NonNull final String username,
+                          @Nullable final String urlPicture);
 
     // -- Read --
 
@@ -46,7 +48,7 @@ public interface UserRepository {
      * @return a {@link Task} of {@link DocumentSnapshot}
      */
     @NonNull
-    Task<DocumentSnapshot> getUser(@NonNull String uid);
+    Task<DocumentSnapshot> getUser(@NonNull final String uid);
 
     /**
      * Gets all users into the collection
@@ -62,7 +64,7 @@ public interface UserRepository {
      * @return a {@link Query} that contains the users
      */
     @NonNull
-    Query getAllUsersFromThisRestaurant(@Nullable String placeIdOfRestaurant);
+    Query getAllUsersFromThisRestaurant(@Nullable final String placeIdOfRestaurant);
 
     // -- Update --
 
@@ -73,7 +75,8 @@ public interface UserRepository {
      * @return a {@link Task} of {@link Void}
      */
     @NonNull
-    Task<Void> updateUsername(@NonNull String uid, @NonNull String username);
+    Task<Void> updateUsername(@NonNull final String uid,
+                              @NonNull final String username);
 
     /**
      * Update the restaurant field of a {@link com.mancel.yann.go4lunch.models.User} with its uid field
@@ -84,8 +87,10 @@ public interface UserRepository {
      * @return a {@link Task} of {@link Void}
      */
     @NonNull
-    Task<Void> updateRestaurant(@NonNull String uid, @Nullable String placeIdOfRestaurant,
-                                @Nullable String nameOfRestaurant,@Nullable String foodTypeOfRestaurant);
+    Task<Void> updateRestaurant(@NonNull final String uid,
+                                @Nullable final String placeIdOfRestaurant,
+                                @Nullable final String nameOfRestaurant,
+                                @Nullable final String foodTypeOfRestaurant);
 
     // -- Delete --
 
@@ -95,5 +100,5 @@ public interface UserRepository {
      * @return a {@link Task} of {@link Void}
      */
     @NonNull
-    Task<Void> deleteUser(@NonNull String uid);
+    Task<Void> deleteUser(@NonNull final String uid);
 }

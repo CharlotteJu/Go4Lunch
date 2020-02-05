@@ -1,5 +1,7 @@
 package com.mancel.yann.go4lunch.repositories;
 
+import androidx.annotation.NonNull;
+
 import com.mancel.yann.go4lunch.apis.GoogleMapsService;
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.DistanceMatrix;
@@ -24,7 +26,9 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     // FIELDS --------------------------------------------------------------------------------------
 
-    private GoogleMapsService mGoogleMapsService = GoogleMapsService.retrofit.create(GoogleMapsService.class);
+    @NonNull
+    private GoogleMapsService mGoogleMapsService = GoogleMapsService.retrofit
+                                                                    .create(GoogleMapsService.class);
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -32,7 +36,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
 
     @Override
     public Observable<NearbySearch> getStreamToFetchNearbySearch(final String location,
-                                                                 double radius,
+                                                                 final double radius,
                                                                  final String types,
                                                                  final String key) {
         return this.mGoogleMapsService.getNearbySearch(location,
@@ -79,32 +83,8 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     }
 
     @Override
-    public Observable<Details> getStreamToFetchNearbySearchThenToFetchDetailsForEachRestaurant(final String location,
-                                                                                               double radius,
-                                                                                               final String types,
-                                                                                               final String key) {
-        return this.getStreamToFetchNearbySearch(location, radius, types, key)
-                   .map( nearbySearch -> nearbySearch.getResults() )
-                   .flatMapIterable( result -> result )
-                   .flatMap( result -> this.getStreamToFetchDetails(result.getPlaceId(), key) );
-    }
-
-    @Override
-    public Observable<Restaurant> getStreamToFetchNearbySearchThenToFetchRestaurant(final String location,
-                                                                                    double radius,
-                                                                                    final String types,
-                                                                                    final String mode,
-                                                                                    final String units,
-                                                                                    final String key) {
-        return this.getStreamToFetchNearbySearch(location, radius, types, key)
-                   .map( nearbySearch -> nearbySearch.getResults() )
-                   .flatMapIterable( result -> result )
-                   .flatMap( result -> this.getStreamToFetchDetailsAndDistanceMatrix(location, result.getPlaceId(), mode, units, key));
-    }
-
-    @Override
     public Observable<List<Restaurant>> getStreamToFetchNearbySearchThenToFetchRestaurants(final String location,
-                                                                                           double radius,
+                                                                                           final double radius,
                                                                                            final String types,
                                                                                            final String mode,
                                                                                            final String units,

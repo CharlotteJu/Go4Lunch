@@ -35,8 +35,8 @@ public class RestaurantsWithUsersLiveData extends MediatorLiveData<List<Restaura
      * @param restaurantsLiveData   a {@link LiveData} of {@link List<Restaurant>}
      * @param usersLiveData         a {@link LiveData} of {@link List<User>}
      */
-    public RestaurantsWithUsersLiveData(@NonNull LiveData<List<Restaurant>> restaurantsLiveData,
-                                        @NonNull LiveData<List<User>> usersLiveData) {
+    public RestaurantsWithUsersLiveData(@NonNull final LiveData<List<Restaurant>> restaurantsLiveData,
+                                        @NonNull final LiveData<List<User>> usersLiveData) {
         this.addSourceRestaurants(restaurantsLiveData);
         this.addSourceUsers(usersLiveData);
     }
@@ -49,7 +49,7 @@ public class RestaurantsWithUsersLiveData extends MediatorLiveData<List<Restaura
      * Adds a source, here a {@link LiveData} of {@link List<Restaurant>}
      * @param restaurantsLiveData a {@link LiveData} of {@link List<Restaurant>}
      */
-    private void addSourceRestaurants(@NonNull LiveData<List<Restaurant>> restaurantsLiveData) {
+    private void addSourceRestaurants(@NonNull final LiveData<List<Restaurant>> restaurantsLiveData) {
         this.addSource(restaurantsLiveData, restaurants -> {
             // Initialises the restaurants
             this.mRestaurants = restaurants;
@@ -63,7 +63,7 @@ public class RestaurantsWithUsersLiveData extends MediatorLiveData<List<Restaura
      * Adds a source, here a {@link LiveData} of {@link List<User>}
      * @param usersLiveData a {@link LiveData} of {@link List<User>}
      */
-    private void addSourceUsers(@NonNull LiveData<List<User>> usersLiveData) {
+    private void addSourceUsers(@NonNull final LiveData<List<User>> usersLiveData) {
         this.addSource(usersLiveData, users -> {
             // Initialises the users
             this.mUsers = users;

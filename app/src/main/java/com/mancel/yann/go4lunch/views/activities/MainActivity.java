@@ -169,40 +169,52 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
+        // ACCESS_FINE_LOCATION
+        if (requestCode == BaseFragment.REQUEST_CODE_PERMISSION_LOCATION) {
+            // No permission
+            if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Log.e("MainActivity", "No permission to access fine location");
+            }
 
-            // ACCESS_FINE_LOCATION
-            case BaseFragment.REQUEST_CODE_PERMISSION_LOCATION:
-                // No permission
-                if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Log.e("MainActivity", "No permission to access fine location");
-                }
+            // According to the fragment type where there is the geolocation
+            switch (this.mFragmentType) {
 
-                // According to the fragment type
-                switch (this.mFragmentType) {
-                    case MAP:
-                        this.mLunchMapFragment.startLocationUpdate();
-                        break;
-                    case LIST:
-                        break;
-                    case WORKMATE:
-                        break;
-                }
+                case MAP:
+                    this.mLunchMapFragment.startLocationUpdate();
+                    break;
 
-                break;
+                case LIST:
+                    this.mLunchListFragment.startLocationUpdate();
+                    break;
+
+                default:
+                    Log.e(TAG, "onRequestPermissionsResult: Error during the permission asking");
+            }
         }
-
-        // TODO: 24/01/2020 Make this method in BaseActivity and make startLocationUpdate in protected method in BaseFragment
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // TODO: 24/01/2020 Make this method in BaseActivity and make startLocationUpdate in protected method in BaseFragment
         // Check settings to location
-        if (requestCode == LunchMapFragment.REQUEST_CODE_CHECK_SETTINGS_TO_LOCATION && resultCode == RESULT_OK) {
-            this.mLunchMapFragment.startLocationUpdate();
+        if (requestCode == LunchMapFragment.REQUEST_CODE_CHECK_SETTINGS_TO_LOCATION &&
+            resultCode == RESULT_OK) {
+
+            // According to the fragment type where there is the geolocation
+            switch (this.mFragmentType) {
+
+                case MAP:
+                    this.mLunchMapFragment.startLocationUpdate();
+                    break;
+
+                case LIST:
+                    this.mLunchListFragment.startLocationUpdate();
+                    break;
+
+                default:
+                    Log.e(TAG, "onActivityResult: Error during the settings to location");
+            }
         }
     }
 

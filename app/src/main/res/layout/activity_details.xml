@@ -109,16 +109,16 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 style="@style/RatingBarStyle"/>
 
-            <!-- TextView: Food type dans address of restaurant -->
+            <!-- TextView: Address of restaurant -->
             <TextView
-                android:id="@+id/activity_details_food_type_and_address"
+                android:id="@+id/activity_details_address"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_little"
                 app:layout_constraintTop_toBottomOf="@id/activity_details_name"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:text="Food type - Address"
+                tools:text="Address"
                 style="@style/TextViewStyle12"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -190,6 +190,7 @@
             android:id="@+id/activity_details_recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margin_little"
             app:layout_constraintTop_toBottomOf="@id/separator"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

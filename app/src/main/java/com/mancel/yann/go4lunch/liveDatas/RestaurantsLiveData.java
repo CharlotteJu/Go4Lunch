@@ -44,13 +44,11 @@ public class RestaurantsLiveData extends LiveData<List<Restaurant>> {
     @Override
     protected void onActive() {
         super.onActive();
-        Log.d(TAG, "onActive");
     }
 
     @Override
     protected void onInactive() {
         super.onInactive();
-        Log.d(TAG, "onInactive");
 
         // Disposes the Disposable
         if (this.mDisposable != null && !this.mDisposable.isDisposed()) {
@@ -69,8 +67,6 @@ public class RestaurantsLiveData extends LiveData<List<Restaurant>> {
         this.mDisposable = observable.subscribeWith(new DisposableObserver<List<Restaurant>>() {
             @Override
             public void onNext(List<Restaurant> restaurants) {
-                Log.d(TAG, "onNext");
-
                 // Notify
                 setValue(restaurants);
             }
@@ -82,7 +78,7 @@ public class RestaurantsLiveData extends LiveData<List<Restaurant>> {
 
             @Override
             public void onComplete() {
-                Log.d(TAG, "onComplete");
+                // Do nothing
             }
         });
     }

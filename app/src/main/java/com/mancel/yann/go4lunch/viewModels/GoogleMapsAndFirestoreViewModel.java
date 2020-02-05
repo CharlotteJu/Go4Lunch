@@ -44,6 +44,46 @@ import io.reactivex.Observable;
  */
 public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
+    /*
+        Summary of LiveData for the fragments: *****************************************************
+
+            LunchMapFragment:
+            |
+            + --- LocationLiveData
+            |
+            + --- POIsLiveData
+                  |
+                  + -- NearbySearchLiveData
+                  |
+                  + -- UsersLiveData
+
+            LunchListFragment:
+            |
+            + --- LocationLiveData
+            |
+            + --- RestaurantsWithUsersLiveData
+                  |
+                  + -- RestaurantsLiveData
+                  |
+                  + -- UsersLiveData
+
+            WorkmateFragment:
+            |
+            + --- UsersLiveData
+
+        Summary of LiveData for the activities: ****************************************************
+
+            ChatActivity:
+            |
+            + --- MessagesLiveData
+
+            DetailsActivity:
+            |
+            + --- DetailsLiveData
+            |
+            + --- UsersLiveData
+     */
+
     // FIELDS --------------------------------------------------------------------------------------
 
     // -- Repositories --
@@ -82,14 +122,6 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     @Nullable
     private POIsLiveData mPOIsLiveData = null;
 
-    // *********************************************************************************************
-    // ************************************** VERIFICATION *****************************************
-    // *********************************************************************************************
-
-    // TODO: 15/01/2020 add the LiveData which couples LocationLiveData and NearbySearchLiveData
-
-
-
     @Nullable
     private RestaurantsLiveData mRestaurantsLiveData = null;
 
@@ -109,8 +141,6 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     public GoogleMapsAndFirestoreViewModel(@NonNull final UserRepository userRepository,
                                            @NonNull final MessageRepository messageRepository,
                                            @NonNull final PlaceRepository placeRepository) {
-        Log.d(TAG, "GoogleMapsAndFirestoreViewModel");
-
         this.mUserRepository = userRepository;
         this.mMessageRepository = messageRepository;
         this.mPlaceRepository = placeRepository;
@@ -123,7 +153,6 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        Log.d(TAG, "onCleared");
     }
 
     // -- UsersLiveData --
@@ -219,7 +248,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     }
 
     /**
-     * Loads the {@link NearbySearch}
+     * Fetches the {@link NearbySearch}
      * @param context       a {@link Context}
      * @param locationData  a {@link LocationData}
      * @param radius        a double that contains the radius of research
@@ -276,7 +305,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     }
 
     /**
-     * Loads the {@link Details}
+     * Fetches the {@link Details}
      * @param context               a {@link Context}
      * @param placeIdOfRestaurant   a {@link String} that contains the Place Id of restaurant
      */
@@ -315,56 +344,59 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         return this.mPOIsLiveData;
     }
 
-
-    // *********************************************************************************************
-    // ************************************** VERIFICATION *****************************************
-    // *********************************************************************************************
-
-//    // -- SwitchMap: LocationLiveData then NearbySearchLiveData
-//    @NonNull
-//    public LiveData<NearbySearch> getNearbySearchFromLocation(@NonNull final Context context) {
-//        // LocationLiveData -> NearbySearchLiveData
-//        return Transformations.switchMap(this.getLocation(context), locationData ->
-//            this.getNearbySearch(context, locationData)
-//        );
-//    }
-
     // -- RestaurantsLiveData --
 
     /**
      * Gets all restaurants from Google Maps
-     * @param context a {@link Context}
+     * @param context       a {@link Context}
+     * @param locationData  a {@link LocationData}
+     * @param radius        a double that contains the radius of research
      * @return a {@link RestaurantsLiveData}
      */
     @NonNull
-    public RestaurantsLiveData getRestaurants(@NonNull final Context context) {
+    public RestaurantsLiveData getRestaurants(@NonNull final Context context,
+                                              @Nullable final LocationData locationData,
+                                              final double radius) {
         if (this.mRestaurantsLiveData == null) {
             this.mRestaurantsLiveData = new RestaurantsLiveData();
         }
 
         // Fetches the restaurants
-        this.loadRestaurants(context);
+        if (locationData != null) {
+            this.fetchRestaurants(context, locationData, radius);
+        }
 
         return this.mRestaurantsLiveData;
     }
 
     /**
-     * Loads the restaurant
-     * @param context a {@link Context}
+     * Fetches the {@link Restaurant}
+     * @param context       a {@link Context}
+     * @param locationData  a {@link LocationData}
+     * @param radius        a double that contains the radius of research
      */
-    public void loadRestaurants(@NonNull final Context context) {
+    public void fetchRestaurants(@NonNull final Context context,
+                                 @Nullable final LocationData locationData,
+                                 final double radius) {
         // Retrieves Google Maps Key
         final String key = context.getResources()
                                   .getString(R.string.google_maps_key);
 
+        // Location
+        final String location = locationData.getLocation().getLatitude() + "," +
+                                locationData.getLocation().getLongitude();
+
+        // Types
+        final String types = "restaurant";
+
         // Observable
         final Observable<List<Restaurant>> observable;
-        observable = this.mPlaceRepository.getStreamToFetchNearbySearchThenToFetchRestaurants("45.9922027,4.7176896",
-                                                                                              200.0,
-                                                                                              "restaurant",
-                                                                                              "walking",
-                                                                                              "metric",
-                                                                                               key);
+        observable = this.mPlaceRepository.getStreamToFetchNearbySearchThenToFetchRestaurants(location,
+                                                                                              radius,
+                                                                                              types,
+                                                                                             "walking",
+                                                                                             "metric",
+                                                                                              key);
 
         // Updates LiveData for the restaurants
         this.mRestaurantsLiveData.getRestaurantsWithObservable(observable);
@@ -374,13 +406,17 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
 
     /**
      * Gets all restaurants from Google Maps and associated with all users
-     * @param context a {@link Context}
+     * @param context       a {@link Context}
+     * @param locationData  a {@link LocationData}
+     * @param radius        a double that contains the radius of research
      * @return a {@link RestaurantsWithUsersLiveData}
      */
     @NonNull
-    public RestaurantsWithUsersLiveData getRestaurantsWithUsers(@NonNull final Context context) {
+    public RestaurantsWithUsersLiveData getRestaurantsWithUsers(@NonNull final Context context,
+                                                                @Nullable final LocationData locationData,
+                                                                final double radius) {
         if (this.mRestaurantsWithUsersLiveData == null) {
-            this.mRestaurantsWithUsersLiveData = new RestaurantsWithUsersLiveData(this.getRestaurants(context),
+            this.mRestaurantsWithUsersLiveData = new RestaurantsWithUsersLiveData(this.getRestaurants(context, locationData, radius),
                                                                                   this.getUsers());
         }
 

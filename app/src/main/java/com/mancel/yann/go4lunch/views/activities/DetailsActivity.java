@@ -65,7 +65,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     TextView mName;
     @BindView(R.id.activity_details_rating_bar)
     RatingBar mRatingBar;
-    @BindView(R.id.activity_details_food_type_and_address)
+    @BindView(R.id.activity_details_address)
     TextView mAddress;
     @BindView(R.id.activity_details_call_button)
     Button mCallButton;

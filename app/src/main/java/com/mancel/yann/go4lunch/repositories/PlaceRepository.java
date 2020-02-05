@@ -29,7 +29,7 @@ public interface PlaceRepository {
      * @return an {@link Observable<NearbySearch>}
      */
     Observable<NearbySearch> getStreamToFetchNearbySearch(final String location,
-                                                          double radius,
+                                                          final double radius,
                                                           final String types,
                                                           final String key);
 
@@ -75,37 +75,6 @@ public interface PlaceRepository {
                                                                     final String key);
 
     /**
-     * Get stream to Fetch the {@link Details} thanks to a {@link NearbySearch}
-     * @param location  a {@link String} that contains the latitude/longitude around which to retrieve place information
-     * @param radius    a double that defines the distance (in meters) within which to return place results
-     * @param types     a {@link String} that restricts the results to places matching the specified type
-     * @param key       a {@link String} that contains your application's API key
-     * @return an {@link Observable<Details>}
-     */
-    Observable<Details> getStreamToFetchNearbySearchThenToFetchDetailsForEachRestaurant(final String location,
-                                                                                        double radius,
-                                                                                        final String types,
-                                                                                        final String key);
-
-    /**
-     * Get stream to Fetch the {@link Restaurant}
-     * @param location  a {@link String} that contains the latitude/longitude around which to retrieve place information
-     * @param radius    a double that defines the distance (in meters) within which to return place results
-     * @param types     a {@link String} that restricts the results to places matching the specified type
-     * @param mode      a {@link String} that specifies the mode of transport to use when calculating distance
-     * @param units     a {@link String} that specifies the unit system to use when expressing distance as text
-     * @param key       a {@link String} that contains your application's API key
-     * @return an {@link Observable<Restaurant>}
-     */
-    Observable<Restaurant> getStreamToFetchNearbySearchThenToFetchRestaurant(final String location,
-                                                                             double radius,
-                                                                             final String types,
-                                                                             final String mode,
-                                                                             final String units,
-                                                                             final String key);
-    // TODO: 09/01/2020 Analyse the utility of the method above
-
-    /**
      * Get stream to Fetch the {@link List<Restaurant>}
      * @param location  a {@link String} that contains the latitude/longitude around which to retrieve place information
      * @param radius    a double that defines the distance (in meters) within which to return place results
@@ -116,7 +85,7 @@ public interface PlaceRepository {
      * @return an {@link Observable} of {@link List<Restaurant>}
      */
     Observable<List<Restaurant>> getStreamToFetchNearbySearchThenToFetchRestaurants(final String location,
-                                                                                    double radius,
+                                                                                    final double radius,
                                                                                     final String types,
                                                                                     final String mode,
                                                                                     final String units,

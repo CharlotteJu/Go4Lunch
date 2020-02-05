@@ -196,6 +196,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
         // Test on Radius for nearby search
         // TODO: 23/01/2020 Test on radius
+        // TODO: 05/02/2020 analyse if really useful to update at each location update
         if (!this.mIsLocatedOnUser) {
             // Location
             final Location location = new Location("Actual Location");
@@ -205,7 +206,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
             // LocationData
             final LocationData locationData = new LocationData(location, null);
 
-            // POIs
+            // Fetches POIs
 //            this.mViewModel.fetchNearbySearch(this.getContext(),
 //                                              locationData,
 //                                              NEARBY_SEARCH_RADIUS);
@@ -417,6 +418,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
             }
 
             // Fetches POIs
+            // TODO: 05/02/2020 analyse if really useful to update at each location update
             this.mViewModel.fetchNearbySearch(this.getContext(),
                                               locationData,
                                               NEARBY_SEARCH_RADIUS);
@@ -438,6 +440,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
      * @param poiList a {@link List<POI>}
      */
     private void onChangedPOIsData(@NonNull final List<POI> poiList) {
+        Log.d(TAG, "onChangedPOIsData");
         // No POI
         if (poiList.size() == 0) {
             return;

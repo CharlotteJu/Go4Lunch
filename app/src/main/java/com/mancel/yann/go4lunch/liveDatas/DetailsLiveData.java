@@ -42,13 +42,11 @@ public class DetailsLiveData extends LiveData<Details> {
     @Override
     protected void onActive() {
         super.onActive();
-        Log.d(TAG, "onActive");
     }
 
     @Override
     protected void onInactive() {
         super.onInactive();
-        Log.d(TAG, "onInactive");
 
         // Disposes the Disposable
         if (this.mDisposable != null && !this.mDisposable.isDisposed()) {
@@ -67,8 +65,6 @@ public class DetailsLiveData extends LiveData<Details> {
         this.mDisposable = observable.subscribeWith(new DisposableObserver<Details>() {
             @Override
             public void onNext(Details details) {
-                Log.d(TAG, "onNext");
-
                 // Notify
                 setValue(details);
             }
@@ -80,7 +76,7 @@ public class DetailsLiveData extends LiveData<Details> {
 
             @Override
             public void onComplete() {
-                Log.d(TAG, "onComplete");
+                // Do nothing
             }
         });
     }

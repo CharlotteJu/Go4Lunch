@@ -3,7 +3,6 @@ package com.mancel.yann.go4lunch.liveDatas;
 import android.content.Context;
 import android.location.Location;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -45,8 +44,6 @@ public class LocationLiveData extends LiveData<LocationData> {
 
     private boolean isFirstSubscriber = true;
 
-    private static final String TAG = LocationLiveData.class.getSimpleName();
-
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
@@ -68,7 +65,6 @@ public class LocationLiveData extends LiveData<LocationData> {
     @Override
     protected void onActive() {
         super.onActive();
-        Log.d(TAG, "onActive");
 
         if (this.isFirstSubscriber) {
             this.requestLastLocation();
@@ -82,7 +78,6 @@ public class LocationLiveData extends LiveData<LocationData> {
     @Override
     protected void onInactive() {
         super.onInactive();
-        Log.d(TAG, "onInactive");
 
         this.mFusedLocationProviderClient.removeLocationUpdates(this.mLocationCallback);
 

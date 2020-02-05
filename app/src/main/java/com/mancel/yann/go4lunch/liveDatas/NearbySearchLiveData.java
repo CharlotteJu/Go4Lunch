@@ -42,13 +42,11 @@ public class NearbySearchLiveData extends LiveData<NearbySearch> {
     @Override
     protected void onActive() {
         super.onActive();
-        Log.d(TAG, "onActive");
     }
 
     @Override
     protected void onInactive() {
         super.onInactive();
-        Log.d(TAG, "onInactive");
 
         // Disposes the Disposable
         if (this.mDisposable != null && !this.mDisposable.isDisposed()) {
@@ -67,8 +65,6 @@ public class NearbySearchLiveData extends LiveData<NearbySearch> {
         this.mDisposable = observable.subscribeWith(new DisposableObserver<NearbySearch>() {
             @Override
             public void onNext(NearbySearch nearbySearch) {
-                Log.d(TAG, "onNext");
-
                 // Notify
                 setValue(nearbySearch);
             }
@@ -80,7 +76,7 @@ public class NearbySearchLiveData extends LiveData<NearbySearch> {
 
             @Override
             public void onComplete() {
-                Log.d(TAG, "onComplete");
+                // Do nothing
             }
         });
     }

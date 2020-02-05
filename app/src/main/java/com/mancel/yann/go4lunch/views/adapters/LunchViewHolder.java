@@ -37,7 +37,7 @@ class LunchViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.item_restaurant_name)
     TextView mName;
-    @BindView(R.id.item_restaurant_type_and_address)
+    @BindView(R.id.item_restaurant_address)
     TextView mAddress;
     @BindView(R.id.item_restaurant_opening_hours)
     TextView mOpeningHours;

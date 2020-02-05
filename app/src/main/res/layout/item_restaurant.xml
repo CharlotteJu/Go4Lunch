@@ -30,9 +30,9 @@
         tools:text="Le Zinc"
         style="@style/TextViewStyle1"/>
 
-    <!-- TextView: Type and address -->
+    <!-- TextView: Address -->
     <TextView
-        android:id="@+id/item_restaurant_type_and_address"
+        android:id="@+id/item_restaurant_address"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_little"

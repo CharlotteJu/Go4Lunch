@@ -195,7 +195,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/item_workmate"/>
+            tools:listitem="@layout/item_workmate"
+            tools:itemCount="2"/>
+
+        <!-- TextView: No workmate -->
+        <TextView
+            android:id="@+id/activity_details_no_people"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            app:layout_constraintTop_toBottomOf="@id/separator"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/message_if_no_workmate"
+            android:visibility="visible"
+            style="@style/TextViewStyle2"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

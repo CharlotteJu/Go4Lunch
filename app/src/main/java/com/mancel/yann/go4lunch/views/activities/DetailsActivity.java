@@ -77,6 +77,8 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     RecyclerView mRecyclerView;
     @BindView(R.id.activity_details_FAB)
     FloatingActionButton mFAB;
+    @BindView(R.id.activity_details_no_people)
+    TextView mNoPeople;
 
     @Nullable
     private String mPlaceIdOfRestaurant = null;
@@ -138,7 +140,8 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
 
     @Override
     public void onDataChanged() {
-        // TODO: 20/01/2020 Add action
+        this.mNoPeople.setVisibility( (this.mAdapter.getItemCount() == 0) ? View.VISIBLE :
+                                                                            View.GONE);
     }
 
     // -- Actions --

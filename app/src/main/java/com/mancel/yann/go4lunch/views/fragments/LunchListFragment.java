@@ -179,6 +179,7 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
         }
 
         // Fetches Restaurants
+        // TODO: 05/02/2020 analyse if really useful to update at each location update
         this.mViewModel.fetchRestaurants(this.getContext(),
                                          locationData,
                                          NEARBY_SEARCH_RADIUS);

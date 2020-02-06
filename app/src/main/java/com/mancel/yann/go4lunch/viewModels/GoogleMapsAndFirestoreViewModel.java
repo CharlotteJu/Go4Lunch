@@ -13,13 +13,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.liveDatas.DetailsLiveData;
+import com.mancel.yann.go4lunch.liveDatas.FirestoreQueryLiveData;
 import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
-import com.mancel.yann.go4lunch.liveDatas.MessagesLiveData;
 import com.mancel.yann.go4lunch.liveDatas.NearbySearchLiveData;
 import com.mancel.yann.go4lunch.liveDatas.POIsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsLiveData;
 import com.mancel.yann.go4lunch.liveDatas.RestaurantsWithUsersLiveData;
-import com.mancel.yann.go4lunch.liveDatas.UsersLiveData;
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.Message;
@@ -55,7 +54,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
                   |
                   + -- NearbySearchLiveData
                   |
-                  + -- UsersLiveData
+                  + -- FirestoreQueryLiveData (User)
 
             LunchListFragment:
             |
@@ -65,23 +64,23 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
                   |
                   + -- RestaurantsLiveData
                   |
-                  + -- UsersLiveData
+                  + -- FirestoreQueryLiveData (User)
 
             WorkmateFragment:
             |
-            + --- UsersLiveData
+            + --- FirestoreQueryLiveData (User)
 
         Summary of LiveData for the activities: ****************************************************
 
             ChatActivity:
             |
-            + --- MessagesLiveData
+            + --- FirestoreQueryLiveData (Message)
 
             DetailsActivity:
             |
             + --- DetailsLiveData
             |
-            + --- UsersLiveData
+            + --- FirestoreQueryLiveData (User)
      */
 
     // FIELDS --------------------------------------------------------------------------------------
@@ -155,7 +154,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
         super.onCleared();
     }
 
-    // -- UsersLiveData --
+    // -- FirestoreQueryLiveData --
 
     /**
      * Gets all users from Firebase Firestore
@@ -164,7 +163,8 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     @NonNull
     public LiveData<List<User>> getUsers() {
         if (this.mUsersLiveData == null) {
-            this.mUsersLiveData = new UsersLiveData(this.mUserRepository.getAllUsers());
+            this.mUsersLiveData = new FirestoreQueryLiveData<>(User.class,
+                                                               this.mUserRepository.getAllUsers());
         }
 
         return this.mUsersLiveData;
@@ -178,13 +178,12 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     @NonNull
     public LiveData<List<User>> getUsersWithSameRestaurant(@NonNull final String placeIdOfRestaurant) {
         if (this.mUsersLiveDataWithSameRestaurant == null) {
-            this.mUsersLiveDataWithSameRestaurant = new UsersLiveData(this.mUserRepository.getAllUsersFromThisRestaurant(placeIdOfRestaurant));
+            this.mUsersLiveDataWithSameRestaurant = new FirestoreQueryLiveData<>(User.class,
+                                                                                 this.mUserRepository.getAllUsersFromThisRestaurant(placeIdOfRestaurant));
         }
 
         return this.mUsersLiveDataWithSameRestaurant;
     }
-
-    // -- MessagesLiveData --
 
     /**
      * Gets all messages from Firebase Firestore
@@ -193,7 +192,8 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     @NonNull
     public LiveData<List<Message>> getMessages() {
         if (this.mMessagesLiveData == null) {
-            this.mMessagesLiveData = new MessagesLiveData(this.mMessageRepository.getAllMessages());
+            this.mMessagesLiveData = new FirestoreQueryLiveData<>(Message.class,
+                                                                  this.mMessageRepository.getAllMessages());
         }
 
         return this.mMessagesLiveData;

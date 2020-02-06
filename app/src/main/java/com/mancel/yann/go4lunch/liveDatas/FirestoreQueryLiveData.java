@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.mancel.yann.go4lunch.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +17,14 @@ import java.util.List;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.liveDatas
  *
- * A {@link LiveData} of {@link List<User>} subclass.
+ * A {@link LiveData} of {@link List<T>} subclass.
  */
-public class UsersLiveData extends LiveData<List<User>> {
+public class FirestoreQueryLiveData<T> extends LiveData<List<T>> {
 
     // FIELDS --------------------------------------------------------------------------------------
+
+    @NonNull
+    private final Class<T> mClass;
 
     @NonNull
     private final Query mQuery;
@@ -31,15 +33,18 @@ public class UsersLiveData extends LiveData<List<User>> {
     @NonNull
     private ListenerRegistration mListenerRegistration;
 
-    private static final String TAG = UsersLiveData.class.getSimpleName();
+    private static final String TAG = FirestoreQueryLiveData.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
      * Constructor with an argument
-     * @param query a {@link Query} to fetch users from Firebase Firestore
+     * @param cls   a {@link Class<T>}
+     * @param query a {@link Query} to fetch data from Firebase Firestore
      */
-    public UsersLiveData(@NonNull final Query query) {
+    public FirestoreQueryLiveData(@NonNull final Class<T> cls,
+                                  @NonNull final Query query) {
+        this.mClass = cls;
         this.mQuery = query;
     }
 
@@ -70,22 +75,22 @@ public class UsersLiveData extends LiveData<List<User>> {
         // ListenerRegistration: SnapshotListener of Query
         this.mListenerRegistration = this.mQuery.addSnapshotListener( (queryDocumentSnapshots, e) -> {
             if (e != null) {
-                Log.e(TAG, "When addSnapshotListener to query (Update WorkmateAdapter): Listen failed.", e);
+                Log.e(TAG, "When addSnapshotListener to query: Listen failed.", e);
                 return;
             }
 
-            final List<User> users = new ArrayList<>();
+            final List<T> dataList = new ArrayList<>();
 
             if (queryDocumentSnapshots != null) {
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     if (doc != null) {
-                        users.add(doc.toObject(User.class));
+                        dataList.add(doc.toObject(this.mClass));
                     }
                 }
             }
 
             // Notify
-            this.setValue(users);
+            this.setValue(dataList);
         });
     }
 }

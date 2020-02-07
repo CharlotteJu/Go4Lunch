@@ -9,30 +9,52 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <!-- ImageView: Logo of workmate -->
-    <ImageView
-        android:id="@+id/item_workmate_image"
-        android:layout_width="@dimen/image_view_item_workmate_size"
-        android:layout_height="@dimen/image_view_item_workmate_size"
-        android:layout_marginTop="@dimen/margin_little"
-        android:layout_marginBottom="@dimen/margin_little"
-        android:layout_marginStart="@dimen/margin_normal"
+    <!-- CardView: For the user's interactions -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_workmate_CardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@null"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <!-- TextView: Description -->
-    <TextView
-        android:id="@+id/item_workmate_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_normal"
-        app:layout_constraintTop_toTopOf="@id/item_workmate_image"
-        app:layout_constraintBottom_toBottomOf="@id/item_workmate_image"
-        app:layout_constraintStart_toEndOf="@id/item_workmate_image"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="User hasn\'t decided yet"/>
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground">
+
+        <!-- ConstraintLayout -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- ImageView: Logo of workmate -->
+            <ImageView
+                android:id="@+id/item_workmate_image"
+                android:layout_width="@dimen/image_view_item_workmate_size"
+                android:layout_height="@dimen/image_view_item_workmate_size"
+                android:layout_marginTop="@dimen/margin_little"
+                android:layout_marginBottom="@dimen/margin_little"
+                android:layout_marginStart="@dimen/margin_normal"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:contentDescription="@null"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <!-- TextView: Description -->
+            <TextView
+                android:id="@+id/item_workmate_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_normal"
+                app:layout_constraintTop_toTopOf="@id/item_workmate_image"
+                app:layout_constraintBottom_toBottomOf="@id/item_workmate_image"
+                app:layout_constraintStart_toEndOf="@id/item_workmate_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="User hasn\'t decided yet"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

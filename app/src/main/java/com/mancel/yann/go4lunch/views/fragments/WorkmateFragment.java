@@ -73,6 +73,11 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
                                                                             View.GONE);
     }
 
+    @Override
+    public void onCardViewClicked(@NonNull final View view) {
+        // TODO: 07/02/2020 Implement this action
+    }
+
     // -- Instances --
 
     /**

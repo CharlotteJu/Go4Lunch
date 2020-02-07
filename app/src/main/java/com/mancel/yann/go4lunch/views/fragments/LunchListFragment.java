@@ -80,6 +80,14 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
                                                                                 View.GONE);
     }
 
+    @Override
+    public void onCardViewClicked(@NonNull final View view) {
+        if (view.getTag() != null) {
+            final String placeIdOfRestaurant = (String) view.getTag();
+            this.mCallbackFromFragmentToActivity.onSelectedRestaurant(placeIdOfRestaurant);
+        }
+    }
+
     // -- Instances --
 
     /**

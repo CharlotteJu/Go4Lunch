@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,7 +35,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
 
     // FIELDS --------------------------------------------------------------------------------------
 
-    @NonNull
+    @Nullable
     private final AdapterListener mCallback;
 
     @NonNull
@@ -50,7 +51,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
      * @param callback  a {@link AdapterListener} for the callback system
      * @param glide     a {@link RequestManager}
      */
-    public WorkmateAdapter(@NonNull final AdapterListener callback,
+    public WorkmateAdapter(@Nullable final AdapterListener callback,
                            @NonNull final RequestManager glide) {
         this.mCallback = callback;
         this.mGlide = glide;
@@ -102,7 +103,9 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
         diffResult.dispatchUpdatesTo(this);
 
         // Callback to update UI
-        this.mCallback.onDataChanged();
+        if (this.mCallback != null) {
+            this.mCallback.onDataChanged();
+        }
     }
 
     // INNER CLASSES -------------------------------------------------------------------------------

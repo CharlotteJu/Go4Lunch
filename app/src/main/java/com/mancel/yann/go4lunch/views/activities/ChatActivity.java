@@ -84,6 +84,11 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
                                                                              View.GONE);
     }
 
+    @Override
+    public void onCardViewClicked(@NonNull final View view) {
+        // TODO: 07/02/2020 Implement this action
+    }
+
     // -- Actions --
 
     @OnClick({R.id.activity_chat_send_button,

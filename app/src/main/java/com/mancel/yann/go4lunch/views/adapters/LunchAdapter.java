@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ import com.mancel.yann.go4lunch.utils.DetailsUtils;
 import com.mancel.yann.go4lunch.utils.RestaurantDiffCallback;
 import com.mancel.yann.go4lunch.utils.RestaurantUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -41,7 +43,7 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.LunchViewHol
 
     // FIELDS --------------------------------------------------------------------------------------
 
-    @NonNull
+    @Nullable
     private final AdapterListener mCallback;
 
     @NonNull
@@ -55,7 +57,7 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.LunchViewHol
     /**
      * Constructor by default
      */
-    public LunchAdapter(@NonNull final AdapterListener callback,
+    public LunchAdapter(@Nullable final AdapterListener callback,
                         @NonNull final RequestManager glide) {
         this.mCallback = callback;
         this.mGlide = glide;
@@ -81,7 +83,9 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.LunchViewHol
 
     @Override
     public void onBindViewHolder(@NonNull LunchViewHolder lunchViewHolder, int position) {
-        lunchViewHolder.updateLunch(this.mRestaurants.get(position), this.mGlide);
+        lunchViewHolder.updateLunch(this.mRestaurants.get(position),
+                                    this.mGlide,
+                                    this.mCallback);
     }
 
     @Override
@@ -107,7 +111,9 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.LunchViewHol
         diffResult.dispatchUpdatesTo(this);
 
         // Callback to update UI
-        this.mCallback.onDataChanged();
+        if (this.mCallback != null) {
+            this.mCallback.onDataChanged();
+        }
     }
 
     // INNER CLASSES -------------------------------------------------------------------------------
@@ -119,6 +125,8 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.LunchViewHol
 
         // FIELDS ----------------------------------------------------------------------------------
 
+        @BindView(R.id.item_restaurant_CardView)
+        CardView mCardView;
         @BindView(R.id.item_restaurant_name)
         TextView mName;
         @BindView(R.id.item_restaurant_address)
@@ -135,6 +143,10 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.LunchViewHol
         RatingBar mRatingBar;
         @BindView(R.id.item_restaurant_image)
         ImageView mImage;
+
+        @SuppressWarnings("NullableProblems")
+        @NonNull
+        private WeakReference<AdapterListener> mCallbackWeakReference;
 
         private static final String TAG = LunchViewHolder.class.getSimpleName();
 
@@ -169,8 +181,26 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.LunchViewHol
          * Updates the item
          * @param restaurant    a {@link Restaurant}
          * @param glide         a {@link RequestManager}
+         * @param callback      a {@link AdapterListener}
          */
-        public void updateLunch(@NonNull final Restaurant restaurant, @NonNull final RequestManager glide) {
+        public void updateLunch(@NonNull final Restaurant restaurant,
+                                @NonNull final RequestManager glide,
+                                @Nullable final AdapterListener callback) {
+            // Callback
+            this.mCallbackWeakReference = new WeakReference<>(callback);
+
+            // CardView
+            this.mCardView.setOnClickListener( v -> {
+                final AdapterListener adapterListener = this.mCallbackWeakReference.get();
+
+                if (adapterListener != null) {
+                    // Add Place Id of restaurant into Tag of CarView
+                    this.mCardView.setTag(restaurant.getDetails().getResult().getPlaceId());
+
+                    adapterListener.onCardViewClicked(v);
+                }
+            });
+
             // Name
             this.mName.setText(restaurant.getDetails().getResult().getName());
 

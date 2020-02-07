@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.DiffUtil;
@@ -37,7 +38,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     // FIELDS --------------------------------------------------------------------------------------
 
-    @NonNull
+    @Nullable
     private final AdapterListener mCallback;
 
     @NonNull
@@ -57,7 +58,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
      * @param glide             a {@link RequestManager}
      * @param uidOfCurrentUser  a {@link String} that contains the uid of current user
      */
-    public MessageAdapter(@NonNull final AdapterListener callback,
+    public MessageAdapter(@Nullable final AdapterListener callback,
                           @NonNull final RequestManager glide,
                           @NonNull final String uidOfCurrentUser) {
         this.mCallback = callback;
@@ -111,7 +112,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         diffResult.dispatchUpdatesTo(this);
 
         // Callback to update UI
-        this.mCallback.onDataChanged();
+        if (this.mCallback != null) {
+            this.mCallback.onDataChanged();
+        }
     }
 
     // INNER CLASSES -------------------------------------------------------------------------------

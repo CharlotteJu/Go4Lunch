@@ -9,115 +9,137 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <!-- Guideline: vertical -->
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/guideline_vertical_item_restaurant" />
-
-    <!-- TextView: Name -->
-    <TextView
-        android:id="@+id/item_restaurant_name"
+    <!-- CardView: For the user's interactions -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_restaurant_CardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_little"
-        android:layout_marginEnd="@dimen/margin_little"
-        app:layout_constraintTop_toTopOf="@id/item_restaurant_image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        tools:text="Le Zinc"
-        style="@style/TextViewStyle1"/>
-
-    <!-- TextView: Address -->
-    <TextView
-        android:id="@+id/item_restaurant_address"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_little"
-        android:layout_marginEnd="@dimen/margin_little"
-        app:layout_constraintTop_toTopOf="@id/item_restaurant_image"
-        app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        tools:text="12 rue du Faubourg Poissonnière"
-        style="@style/TextViewStyle3"/>
-
-    <!-- TextView: Opening hours -->
-    <TextView
-        android:id="@+id/item_restaurant_opening_hours"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_little"
-        android:layout_marginEnd="@dimen/margin_little"
-        app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        tools:text="Open until 7pm"
-        style="@style/TextViewStyle4"/>
-
-    <!-- TextView: Distance -->
-    <TextView
-        android:id="@+id/item_restaurant_distance"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_little"
-        app:layout_constraintTop_toTopOf="@id/item_restaurant_image"
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        app:layout_constraintEnd_toStartOf="@id/item_restaurant_image"
-        app:layout_constraintHorizontal_bias="1"
-        tools:text="120m"
-        style="@style/TextViewStyle6"/>
-
-    <!-- TextView: people number -->
-    <TextView
-        android:id="@+id/item_restaurant_people_number"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_little"
-        app:layout_constraintTop_toTopOf="@id/item_restaurant_image"
-        app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
-        app:layout_constraintEnd_toStartOf="@id/item_restaurant_image"
-        tools:text="(2)"
-        style="@style/TextViewStyle5"/>
-
-    <!-- ImageView: People image -->
-    <ImageView
-        android:id="@+id/item_restaurant_people_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/item_restaurant_image"
-        app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        app:layout_constraintEnd_toStartOf="@id/item_restaurant_people_number"
-        app:layout_constraintHorizontal_bias="1"
-        android:src="@drawable/ic_person"
-        android:contentDescription="@null"/>
-
-    <!-- RatingBar: Stars -->
-    <RatingBar
-        android:id="@+id/item_restaurant_rating_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_tiny"
-        app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        app:layout_constraintEnd_toStartOf="@id/item_restaurant_image"
-        app:layout_constraintHorizontal_bias="1"
-        style="@style/RatingBarStyle"/>
-
-    <!-- ImageView: Image -->
-    <ImageView
-        android:id="@+id/item_restaurant_image"
-        android:layout_width="@dimen/image_view_item_restaurant_size"
-        android:layout_height="@dimen/image_view_item_restaurant_size"
-        android:layout_margin="@dimen/margin_little"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@null"
-        tools:srcCompat="@tools:sample/backgrounds/scenic"
-        style="@style/ImageViewStyle"/>
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground">
+
+        <!-- ConstraintLayout -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Guideline: vertical -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/guideline_vertical_item_restaurant" />
+
+            <!-- TextView: Name -->
+            <TextView
+                android:id="@+id/item_restaurant_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_little"
+                android:layout_marginEnd="@dimen/margin_little"
+                app:layout_constraintTop_toTopOf="@id/item_restaurant_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+                tools:text="Le Zinc"
+                style="@style/TextViewStyle1"/>
+
+            <!-- TextView: Address -->
+            <TextView
+                android:id="@+id/item_restaurant_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_little"
+                android:layout_marginEnd="@dimen/margin_little"
+                app:layout_constraintTop_toTopOf="@id/item_restaurant_image"
+                app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+                tools:text="12 rue du Faubourg Poissonnière"
+                style="@style/TextViewStyle3"/>
+
+            <!-- TextView: Opening hours -->
+            <TextView
+                android:id="@+id/item_restaurant_opening_hours"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_little"
+                android:layout_marginEnd="@dimen/margin_little"
+                app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+                tools:text="Open until 7pm"
+                style="@style/TextViewStyle4"/>
+
+            <!-- TextView: Distance -->
+            <TextView
+                android:id="@+id/item_restaurant_distance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_little"
+                app:layout_constraintTop_toTopOf="@id/item_restaurant_image"
+                app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+                app:layout_constraintEnd_toStartOf="@id/item_restaurant_image"
+                app:layout_constraintHorizontal_bias="1"
+                tools:text="120m"
+                style="@style/TextViewStyle6"/>
+
+            <!-- TextView: people number -->
+            <TextView
+                android:id="@+id/item_restaurant_people_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_little"
+                app:layout_constraintTop_toTopOf="@id/item_restaurant_image"
+                app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
+                app:layout_constraintEnd_toStartOf="@id/item_restaurant_image"
+                tools:text="(2)"
+                style="@style/TextViewStyle5"/>
+
+            <!-- ImageView: People image -->
+            <ImageView
+                android:id="@+id/item_restaurant_people_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/item_restaurant_image"
+                app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
+                app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+                app:layout_constraintEnd_toStartOf="@id/item_restaurant_people_number"
+                app:layout_constraintHorizontal_bias="1"
+                android:src="@drawable/ic_person"
+                android:contentDescription="@null"/>
+
+            <!-- RatingBar: Stars -->
+            <RatingBar
+                android:id="@+id/item_restaurant_rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_tiny"
+                app:layout_constraintBottom_toBottomOf="@id/item_restaurant_image"
+                app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+                app:layout_constraintEnd_toStartOf="@id/item_restaurant_image"
+                app:layout_constraintHorizontal_bias="1"
+                style="@style/RatingBarStyle"/>
+
+            <!-- ImageView: Image -->
+            <ImageView
+                android:id="@+id/item_restaurant_image"
+                android:layout_width="@dimen/image_view_item_restaurant_size"
+                android:layout_height="@dimen/image_view_item_restaurant_size"
+                android:layout_margin="@dimen/margin_little"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:contentDescription="@null"
+                tools:srcCompat="@tools:sample/backgrounds/scenic"
+                style="@style/ImageViewStyle"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

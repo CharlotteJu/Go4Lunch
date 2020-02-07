@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_lunchMapFragment">
+
+    <!-- fragment: LunchMapFragment -->
+    <fragment
+        android:id="@+id/navigation_lunchMapFragment"
+        android:name="com.mancel.yann.go4lunch.views.fragments.LunchMapFragment"
+        android:label="@string/hungry_toolbar"
+        tools:layout="@layout/fragment_lunch_map"/>
+
+    <!-- fragment: LunchListFragment -->
+    <fragment
+        android:id="@+id/navigation_lunchListFragment"
+        android:name="com.mancel.yann.go4lunch.views.fragments.LunchListFragment"
+        android:label="@string/hungry_toolbar"
+        tools:layout="@layout/fragment_lunch_list"/>
+
+    <!-- fragment: WorkmateFragment -->
+    <fragment
+        android:id="@+id/navigation_workmateFragment"
+        android:name="com.mancel.yann.go4lunch.views.fragments.WorkmateFragment"
+        android:label="@string/workmate_toolbar"
+        tools:layout="@layout/fragment_workmate"/>
+
+</navigation>

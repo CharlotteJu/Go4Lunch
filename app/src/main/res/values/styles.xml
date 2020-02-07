@@ -42,7 +42,6 @@
 
     <!-- Toolbar style -->
     <style name="ToolbarStyle" parent="ThemeOverlay.AppCompat.Dark">
-        <item name="title">@string/title_toolbar</item>
         <item name="titleTextColor">@android:color/white</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:elevation" tools:targetApi="21">@dimen/elevation_toolbar</item>

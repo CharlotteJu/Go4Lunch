@@ -5,21 +5,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/bottom_navigation_menu_map"
+        android:id="@id/navigation_lunchMapFragment"
         android:enabled="true"
         android:icon="@drawable/ic_map"
         android:title="@string/bottom_navigation_menu_map"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/bottom_navigation_menu_list"
+        android:id="@id/navigation_lunchListFragment"
         android:enabled="true"
         android:icon="@drawable/ic_view_list"
         android:title="@string/bottom_navigation_menu_list"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/bottom_navigation_menu_workmate"
+        android:id="@id/navigation_workmateFragment"
         android:enabled="true"
         android:icon="@drawable/ic_people"
         android:title="@string/bottom_navigation_menu_workmate"

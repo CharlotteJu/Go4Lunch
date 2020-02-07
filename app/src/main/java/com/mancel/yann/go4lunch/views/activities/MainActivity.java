@@ -17,6 +17,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
@@ -30,9 +34,6 @@ import com.mancel.yann.go4lunch.utils.BlurTransformation;
 import com.mancel.yann.go4lunch.utils.ShowMessage;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
 import com.mancel.yann.go4lunch.views.fragments.FragmentListener;
-import com.mancel.yann.go4lunch.views.fragments.LunchListFragment;
-import com.mancel.yann.go4lunch.views.fragments.LunchMapFragment;
-import com.mancel.yann.go4lunch.views.fragments.WorkmateFragment;
 import com.mancel.yann.go4lunch.workers.WorkerController;
 
 import butterknife.BindView;
@@ -46,16 +47,6 @@ import butterknife.BindView;
  */
 public class MainActivity extends BaseActivity implements FragmentListener {
 
-    // ENUMS ---------------------------------------------------------------------------------------
-
-    private enum FragmentType {MAP, LIST, WORKMATE}
-
-    @SuppressWarnings("NullableProblems")
-    @NonNull
-    private FragmentType mFragmentType;
-
-    public static final String BUNDLE_ENUM = "BUNDLE_ENUM";
-
     // FIELDS --------------------------------------------------------------------------------------
 
     @BindView(R.id.activity_main_CoordinatorLayout)
@@ -68,15 +59,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     NavigationView mNavigationView;
     @BindView(R.id.activity_main_bottom_navigation_view)
     BottomNavigationView mBottomNavigationView;
-
-    @Nullable
-    private LunchMapFragment mLunchMapFragment = null;
-
-    @Nullable
-    private LunchListFragment mLunchListFragment = null;
-
-    @Nullable
-    private WorkmateFragment mWorkmateFragment = null;
 
     public static final String INTENT_PLACE_ID = "INTENT_PLACE_ID";
     public static final String INTENT_CURRENT_USER = "INTENT_CURRENT_USER";
@@ -100,20 +82,16 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
     @Override
     protected void configureDesign(@Nullable Bundle savedInstanceState) {
-        // Bundle
-        this.fetchDataFromBundle(savedInstanceState);
+        // User
+        this.createUser();
 
         // UI
         this.configureToolBar();
         this.configureDrawerLayout();
         this.configureNavigationView();
-        this.configureBottomNavigationView();
 
-        // User
-        this.createUser();
-
-        // Fragment
-        this.configureFragmentIntoOnCreate();
+        // Fragment Navigation
+        this.configureFragmentNavigation();
 
         // WorkManager
         WorkerController.startWorkRequestIntoWorkManager(this.getApplicationContext(),
@@ -150,15 +128,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
             // TODO: 10/01/2020 call logout method and not super.onBackPressed();
             super.onBackPressed();
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        // Saves the current Fragment type
-        outState.putSerializable(BUNDLE_ENUM, this.mFragmentType);
-
-        // call superclass to save any view hierarchy
-        super.onSaveInstanceState(outState);
     }
 
     // -- FragmentListener interface --
@@ -218,26 +187,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
                 this.logout();
                 break;
 
-            // BottomNavigationView ----------------------------------------------------------------
-
-            // Maps fragment
-            case R.id.bottom_navigation_menu_map:
-                this.mFragmentType = FragmentType.MAP;
-                this.configureLunchMapFragment();
-                break;
-
-            // List fragment
-            case R.id.bottom_navigation_menu_list:
-                this.mFragmentType = FragmentType.LIST;
-                this.configureLunchListFragment();
-                break;
-
-            // Workmate fragment
-            case R.id.bottom_navigation_menu_workmate:
-                this.mFragmentType = FragmentType.WORKMATE;
-                this.configureWorkmateFragment();
-                break;
-
             default:
                 Log.e(this.getClass().getSimpleName(), "onNavigationItemSelected: None of ids selected among the list");
         }
@@ -248,24 +197,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
 
         return true;
-    }
-
-    // -- Bundle --
-
-    /**
-     * Configures data from {@link Bundle}
-     * @param savedInstanceState a {@link Bundle}
-     */
-    private void fetchDataFromBundle(@Nullable final Bundle savedInstanceState) {
-        // Restores the current Fragment type
-        FragmentType fragmentType = null;
-
-        if (savedInstanceState != null) {
-            fragmentType = (FragmentType) savedInstanceState.getSerializable(BUNDLE_ENUM);
-        }
-
-        this.mFragmentType = (fragmentType != null) ? fragmentType :
-                                                      FragmentType.MAP;
     }
 
     // -- DrawerLayout --
@@ -346,71 +277,28 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
     }
 
-    // -- BottomNavigationView --
+    // -- Fragment Navigation --
 
     /**
-     * Configures the {@link BottomNavigationView}
+     * Configures the {@link androidx.fragment.app.Fragment} navigation
      */
-    private void configureBottomNavigationView() {
-        this.mBottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-    }
+    private void configureFragmentNavigation() {
+        // NavController
+        final NavController navController = Navigation.findNavController(this,
+                                                                          R.id.activity_main_nav_host_fragment);
 
-    // -- Fragment --
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        final AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_lunchMapFragment,
+                                                                                        R.id.navigation_lunchListFragment,
+                                                                                        R.id.navigation_workmateFragment)
+                                                                               .build();
 
-    /**
-     * Configures the current {@link androidx.fragment.app.Fragment}
-     */
-    private void configureFragmentIntoOnCreate() {
-        switch (this.mFragmentType) {
+        NavigationUI.setupActionBarWithNavController(this,
+                                                      navController,
+                                                      appBarConfiguration);
 
-            case MAP:
-                this.configureLunchMapFragment();
-                break;
-
-            case LIST:
-                this.configureLunchListFragment();
-                break;
-
-            case WORKMATE:
-                this.configureWorkmateFragment();
-                break;
-
-            default:
-                Log.e(TAG, "configureFragment: Error to configure the fragment");
-        }
-    }
-
-    /**
-     * Configures the {@link LunchMapFragment}
-     */
-    private void configureLunchMapFragment() {
-        if (this.mLunchMapFragment == null) {
-            this.mLunchMapFragment = LunchMapFragment.newInstance();
-        }
-
-        this.replaceFragment(this.mLunchMapFragment, R.id.activity_main_frame_layout);
-    }
-
-    /**
-     * Configures the {@link LunchListFragment}
-     */
-    private void configureLunchListFragment() {
-        if (this.mLunchListFragment == null) {
-            this.mLunchListFragment = LunchListFragment.newInstance();
-        }
-
-        this.replaceFragment(this.mLunchListFragment, R.id.activity_main_frame_layout);
-    }
-
-    /**
-     * Configures the {@link WorkmateFragment}
-     */
-    private void configureWorkmateFragment() {
-        if (this.mWorkmateFragment == null) {
-            this.mWorkmateFragment = WorkmateFragment.newInstance();
-        }
-
-        this.replaceFragment(this.mWorkmateFragment, R.id.activity_main_frame_layout);
+        NavigationUI.setupWithNavController(this.mBottomNavigationView, navController);
     }
 
     // -- User --

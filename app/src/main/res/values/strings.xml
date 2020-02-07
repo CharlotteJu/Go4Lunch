@@ -17,7 +17,8 @@
     <string name="bottom_navigation_menu_list">List View</string>
     <string name="bottom_navigation_menu_workmate">Workmates</string>
     <string name="toolbar_menu_search">Search</string>
-    <string name="title_toolbar">I\'m Hungry!</string>
+    <string name="hungry_toolbar">I\'m Hungry!</string>
+    <string name="workmate_toolbar">Available workmates</string>
 
     <!-- activity_auth.xml -->
     <string name="subtitle_authentication">Find a nice restaurant and invite your co-workers for lunch!</string>

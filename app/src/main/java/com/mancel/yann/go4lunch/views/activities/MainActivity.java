@@ -1,7 +1,6 @@
 package com.mancel.yann.go4lunch.views.activities;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,7 +17,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
@@ -28,15 +26,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.User;
-import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.BlurTransformation;
 import com.mancel.yann.go4lunch.utils.ShowMessage;
-import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
-import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
-import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 import com.mancel.yann.go4lunch.views.fragments.FragmentListener;
 import com.mancel.yann.go4lunch.views.fragments.LunchListFragment;
 import com.mancel.yann.go4lunch.views.fragments.LunchMapFragment;
@@ -77,10 +69,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     @BindView(R.id.activity_main_bottom_navigation_view)
     BottomNavigationView mBottomNavigationView;
 
-    @SuppressWarnings("NullableProblems")
-    @NonNull
-    private GoogleMapsAndFirestoreViewModel mViewModel;
-
     @Nullable
     private LunchMapFragment mLunchMapFragment = null;
 
@@ -120,9 +108,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         this.configureDrawerLayout();
         this.configureNavigationView();
         this.configureBottomNavigationView();
-
-        // ViewModel
-        this.configureViewModel();
 
         // User
         this.createUser();
@@ -168,57 +153,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        // ACCESS_FINE_LOCATION
-        if (requestCode == BaseFragment.REQUEST_CODE_PERMISSION_LOCATION) {
-            // No permission
-            if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Log.e("MainActivity", "No permission to access fine location");
-            }
-
-            // According to the fragment type where there is the geolocation
-            switch (this.mFragmentType) {
-
-                case MAP:
-                    this.mLunchMapFragment.startLocationUpdate();
-                    break;
-
-                case LIST:
-                    this.mLunchListFragment.startLocationUpdate();
-                    break;
-
-                default:
-                    Log.e(TAG, "onRequestPermissionsResult: Error during the permission asking");
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Check settings to location
-        if (requestCode == LunchMapFragment.REQUEST_CODE_CHECK_SETTINGS_TO_LOCATION &&
-            resultCode == RESULT_OK) {
-
-            // According to the fragment type where there is the geolocation
-            switch (this.mFragmentType) {
-
-                case MAP:
-                    this.mLunchMapFragment.startLocationUpdate();
-                    break;
-
-                case LIST:
-                    this.mLunchListFragment.startLocationUpdate();
-                    break;
-
-                default:
-                    Log.e(TAG, "onActivityResult: Error during the settings to location");
-            }
-        }
-    }
-
-    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         // Saves the current Fragment type
         outState.putSerializable(BUNDLE_ENUM, this.mFragmentType);
@@ -227,7 +161,7 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         super.onSaveInstanceState(outState);
     }
 
-    // -- FragmentListener --
+    // -- FragmentListener interface --
 
     @Override
     public void onSelectedRestaurant(@NonNull final String placeIdOfRestaurant) {
@@ -419,20 +353,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
      */
     private void configureBottomNavigationView() {
         this.mBottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-    }
-
-    // -- GoogleMapsAndFirestoreViewModel --
-
-    /**
-     * Configures the {@link GoogleMapsAndFirestoreViewModel}
-     */
-    private void configureViewModel() {
-        // TODO: 27/01/2020 UserRepositories must be removed thanks to Dagger 2
-        final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
-                                                                                                          new MessageRepositoryImpl(),
-                                                                                                          new PlaceRepositoryImpl());
-
-        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
     }
 
     // -- Fragment --

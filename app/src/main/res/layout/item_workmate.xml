@@ -21,7 +21,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@null"
-        tools:background="@color/colorAccent"/>
+        tools:srcCompat="@tools:sample/avatars" />
 
     <!-- TextView: Description -->
     <TextView

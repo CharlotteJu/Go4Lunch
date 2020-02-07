@@ -41,7 +41,7 @@ import io.reactivex.Observable;
  *
  * A {@link ViewModel} subclass.
  */
-public class GoogleMapsAndFirestoreViewModel extends ViewModel {
+public class Go4LunchViewModel extends ViewModel {
 
     /*
         Summary of LiveData for the fragments: *****************************************************
@@ -127,7 +127,7 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
     @Nullable
     private RestaurantsWithUsersLiveData mRestaurantsWithUsersLiveData = null;
 
-    private static final String TAG = GoogleMapsAndFirestoreViewModel.class.getSimpleName();
+    private static final String TAG = Go4LunchViewModel.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -137,9 +137,9 @@ public class GoogleMapsAndFirestoreViewModel extends ViewModel {
      * @param messageRepository a {@link MessageRepository} for data from Firebase Firestore
      * @param placeRepository   a {@link PlaceRepository} for data from Google Maps
      */
-    public GoogleMapsAndFirestoreViewModel(@NonNull final UserRepository userRepository,
-                                           @NonNull final MessageRepository messageRepository,
-                                           @NonNull final PlaceRepository placeRepository) {
+    public Go4LunchViewModel(@NonNull final UserRepository userRepository,
+                             @NonNull final MessageRepository messageRepository,
+                             @NonNull final PlaceRepository placeRepository) {
         this.mUserRepository = userRepository;
         this.mMessageRepository = messageRepository;
         this.mPlaceRepository = placeRepository;

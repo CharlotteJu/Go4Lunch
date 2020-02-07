@@ -12,6 +12,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -21,6 +22,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
+import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
+import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
+import com.mancel.yann.go4lunch.viewModels.Go4LunchViewModel;
+import com.mancel.yann.go4lunch.viewModels.Go4LunchViewModelFactory;
 
 import butterknife.ButterKnife;
 
@@ -37,13 +43,32 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @SuppressWarnings("NullableProblems")
     @NonNull
+    protected Go4LunchViewModel mViewModel;
+
+    @SuppressWarnings("NullableProblems")
+    @NonNull
     protected FirebaseAuth mFirebaseAuth;
+
+    private static final String TAG = BaseActivity.class.getSimpleName();
 
     // METHODS -------------------------------------------------------------------------------------
 
+    /**
+     * Gets the integer value of the activity layout
+     * @return an integer that corresponds to the activity layout
+     */
     protected abstract int getActivityLayout();
+
+    /**
+     * Gets the {@link Toolbar}
+     * @return a {@link Toolbar}
+     */
     @Nullable
     protected abstract Toolbar getToolbar();
+
+    /**
+     * Configures the design of each daughter class
+     */
     protected abstract void configureDesign(@Nullable Bundle savedInstanceState);
 
     // -- Activity --
@@ -61,8 +86,25 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Configure the Firebase authentication
         this.configureFirebaseAuth();
 
+        // ViewModel
+        this.configureViewModel();
+
         // Configures the design of the activity
         this.configureDesign(savedInstanceState);
+    }
+
+    // -- ViewModel --
+
+    /**
+     * Configures the {@link Go4LunchViewModel}
+     */
+    private void configureViewModel() {
+        // TODO: 07/02/2020 Repositories must be removed thanks to Dagger 2
+        final Go4LunchViewModelFactory factory = new Go4LunchViewModelFactory(new UserRepositoryImpl(),
+                                                                              new MessageRepositoryImpl(),
+                                                                              new PlaceRepositoryImpl());
+
+        this.mViewModel = new ViewModelProvider(this, factory).get(Go4LunchViewModel.class);
     }
 
     // -- Toolbar --
@@ -130,13 +172,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                     googleSignInClient.signOut()
                                       .addOnCompleteListener(this,
-                                                             (task) -> Log.e("BaseActivity", "signOutCurrentUser: google.com"));
+                                                             (task) -> Log.d(TAG, "signOutCurrentUser: google.com"));
                 }
 
                 if (providerId.equals("facebook.com")) {
                     // Facebook sign out
                     LoginManager.getInstance().logOut();
-                    Log.e("BaseActivity", "signOutCurrentUser: facebook.com");
                 }
             }
 
@@ -167,11 +208,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                     googleSignInClient.revokeAccess()
                                       .addOnCompleteListener(this,
-                                                             (task) -> Log.e("BaseActivity", "deleteCurrentUserAccount: Disconnect Google account"));
+                                                             (task) -> Log.e(TAG, "deleteCurrentUserAccount: Disconnect Google account"));
                 }
 
                 if (providerId.equals("facebook.com")) {
-                    Log.e("BaseActivity", "deleteCurrentUserAccount: facebook.com");
+                    Log.e(TAG, "deleteCurrentUserAccount: facebook.com");
                     LoginManager.getInstance().logOut();
                 }
             }
@@ -180,7 +221,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         this.getCurrentUser().delete()
                              .addOnCompleteListener((task) -> {
                                  if (task.isSuccessful()) {
-                                     Log.e("BaseActivity", "deleteCurrentUserAccount: delete current user");
+                                     Log.e(TAG, "deleteCurrentUserAccount: delete current user");
                                  }
                              });
     }

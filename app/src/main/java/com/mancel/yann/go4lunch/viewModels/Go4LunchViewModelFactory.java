@@ -15,7 +15,7 @@ import com.mancel.yann.go4lunch.repositories.UserRepository;
  *
  * A class which implements {@link ViewModelProvider.Factory}.
  */
-public class GoogleMapsAndFirestoreViewModelFactory implements ViewModelProvider.Factory {
+public class Go4LunchViewModelFactory implements ViewModelProvider.Factory {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -36,9 +36,9 @@ public class GoogleMapsAndFirestoreViewModelFactory implements ViewModelProvider
      * @param messageRepository a {@link MessageRepository} for data from Firebase Firestore
      * @param placeRepository   a {@link PlaceRepository} for data from Google Maps
      */
-    public GoogleMapsAndFirestoreViewModelFactory(@NonNull final UserRepository userRepository,
-                                                  @NonNull final MessageRepository messageRepository,
-                                                  @NonNull final PlaceRepository placeRepository) {
+    public Go4LunchViewModelFactory(@NonNull final UserRepository userRepository,
+                                    @NonNull final MessageRepository messageRepository,
+                                    @NonNull final PlaceRepository placeRepository) {
         this.mUserRepository = userRepository;
         this.mMessageRepository = messageRepository;
         this.mPlaceRepository = placeRepository;
@@ -51,10 +51,10 @@ public class GoogleMapsAndFirestoreViewModelFactory implements ViewModelProvider
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(GoogleMapsAndFirestoreViewModel.class)) {
-            return (T) new GoogleMapsAndFirestoreViewModel(this.mUserRepository,
-                                                           this.mMessageRepository,
-                                                           this.mPlaceRepository);
+        if (modelClass.isAssignableFrom(Go4LunchViewModel.class)) {
+            return (T) new Go4LunchViewModel(this.mUserRepository,
+                                             this.mMessageRepository,
+                                             this.mPlaceRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

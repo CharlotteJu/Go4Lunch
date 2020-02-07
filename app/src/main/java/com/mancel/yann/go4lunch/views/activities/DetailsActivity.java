@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,15 +25,10 @@ import com.mancel.yann.go4lunch.apis.GoogleMapsService;
 import com.mancel.yann.go4lunch.liveDatas.DetailsLiveData;
 import com.mancel.yann.go4lunch.models.Details;
 import com.mancel.yann.go4lunch.models.User;
-import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.DetailsUtils;
 import com.mancel.yann.go4lunch.utils.InsetDivider;
 import com.mancel.yann.go4lunch.utils.RestaurantUtils;
 import com.mancel.yann.go4lunch.utils.ShowMessage;
-import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
-import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.WorkmateAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
@@ -91,10 +85,6 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
 
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private GoogleMapsAndFirestoreViewModel mViewModel;
-
-    @SuppressWarnings("NullableProblems")
-    @NonNull
     private DetailsLiveData mDetailsLiveData;
 
     @SuppressWarnings("NullableProblems")
@@ -128,15 +118,12 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         this.configureUpButtonOfToolBar();
         this.configureRecyclerView();
 
-        // ViewModel
-        this.configureViewModel();
-
         // LiveData
         this.configureDetailsLiveData();
         this.configureUsersLiveData();
     }
 
-    // -- AdapterListener --
+    // -- AdapterListener interface --
 
     @Override
     public void onDataChanged() {
@@ -220,19 +207,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         this.mRecyclerView.addItemDecoration(divider);
     }
 
-    // -- GoogleMapsAndFirestoreViewModel --
-
-    /**
-     * Configures the {@link GoogleMapsAndFirestoreViewModel}
-     */
-    private void configureViewModel() {
-        // TODO: 27/01/2020 UserRepositories must be removed thanks to Dagger 2
-        final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
-                                                                                                          new MessageRepositoryImpl(),
-                                                                                                          new PlaceRepositoryImpl());
-
-        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
-    }
+    // -- LiveData --
 
     /**
      * Configures the {@link LiveData} of {@link List<User>}

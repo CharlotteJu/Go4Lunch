@@ -6,21 +6,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.mancel.yann.go4lunch.R;
-import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.Restaurant;
-import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
-import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
-import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.LunchAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
@@ -49,10 +42,6 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
 
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private GoogleMapsAndFirestoreViewModel mViewModel;
-
-    @SuppressWarnings("NullableProblems")
-    @NonNull
     private LunchAdapter mAdapter;
 
     private static final double NEARBY_SEARCH_RADIUS = 200.0;
@@ -77,9 +66,6 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
     protected void configureDesign() {
         // UI
         this.configureRecyclerView();
-
-        // ViewModel
-        this.configureViewModel();
 
         // LiveData
         this.configureLocationLiveData();
@@ -122,19 +108,7 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
                                                                        DividerItemDecoration.VERTICAL));
     }
 
-    // -- GoogleMapsAndFirestoreViewModel --
-
-    /**
-     * Configures the {@link GoogleMapsAndFirestoreViewModel}
-     */
-    private void configureViewModel() {
-        // TODO: 09/01/2020 UserRepositories must be removed thanks to Dagger 2
-        final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
-                                                                                                          new MessageRepositoryImpl(),
-                                                                                                          new PlaceRepositoryImpl());
-
-        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
-    }
+    // -- LiveData --
 
     /**
      * Configures the {@link LiveData<LocationData>}
@@ -163,6 +137,8 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
                                 });
     }
 
+    // -- Update Location --
+
     /**
      * Method to replace the {@link androidx.lifecycle.Observer} of {@link LocationData}
      * @param locationData a {@link LocationData}
@@ -183,12 +159,5 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
         this.mViewModel.fetchRestaurants(this.getContext(),
                                          locationData,
                                          NEARBY_SEARCH_RADIUS);
-    }
-
-    /**
-     * Starts the location update from {@link LocationLiveData}
-     */
-    public void startLocationUpdate() {
-        this.mViewModel.startLocationUpdate();
     }
 }

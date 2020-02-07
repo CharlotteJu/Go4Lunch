@@ -8,7 +8,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,16 +20,10 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mancel.yann.go4lunch.R;
-import com.mancel.yann.go4lunch.liveDatas.LocationLiveData;
 import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.POI;
-import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
 import com.mancel.yann.go4lunch.utils.CustomRelativeLayout;
 import com.mancel.yann.go4lunch.utils.GeneratorBitmap;
-import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModel;
-import com.mancel.yann.go4lunch.viewModels.GoogleMapsAndFirestoreViewModelFactory;
 import com.mancel.yann.go4lunch.views.adapters.InfoWindowAdapter;
 import com.mancel.yann.go4lunch.views.adapters.OnClickButtonInfoWindowListener;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
@@ -66,10 +59,6 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     @SuppressWarnings("NullableProblems")
     @NonNull
-    private GoogleMapsAndFirestoreViewModel mViewModel;
-
-    @SuppressWarnings("NullableProblems")
-    @NonNull
     private LiveData<LocationData> mLocationDataLiveData;
 
     private boolean mIsFirstLocation = true;
@@ -101,9 +90,6 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     protected void configureDesign() {
         // UI
         this.configureSupportMapFragment();
-
-        // ViewModel
-        this.configureViewModel();
 
         // LiveData
         this.configureLocationLiveData();
@@ -225,7 +211,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         }
     }
 
-    // -- GoogleMap.OnMarkerClickListener --
+    // -- GoogleMap.OnMarkerClickListener interface --
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -234,7 +220,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         return false;
     }
 
-    // -- OnClickButtonInfoWindowListener --
+    // -- OnClickButtonInfoWindowListener interface --
 
     @Override
     public void onClickOnDetailsButton(@Nullable final Marker marker) {
@@ -393,26 +379,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         this.mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    // -- GoogleMapsAndFirestoreViewModel --
-
-    /**
-     * Configures the {@link GoogleMapsAndFirestoreViewModel}
-     */
-    private void configureViewModel() {
-        // TODO: 09/01/2020 UserRepositories must be removed thanks to Dagger 2
-        final GoogleMapsAndFirestoreViewModelFactory factory = new GoogleMapsAndFirestoreViewModelFactory(new UserRepositoryImpl(),
-                                                                                                          new MessageRepositoryImpl(),
-                                                                                                          new PlaceRepositoryImpl());
-
-        this.mViewModel = new ViewModelProvider(this, factory).get(GoogleMapsAndFirestoreViewModel.class);
-    }
-
-    /**
-     * Starts the location update from {@link LocationLiveData}
-     */
-    public void startLocationUpdate() {
-        this.mViewModel.startLocationUpdate();
-    }
+    // -- LiveData --
 
     /**
      * Configures the {@link LiveData<LocationData>}

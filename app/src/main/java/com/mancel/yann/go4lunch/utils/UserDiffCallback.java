@@ -32,7 +32,8 @@ public class UserDiffCallback extends DiffUtil.Callback {
      * @param oldUsers a {@link List<User>} that contains the old list
      * @param newUsers a {@link List<User>} that contains the new list
      */
-    public UserDiffCallback(@NonNull List<User> oldUsers, @NonNull List<User> newUsers) {
+    public UserDiffCallback(@NonNull final List<User> oldUsers,
+                            @NonNull final List<User> newUsers) {
         this.mOldUsers = oldUsers;
         this.mNewUsers = newUsers;
     }

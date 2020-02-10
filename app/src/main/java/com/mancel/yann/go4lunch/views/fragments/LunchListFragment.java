@@ -18,6 +18,7 @@ import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.LunchAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -136,6 +137,9 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
                                 restaurants -> {
                                     // The action can take a long time
                                     this.mProgressBar.show();
+
+                                    // Sorts the list from A to Z
+                                    Collections.sort(restaurants, new Restaurant.AZComparator());
 
                                     // Updates adapter
                                     this.mAdapter.updateData(restaurants);

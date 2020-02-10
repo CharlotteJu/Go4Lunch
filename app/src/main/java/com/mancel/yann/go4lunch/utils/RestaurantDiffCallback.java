@@ -32,8 +32,8 @@ public class RestaurantDiffCallback extends DiffUtil.Callback {
      * @param oldRestaurants a {@link List<Restaurant>} that contains the old list
      * @param newRestaurants a {@link List<Restaurant>} that contains the new list
      */
-    public RestaurantDiffCallback(@NonNull List<Restaurant> oldRestaurants,
-                                  @NonNull List<Restaurant> newRestaurants) {
+    public RestaurantDiffCallback(@NonNull final List<Restaurant> oldRestaurants,
+                                  @NonNull final List<Restaurant> newRestaurants) {
         this.mOldRestaurants = oldRestaurants;
         this.mNewRestaurants = newRestaurants;
     }
@@ -83,21 +83,22 @@ public class RestaurantDiffCallback extends DiffUtil.Callback {
      * @return a {@link String}
      */
     @NonNull
-    private String restaurantAnalyse(@NonNull Restaurant restaurant) {
+    private String restaurantAnalyse(@NonNull final Restaurant restaurant) {
         // NAME
         final String name = restaurant.getDetails().getResult().getName();
 
         // RATING
-        final Double rating = restaurant.getDetails().getResult().getRating();
+        final Double rating = (restaurant.getDetails().getResult().getRating() == null) ?
+                0.0 :
+                restaurant.getDetails().getResult().getRating();
 
         // PHOTO
         final String photo = (restaurant.getDetails().getResult().getPhotos() == null) ?
-                null :
+                "Null" :
                 restaurant.getDetails().getResult().getPhotos().get(0).getPhotoReference();
 
         // PEOPLE
-        // TODO: 08/01/2020 add mPeople to Restaurant class
-        final int oldPeople = 1;
+        final int oldPeople = restaurant.getNumberOfUsers();
 
         // OPENING HOURS
         final String openingHours;

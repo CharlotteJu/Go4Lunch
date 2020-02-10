@@ -87,6 +87,10 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:$google_maps_version"
     implementation "com.google.android.gms:play-services-maps:$google_maps_version"
 
+    // AUTOCOMPLETE PLACE GOOGLE MAPS
+    def autocomplete_place_google_maps_version = "2.0.0"
+    implementation "com.google.android.libraries.places:places:$autocomplete_place_google_maps_version"
+
     // FIREBASE
     def firebase_analytics_version = "17.2.1"
     def firebase_auth_version = "19.2.0"

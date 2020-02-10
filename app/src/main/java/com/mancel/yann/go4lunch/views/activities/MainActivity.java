@@ -13,10 +13,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -25,6 +27,13 @@ import androidx.navigation.ui.NavigationUI;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,8 +42,11 @@ import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.utils.BlurTransformation;
 import com.mancel.yann.go4lunch.utils.ShowMessage;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
+import com.mancel.yann.go4lunch.views.bases.BaseFragment;
 import com.mancel.yann.go4lunch.views.fragments.FragmentListener;
 import com.mancel.yann.go4lunch.workers.WorkerController;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 
@@ -62,6 +74,8 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
     public static final String INTENT_PLACE_ID = "INTENT_PLACE_ID";
     public static final String INTENT_CURRENT_USER = "INTENT_CURRENT_USER";
+
+    public static final int REQUEST_CODE_AUTOCOMPLETE = 2020;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -109,13 +123,70 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.toolbar_menu_search:
-                Log.e(this.getClass().getSimpleName(), "Search");
-                return true;
+        // SEARCH
+        if (item.getItemId() == R.id.toolbar_menu_search) {
+            // Autocomplete of Place of Google Maps
+            Places.initialize(this.getApplicationContext(),
+                              this.getString(R.string.google_maps_key));
 
-            default:
-                return super.onOptionsItemSelected(item);
+            // Start the autocomplete intent.
+            final Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY,
+                                                                 Arrays.asList(Place.Field.ID,
+                                                                               Place.Field.NAME,
+                                                                               Place.Field.LAT_LNG))
+                                                  .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                                                  .build(this.getApplicationContext());
+
+            this.startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+
+            return true;
+
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // AUTOCOMPLETE
+        if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+            if (resultCode == RESULT_OK) {
+                // Data
+                final Place place = Autocomplete.getPlaceFromIntent(data);
+
+                // NavController
+                final NavController navController = Navigation.findNavController(this,
+                                                                                  R.id.activity_main_nav_host_fragment);
+
+                // Retrieves the current fragment
+                switch (navController.getCurrentDestination().getId()) {
+
+                    // MAP or LIST
+                    case R.id.navigation_lunchMapFragment:
+                    case R.id.navigation_lunchListFragment:
+                        this.retrieveCurrentFragmentFromNavigation(place);
+                        break;
+
+                    // WORKMATE
+                    case R.id.navigation_workmateFragment:
+                        // Do nothing
+                        break;
+
+                    default:
+                        Log.e(TAG, "onActivityResult: The Id of the current destination is not good.");
+                }
+            }
+            else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                final Status status = Autocomplete.getStatusFromIntent(data);
+                Log.e(TAG, status.getStatusMessage());
+            }
+            else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+                ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
+                                                    this.getString(R.string.cancelled_search));
+            }
         }
     }
 
@@ -125,7 +196,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
             this.mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         else {
-            // TODO: 10/01/2020 call logout method and not super.onBackPressed();
             super.onBackPressed();
         }
     }
@@ -160,7 +230,12 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
     // -- Actions --
 
-    private boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+    /**
+     * Actions for the {@link NavigationView}
+     * @param menuItem a {@link MenuItem}
+     * @return a boolean
+     */
+    private boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
         switch (menuItem.getItemId()) {
 
             // NavigationView ----------------------------------------------------------------------
@@ -280,7 +355,7 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     // -- Fragment Navigation --
 
     /**
-     * Configures the {@link androidx.fragment.app.Fragment} navigation
+     * Configures the {@link androidx.fragment.app.Fragment} navigation component
      */
     private void configureFragmentNavigation() {
         // NavController
@@ -299,6 +374,26 @@ public class MainActivity extends BaseActivity implements FragmentListener {
                                                       appBarConfiguration);
 
         NavigationUI.setupWithNavController(this.mBottomNavigationView, navController);
+    }
+
+    /**
+     * Retrieves the current {@link Fragment} from the navigation component
+     * @param place a {@link Place} that contains all data of the autocomplete system
+     */
+    private void retrieveCurrentFragmentFromNavigation(@NonNull final Place place) {
+        final BaseFragment fragment = (BaseFragment) this.getSupportFragmentManager()
+                                                         .findFragmentById(R.id.activity_main_nav_host_fragment)
+                                                         .getChildFragmentManager()
+                                                         .getFragments()
+                                                         .get(0);
+
+        // Method of BaseFragment
+        fragment.onSuccessOfAutocomplete(place);
+
+        // Shows message
+        ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
+                                            this.getString(R.string.validated_search,
+                                                           place.getName()));
     }
 
     // -- User --
@@ -358,11 +453,21 @@ public class MainActivity extends BaseActivity implements FragmentListener {
      * Logout the current user
      */
     private void logout() {
-        // TODO: 10/01/2020 Create Dialog to ask if the user would like really logout
-        this.signOutCurrentUser();
-        this.startAnotherActivity(AuthActivity.class);
+        // DIALOG
+        new AlertDialog.Builder(this) // this instead of this.getApplicationContext() for the theme
+                       .setTitle(this.getString(R.string.title_alertdialog))
+                       .setMessage(this.getString(R.string.message_alertdialog))
+                       .setPositiveButton(this.getString(R.string.positive_button_alertdialog), (dialog, which) -> {
+                           this.signOutCurrentUser();
+                           this.startAnotherActivity(AuthActivity.class);
 
-        // Deletes this activity
-        this.finish();
+                           // Deletes this activity
+                           this.finish();
+                       })
+                       .setNegativeButton(this.getString(R.string.negative_button_alertdialog), (dialog, which) -> {
+                           // Do nothing
+                       })
+                       .create()
+                       .show();
     }
 }

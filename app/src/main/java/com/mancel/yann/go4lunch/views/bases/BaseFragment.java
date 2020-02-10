@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.libraries.places.api.model.Place;
 import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
@@ -65,6 +66,12 @@ public abstract class BaseFragment extends Fragment {
      * Configures the design of each daughter class
      */
     protected abstract void configureDesign();
+
+    /**
+     * Calls when the user has selected a {@link Place} thanks to the autocomplete of Google Maps
+     * @param place a {@link Place} that contains all data of the autocomplete system
+     */
+    public abstract void onSuccessOfAutocomplete(@NonNull final Place place);
 
     // -- Fragment --
 

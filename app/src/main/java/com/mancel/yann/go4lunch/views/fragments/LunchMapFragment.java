@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.model.Place;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.POI;
@@ -94,6 +95,11 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         // LiveData
         this.configureLocationLiveData();
         this.configurePOIsLiveData();
+    }
+
+    @Override
+    public void onSuccessOfAutocomplete(@NonNull final Place place) {
+        Log.d(TAG, "onAutocompleteListener: " + place.getLatLng() );
     }
 
     // -- Fragment --

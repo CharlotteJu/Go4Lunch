@@ -1,5 +1,6 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.libraries.places.api.model.Place;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.LocationData;
 import com.mancel.yann.go4lunch.models.Restaurant;
@@ -71,6 +73,11 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
         // LiveData
         this.configureLocationLiveData();
         this.configureRestaurantsWithUsersLiveData();
+    }
+
+    @Override
+    public void onSuccessOfAutocomplete(@NonNull final Place place) {
+        Log.d("LunchListFragment", "onAutocompleteListener: " + place.getId() );
     }
 
     // -- AdapterListener interface --

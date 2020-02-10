@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.libraries.places.api.model.Place;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.utils.InsetDivider;
@@ -64,6 +65,9 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
         // LiveData
         this.configureUsersLiveData();
     }
+
+    @Override
+    public void onSuccessOfAutocomplete(@NonNull final Place place) {}
 
     // -- AdapterListener interface --
 

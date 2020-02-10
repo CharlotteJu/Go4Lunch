@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.facebook.login.LoginManager;
@@ -224,21 +223,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                                      Log.e(TAG, "deleteCurrentUserAccount: delete current user");
                                  }
                              });
-    }
-
-    // -- Fragment --
-
-    /**
-     * Replaces the fragment
-     * @param fragment      a {@link Fragment}
-     * @param idFrameLayout an integer that contains the id of the {@link android.widget.FrameLayout}
-     */
-    protected void replaceFragment(final Fragment fragment, final int idFrameLayout) {
-        if (!fragment.isVisible()) {
-            this.getSupportFragmentManager().beginTransaction()
-                                            .replace(idFrameLayout, fragment)
-                                            .commit();
-        }
     }
 
     // -- Another Activities --

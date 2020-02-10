@@ -17,8 +17,14 @@
     <string name="bottom_navigation_menu_list">List View</string>
     <string name="bottom_navigation_menu_workmate">Workmates</string>
     <string name="toolbar_menu_search">Search</string>
+    <string name="cancelled_search">Cancelled search</string>
+    <string name="validated_search">Search: %s</string>
     <string name="hungry_toolbar">I\'m Hungry!</string>
     <string name="workmate_toolbar">Available workmates</string>
+    <string name="title_alertdialog">Logout</string>
+    <string name="message_alertdialog">Are you sure to logout yourself?</string>
+    <string name="positive_button_alertdialog">Yes</string>
+    <string name="negative_button_alertdialog">No</string>
 
     <!-- activity_auth.xml -->
     <string name="subtitle_authentication">Find a nice restaurant and invite your co-workers for lunch!</string>

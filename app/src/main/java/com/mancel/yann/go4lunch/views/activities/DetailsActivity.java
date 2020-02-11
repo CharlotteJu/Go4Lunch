@@ -194,7 +194,8 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
     private void configureRecyclerView() {
         // Adapter
         this.mAdapter = new WorkmateAdapter(this,
-                                             Glide.with(this));
+                                             Glide.with(this),
+                                             WorkmateAdapter.AdapterMode.DETAILS_MODE);
 
         // InsetDivider
         final RecyclerView.ItemDecoration divider = new InsetDivider.Builder(this.getApplicationContext())

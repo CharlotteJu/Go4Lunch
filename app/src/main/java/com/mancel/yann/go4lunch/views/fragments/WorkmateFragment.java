@@ -100,7 +100,9 @@ public class WorkmateFragment extends BaseFragment implements AdapterListener {
      */
     private void configureRecyclerView() {
         // Adapter
-        this.mAdapter = new WorkmateAdapter(this, Glide.with(this));
+        this.mAdapter = new WorkmateAdapter(this,
+                                             Glide.with(this),
+                                             WorkmateAdapter.AdapterMode.WORKMATE_MODE);
 
         // InsetDivider
         final RecyclerView.ItemDecoration divider = new InsetDivider.Builder(this.getContext())

@@ -2,6 +2,7 @@ package com.mancel.yann.go4lunch.views.adapters;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,13 @@ import butterknife.ButterKnife;
  */
 public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.WorkmateViewHolder> {
 
+    // ENUMS ---------------------------------------------------------------------------------------
+
+    public enum AdapterMode {WORKMATE_MODE, DETAILS_MODE}
+
+    @NonNull
+    private final AdapterMode mMode;
+
     // FIELDS --------------------------------------------------------------------------------------
 
     @Nullable
@@ -50,11 +58,14 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
      * Create a new RecyclerView adapter that listens to a Firestore Query.
      * @param callback  a {@link AdapterListener} for the callback system
      * @param glide     a {@link RequestManager}
+     * @param mode      a {@link AdapterMode} {WORKMATE_MODE, DETAILS_MODE}
      */
     public WorkmateAdapter(@Nullable final AdapterListener callback,
-                           @NonNull final RequestManager glide) {
+                           @NonNull final RequestManager glide,
+                           @NonNull final AdapterMode mode) {
         this.mCallback = callback;
         this.mGlide = glide;
+        this.mMode = mode;
         this.mUsers = new ArrayList<>();
     }
 
@@ -77,7 +88,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
 
     @Override
     public void onBindViewHolder(@NonNull WorkmateViewHolder holder, int position) {
-        holder.updateWorkmate(this.mUsers.get(position), this.mGlide);
+        holder.updateWorkmate(this.mUsers.get(position), this.mGlide, this.mMode);
     }
 
     @Override
@@ -122,6 +133,8 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
         @BindView(R.id.item_workmate_text)
         TextView mText;
 
+        private static final String TAG = WorkmateViewHolder.class.getSimpleName();
+
         // CONSTRUCTORS ----------------------------------------------------------------------------
 
         /**
@@ -153,9 +166,11 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
          * Updates the item
          * @param user  a {@link User} that allows to update the item
          * @param glide a {@link RequestManager}
+         * @param mode  a {@link AdapterMode} {WORKMATE_MODE, DETAILS_MODE}
          */
         public void updateWorkmate(@NonNull final User user,
-                                   @NonNull final RequestManager glide) {
+                                   @NonNull final RequestManager glide,
+                                   @NonNull final AdapterMode mode) {
             // ImageView (using to Glide library)
             glide.load(user.getUrlPicture())
                  .circleCrop()
@@ -166,16 +181,33 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
             // TextView: Text
             String text;
 
-            if (user.getPlaceIdOfRestaurant() == null) {
-                // [User] has't decided yet
-                text = itemView.getContext().getString(R.string.text_item_workmate_no_choice,
-                                                       user.getUsername());
-            }
-            else {
-                // {User] is eating [food type] ([Name])
-                text = itemView.getContext().getString(R.string.text_item_workmate_choice,
-                                                       user.getUsername(),
-                                                       user.getNameOfRestaurant());
+            switch (mode) {
+
+                case WORKMATE_MODE:
+                    if (user.getPlaceIdOfRestaurant() == null) {
+                        // [User] has't decided yet
+                        text = itemView.getContext().getString(R.string.text_item_workmate_no_choice,
+                                user.getUsername());
+                    }
+                    else {
+                        // {User] is eating at [Name]
+                        text = itemView.getContext().getString(R.string.text_item_workmate_choice,
+                                user.getUsername(),
+                                user.getNameOfRestaurant());
+                    }
+
+                    break;
+
+                case DETAILS_MODE:
+                    // {User] is joining!
+                    text = itemView.getContext().getString(R.string.text_item_workmate_details,
+                                                           user.getUsername());
+
+                    break;
+
+                default:
+                    Log.e(TAG, "updateWorkmate: Error with AdapterMode");
+                    text = "Name";
             }
 
             this.mText.setText(text);

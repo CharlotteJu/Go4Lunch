@@ -118,6 +118,10 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Creates a MenuInflater to add the menu xml file into the Toolbar
         this.getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+
+        // Behavior of Toolbar
+        this.configureBehaviorOfToolBar();
+
         return true;
     }
 
@@ -171,7 +175,7 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
                     // WORKMATE
                     case R.id.navigation_workmateFragment:
-                        // Do nothing
+                        // Not possible see configureBehaviorOfToolBar method
                         break;
 
                     default:
@@ -352,7 +356,7 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
     }
 
-    // -- Fragment Navigation --
+    // -- Navigation Component --
 
     /**
      * Configures the {@link androidx.fragment.app.Fragment} navigation component
@@ -369,11 +373,46 @@ public class MainActivity extends BaseActivity implements FragmentListener {
                                                                                         R.id.navigation_workmateFragment)
                                                                                .build();
 
+        // Navigation component
         NavigationUI.setupActionBarWithNavController(this,
                                                       navController,
                                                       appBarConfiguration);
 
         NavigationUI.setupWithNavController(this.mBottomNavigationView, navController);
+    }
+
+    /**
+     * Configures the behavior of the {@link Toolbar}
+     */
+    private void configureBehaviorOfToolBar() {
+        // Listener to NavController
+        Navigation.findNavController(this,
+                                      R.id.activity_main_nav_host_fragment)
+                  .addOnDestinationChangedListener( ((controller, destination, arguments) -> {
+                      // Search item
+                      final MenuItem searchItem = this.mToolbar.getMenu()
+                                                      .findItem(R.id.toolbar_menu_search);
+
+                      // Retrieves the current fragment
+                      switch (destination.getId()) {
+
+                          // MAP or LIST
+                          case R.id.navigation_lunchMapFragment:
+                          case R.id.navigation_lunchListFragment:
+                              searchItem.setEnabled(true);
+                              searchItem.setIcon(R.drawable.ic_search_enable);
+                              break;
+
+                          // WORKMATE
+                          case R.id.navigation_workmateFragment:
+                              searchItem.setEnabled(false);
+                              searchItem.setIcon(R.drawable.ic_search_disable);
+                              break;
+
+                          default:
+                              Log.e(TAG, "addOnDestinationChangedListener: The Id of the current destination is not good.");
+                      }
+                  }));
     }
 
     /**

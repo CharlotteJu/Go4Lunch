@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.libraries.places.api.model.Place;
+import com.mancel.yann.go4lunch.repositories.LikeRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
@@ -139,6 +140,7 @@ public abstract class BaseFragment extends Fragment {
     private void configureViewModel() {
         // TODO: 07/02/2020 Repositories must be removed thanks to Dagger 2
         final Go4LunchViewModelFactory factory = new Go4LunchViewModelFactory(new UserRepositoryImpl(),
+                                                                              new LikeRepositoryImpl(),
                                                                               new MessageRepositoryImpl(),
                                                                               new PlaceRepositoryImpl());
 

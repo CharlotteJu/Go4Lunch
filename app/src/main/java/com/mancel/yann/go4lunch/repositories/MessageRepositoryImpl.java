@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.SetOptions;
 import com.mancel.yann.go4lunch.models.Message;
 import com.mancel.yann.go4lunch.models.User;
 
@@ -21,24 +22,24 @@ public class MessageRepositoryImpl implements MessageRepository {
     /*
         Firestore structure:
 
-        chats
+        chats ..................................................... [Collection]
         |
-        +--- general_chat
+        +--- general_chat ......................................... [Document]
              |
-             +--- messages
+             +--- messages ........................................ [Collection]
                   |
-                  +--- message (value created by Firestore)
+                  +--- message (value created by Firestore) ....... [Document]
                        |
-                       +--- message
-                       +--- date_created
-                       +--- user
+                       +--- message ............................... [Data]
+                       +--- date_created .......................... [Data]
+                       +--- user .................................. [Data]
                             |
-                            +--- uid
-                            +--- username
-                            +--- url_picture
-                            +--- place_id_of_restaurant
-                            +--- name_of_restaurant
-                            +--- food_type_of_restaurant
+                            +--- uid .............................. [Data]
+                            +--- username ......................... [Data]
+                            +--- url_picture ...................... [Data]
+                            +--- place_id_of_restaurant ........... [Data]
+                            +--- name_of_restaurant ............... [Data]
+                            +--- food_type_of_restaurant .......... [Data]
      */
 
     // FIELDS --------------------------------------------------------------------------------------
@@ -68,7 +69,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                                     @NonNull final User user) {
         final Message messageToCreate = new Message(message, user);
         return this.getMessagesCollection().document()
-                                           .set(messageToCreate);
+                                           .set(messageToCreate, SetOptions.merge());
     }
 
     // -- Read --

@@ -8,6 +8,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.SetOptions;
 import com.mancel.yann.go4lunch.models.User;
 
 /**
@@ -22,16 +23,16 @@ public class UserRepositoryImpl implements UserRepository {
     /*
         Firestore structure:
 
-        users
+        users ........................................ [Collection]
         |
-        +--- user1 (its uid value)
+        +--- user1 (its uid value) ................... [Document]
              |
-             +--- uid
-             +--- username
-             +--- url_picture
-             +--- place_id_of_restaurant
-             +--- name_of_restaurant
-             +--- food_type_of_restaurant
+             +--- uid ................................ [Data]
+             +--- username ........................... [Data]
+             +--- url_picture ........................ [Data]
+             +--- place_id_of_restaurant ............. [Data]
+             +--- name_of_restaurant ................. [Data]
+             +--- food_type_of_restaurant ............ [Data]
      */
 
     // FIELDS --------------------------------------------------------------------------------------
@@ -58,7 +59,7 @@ public class UserRepositoryImpl implements UserRepository {
                                  @Nullable final String urlPicture) {
         final User user = new User(uid, username, urlPicture);
         return this.getUsersCollection().document(uid)
-                                        .set(user);
+                                        .set(user, SetOptions.merge());
     }
 
     // -- Read --

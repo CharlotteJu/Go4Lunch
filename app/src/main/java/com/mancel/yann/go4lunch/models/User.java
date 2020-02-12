@@ -19,18 +19,28 @@ import java.util.Objects;
  */
 public class User implements Parcelable {
 
+    /*
+        Firestore annotation:
+            - PropertyName:     Marks a field to be renamed when serialized.
+     */
+
     // FIELDS --------------------------------------------------------------------------------------
 
     @NonNull
     private String mUid;
+
     @NonNull
     private String mUsername;
+
     @Nullable
     private String mUrlPicture = null;
+
     @Nullable
     private String mPlaceIdOfRestaurant = null;
+
     @Nullable
     private String mNameOfRestaurant = null;
+
     @Nullable
     private String mFoodTypeOfRestaurant = null;
 
@@ -101,38 +111,38 @@ public class User implements Parcelable {
 
     // -- Getter --
 
-    @PropertyName("uid")
     @NonNull
+    @PropertyName("uid")
     public String getUid() {
         return this.mUid;
     }
 
-    @PropertyName("username")
     @NonNull
+    @PropertyName("username")
     public String getUsername() {
         return this.mUsername;
     }
 
-    @PropertyName("url_picture")
     @Nullable
+    @PropertyName("url_picture")
     public String getUrlPicture() {
         return this.mUrlPicture;
     }
 
-    @PropertyName("place_id_of_restaurant")
     @Nullable
+    @PropertyName("place_id_of_restaurant")
     public String getPlaceIdOfRestaurant() {
         return this.mPlaceIdOfRestaurant;
     }
 
-    @PropertyName("name_of_restaurant")
     @Nullable
+    @PropertyName("name_of_restaurant")
     public String getNameOfRestaurant() {
         return this.mNameOfRestaurant;
     }
 
-    @PropertyName("food_type_of_restaurant")
     @Nullable
+    @PropertyName("food_type_of_restaurant")
     public String getFoodTypeOfRestaurant() {
         return this.mFoodTypeOfRestaurant;
     }

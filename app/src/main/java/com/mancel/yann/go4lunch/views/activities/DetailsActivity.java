@@ -154,10 +154,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
 
             // LIKE
             case R.id.activity_details_like_button:
-                ShowMessage.showMessageWithSnackbarWithButton(this.mCoordinatorLayout,
-                                                             "LIKE",
-                                                             "Undo",
-                                                              (v) ->{Log.d(TAG, "UNDO");});
+                this.selectRating();
                 break;
 
             // WEBSITE
@@ -294,6 +291,26 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
                                      this.mPlaceIdOfRestaurant.equals(this.mCurrentUser.getPlaceIdOfRestaurant()) ?
                 R.drawable.ic_check :
                 R.drawable.ic_add));
+    }
+
+    // -- Rating --
+
+    /**
+     * Selects the rating of the restaurant
+     */
+    private void selectRating() {
+        // User has not selected of restaurant yet
+        if (this.mCurrentUser.getPlaceIdOfRestaurant() == null) {
+            return;
+        }
+
+        try {
+            this.mViewModel.createLike(this.getCurrentUser(),
+                                       this.mCurrentUser.getPlaceIdOfRestaurant(),
+                                       3.0);
+        } catch (Exception e) {
+            Log.e(TAG, "selectRating: " + e.getMessage());
+        }
     }
 
     // -- FAB --

@@ -18,14 +18,20 @@ import java.util.Objects;
  */
 public class Message {
 
+    /*
+        Firestore annotation:
+            - PropertyName:     Marks a field to be renamed when serialized.
+            - ServerTimestamp:  Annotation used to mark a timestamp field as being populated
+                                via Server Timestamps.
+     */
+
     // FIELDS --------------------------------------------------------------------------------------
 
     @NonNull
     private String mMessage;
 
-    // Firebase Firestore will initialises this field thanks to @ServerTimestamp
     @Nullable
-    private Date mDateCreated;
+    private Date mDateCreated = null;
 
     @NonNull
     private User mUser;
@@ -43,8 +49,8 @@ public class Message {
 
     /**
      * Constructor
-     * @param message       a {@link String} that contains the message
-     * @param user          a {@link User} that contains the user who has created the message
+     * @param message   a {@link String} that contains the message
+     * @param user      a {@link User} that contains the user who has created the message
      */
     public Message(@NonNull final String message,
                    @NonNull final User user) {
@@ -56,21 +62,21 @@ public class Message {
 
     // -- Getter --
 
-    @PropertyName("message")
     @NonNull
+    @PropertyName("message")
     public String getMessage() {
         return this.mMessage;
     }
 
-    @PropertyName("date_created")
-    @ServerTimestamp
     @Nullable
+    @ServerTimestamp
+    @PropertyName("date_created")
     public Date getDateCreated() {
         return this.mDateCreated;
     }
 
-    @PropertyName("user")
     @NonNull
+    @PropertyName("user")
     public User getUser() {
         return this.mUser;
     }
@@ -105,7 +111,7 @@ public class Message {
         // Cast Object to Message
         final Message message = (Message) obj;
 
-        return Objects.equals(this.mMessage, message.mMessage) &&
+        return Objects.equals(this.mMessage, message.mMessage)         &&
                Objects.equals(this.mDateCreated, message.mDateCreated) &&
                Objects.equals(this.mUser, message.mUser);
     }

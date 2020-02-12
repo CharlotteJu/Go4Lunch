@@ -26,6 +26,7 @@ import com.mancel.yann.go4lunch.models.NearbySearch;
 import com.mancel.yann.go4lunch.models.POI;
 import com.mancel.yann.go4lunch.models.Restaurant;
 import com.mancel.yann.go4lunch.models.User;
+import com.mancel.yann.go4lunch.repositories.LikeRepository;
 import com.mancel.yann.go4lunch.repositories.MessageRepository;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.UserRepository;
@@ -91,6 +92,9 @@ public class Go4LunchViewModel extends ViewModel {
     private final UserRepository mUserRepository;
 
     @NonNull
+    private final LikeRepository mLikeRepository;
+
+    @NonNull
     private final MessageRepository mMessageRepository;
 
     @NonNull
@@ -134,13 +138,16 @@ public class Go4LunchViewModel extends ViewModel {
     /**
      * Constructor with 2 repositories
      * @param userRepository    a {@link UserRepository} for data from Firebase Firestore
+     * @param likeRepository    a {@link LikeRepository} for data from Firebase Firestore
      * @param messageRepository a {@link MessageRepository} for data from Firebase Firestore
      * @param placeRepository   a {@link PlaceRepository} for data from Google Maps
      */
     public Go4LunchViewModel(@NonNull final UserRepository userRepository,
+                             @NonNull final LikeRepository likeRepository,
                              @NonNull final MessageRepository messageRepository,
                              @NonNull final PlaceRepository placeRepository) {
         this.mUserRepository = userRepository;
+        this.mLikeRepository = likeRepository;
         this.mMessageRepository = messageRepository;
         this.mPlaceRepository = placeRepository;
     }
@@ -547,6 +554,32 @@ public class Go4LunchViewModel extends ViewModel {
                             })
                             .addOnFailureListener( e ->
                                 Log.e(TAG, "--> deleteUser (onFailure): " + e.getMessage())
+                            );
+    }
+
+    // -- Create (Like) --
+
+    /**
+     * Creates the like into Firebase Firestore
+     * @param currentUser           a {@link FirebaseUser} that contains the data of the last authenticated
+     * @param placeIdOfRestaurant   a {@link String} that contains the place_id of the restaurant
+     * @param rating                an integer that contains the user's rating of the restaurant
+     * @throws Exception if the {@link FirebaseUser} is null
+     */
+    public void createLike(@Nullable final FirebaseUser currentUser,
+                           @NonNull final String placeIdOfRestaurant,
+                           final double rating) throws Exception {
+        // FirebaseUser must not be null to create an user
+        if (currentUser == null) throw new Exception("FirebaseUser is null");
+
+        this.mLikeRepository.createLike(currentUser.getUid(),
+                                        placeIdOfRestaurant,
+                                        rating)
+                            .addOnSuccessListener( aVoid -> {
+                                // Do nothing because the like is created
+                            })
+                            .addOnFailureListener( e ->
+                                Log.e(TAG, "--> createLike (onFailure): " + e.getMessage())
                             );
     }
 

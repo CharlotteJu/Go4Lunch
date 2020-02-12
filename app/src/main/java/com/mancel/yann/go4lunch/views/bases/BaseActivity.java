@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.repositories.LikeRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
 import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
@@ -100,6 +101,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void configureViewModel() {
         // TODO: 07/02/2020 Repositories must be removed thanks to Dagger 2
         final Go4LunchViewModelFactory factory = new Go4LunchViewModelFactory(new UserRepositoryImpl(),
+                                                                              new LikeRepositoryImpl(),
                                                                               new MessageRepositoryImpl(),
                                                                               new PlaceRepositoryImpl());
 

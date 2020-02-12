@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mancel.yann.go4lunch.R;
+import com.mancel.yann.go4lunch.models.Message;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.MessageAdapter;
@@ -151,7 +152,17 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
         // Bind between liveData of ViewModel and the Adapter of RecyclerView
         this.mViewModel.getMessages()
                        .observe(this,
-                                 messages -> this.mAdapter.updateData(messages));
+                                 messages -> {
+                                     // To avoid the value equal to null by Firebase Firestore
+                                     // during the update in real-time
+                                     for (Message message : messages) {
+                                         if (message.getDateCreated() == null) {
+                                             return;
+                                         }
+                                     }
+
+                                     this.mAdapter.updateData(messages);
+                                 });
     }
 
     // -- Message --

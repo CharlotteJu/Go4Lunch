@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
  */
 public interface FragmentListener {
 
+    // METHODS -------------------------------------------------------------------------------------
+
     /**
      * Callback from {@link androidx.fragment.app.Fragment} to {@link android.app.Activity}
      * @param placeIdOfRestaurant a {@link String} that contains the Place Id value

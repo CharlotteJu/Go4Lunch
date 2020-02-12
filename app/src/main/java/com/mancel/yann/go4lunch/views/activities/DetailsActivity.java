@@ -32,6 +32,8 @@ import com.mancel.yann.go4lunch.utils.ShowMessage;
 import com.mancel.yann.go4lunch.views.adapters.AdapterListener;
 import com.mancel.yann.go4lunch.views.adapters.WorkmateAdapter;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
+import com.mancel.yann.go4lunch.views.dialogs.DialogListener;
+import com.mancel.yann.go4lunch.views.dialogs.RatingDialogFragment;
 
 import java.util.List;
 
@@ -43,9 +45,11 @@ import butterknife.OnClick;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.views.activities
  *
- * A {@link BaseActivity} subclass which implements {@link AdapterListener}.
+ * A {@link BaseActivity} subclass which implements {@link AdapterListener} and
+ * {@link DialogListener}.
  */
-public class DetailsActivity extends BaseActivity implements AdapterListener {
+public class DetailsActivity extends BaseActivity implements AdapterListener,
+                                                             DialogListener {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -136,6 +140,24 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
         // TODO: 07/02/2020 Implement this action
     }
 
+    // -- DialogListener interface --
+
+    @Override
+    public void onClickOnPositiveButton(final float newRating) {
+        // User has not selected of restaurant yet
+        if (this.mCurrentUser.getPlaceIdOfRestaurant() == null) {
+            return;
+        }
+
+        try {
+            this.mViewModel.createLike(this.getCurrentUser(),
+                                       this.mCurrentUser.getPlaceIdOfRestaurant(),
+                                       newRating);
+        } catch (Exception e) {
+            Log.e(TAG, "selectRating: " + e.getMessage());
+        }
+    }
+
     // -- Actions --
 
     @OnClick({R.id.activity_details_call_button,
@@ -154,7 +176,10 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
 
             // LIKE
             case R.id.activity_details_like_button:
-                this.selectRating();
+                // Dialog
+                RatingDialogFragment.newInstance()
+                                    .show(this.getSupportFragmentManager(),
+                                         "Rating Dialog Fragment");
                 break;
 
             // WEBSITE
@@ -291,26 +316,6 @@ public class DetailsActivity extends BaseActivity implements AdapterListener {
                                      this.mPlaceIdOfRestaurant.equals(this.mCurrentUser.getPlaceIdOfRestaurant()) ?
                 R.drawable.ic_check :
                 R.drawable.ic_add));
-    }
-
-    // -- Rating --
-
-    /**
-     * Selects the rating of the restaurant
-     */
-    private void selectRating() {
-        // User has not selected of restaurant yet
-        if (this.mCurrentUser.getPlaceIdOfRestaurant() == null) {
-            return;
-        }
-
-        try {
-            this.mViewModel.createLike(this.getCurrentUser(),
-                                       this.mCurrentUser.getPlaceIdOfRestaurant(),
-                                       3.0);
-        } catch (Exception e) {
-            Log.e(TAG, "selectRating: " + e.getMessage());
-        }
     }
 
     // -- FAB --

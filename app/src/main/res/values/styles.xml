@@ -184,6 +184,13 @@
         <item name="android:progressTint" tools:targetApi="21">@color/colorRating</item>
     </style>
 
+    <!-- RatingBar style 2 -->
+    <style name="RatingBarStyle2" parent="Widget.AppCompat.RatingBar">
+        <item name="android:numStars">@integer/max_stars_rating_bar</item>
+        <item name="android:rating">@integer/max_stars_rating_bar</item>
+        <item name="android:progressTint" tools:targetApi="21">@color/colorRating</item>
+    </style>
+
     <!-- *********************************** Button ******************************************** -->
 
     <!-- Base Button style -->

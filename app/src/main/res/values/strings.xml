@@ -21,10 +21,6 @@
     <string name="validated_search">Search: %s</string>
     <string name="hungry_toolbar">I\'m Hungry!</string>
     <string name="workmate_toolbar">Available workmates</string>
-    <string name="title_alertdialog">Logout</string>
-    <string name="message_alertdialog">Are you sure to logout yourself?</string>
-    <string name="positive_button_alertdialog">Yes</string>
-    <string name="negative_button_alertdialog">No</string>
 
     <!-- activity_auth.xml -->
     <string name="subtitle_authentication">Find a nice restaurant and invite your co-workers for lunch!</string>
@@ -48,6 +44,13 @@
     <string name="text_item_workmate_no_choice">%s hasn\'t decided yet</string>
     <string name="text_item_workmate_choice">%s is eating at %s</string>
     <string name="text_item_workmate_details">%s is joining!</string>
+
+    <!-- RatingDialogFragment.java & AlertDialog -->
+    <string name="title_alertdialog">Logout</string>
+    <string name="message_alertdialog">Are you sure to logout yourself?</string>
+    <string name="positive_button_alertdialog">Yes</string>
+    <string name="negative_button_alertdialog">No</string>
+    <string name="title_alertdialog_details">Rating</string>
 
     <!-- marker_info_window.xml -->
     <string name="details_info_window">Details</string>

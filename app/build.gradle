@@ -49,7 +49,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
     // WORKMANAGER
-    def work_version = "2.3.0"
+    def work_version = "2.3.1"
     implementation "androidx.work:work-runtime:$work_version"
 
     // CONCURRENT
@@ -88,11 +88,11 @@ dependencies {
     implementation "com.google.android.gms:play-services-maps:$google_maps_version"
 
     // AUTOCOMPLETE PLACE GOOGLE MAPS
-    def autocomplete_place_google_maps_version = "2.0.0"
+    def autocomplete_place_google_maps_version = "2.2.0"
     implementation "com.google.android.libraries.places:places:$autocomplete_place_google_maps_version"
 
     // FIREBASE
-    def firebase_analytics_version = "17.2.1"
+    def firebase_analytics_version = "17.2.2"
     def firebase_auth_version = "19.2.0"
     def firebase_firestore_version = "21.4.0"
     implementation "com.google.firebase:firebase-analytics:$firebase_analytics_version"

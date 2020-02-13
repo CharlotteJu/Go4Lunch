@@ -24,6 +24,7 @@ import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.apis.GoogleMapsService;
 import com.mancel.yann.go4lunch.liveDatas.DetailsLiveData;
 import com.mancel.yann.go4lunch.models.Details;
+import com.mancel.yann.go4lunch.models.Like;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.utils.DetailsUtils;
 import com.mancel.yann.go4lunch.utils.InsetDivider;
@@ -176,10 +177,7 @@ public class DetailsActivity extends BaseActivity implements AdapterListener,
 
             // LIKE
             case R.id.activity_details_like_button:
-                // Dialog
-                RatingDialogFragment.newInstance()
-                                    .show(this.getSupportFragmentManager(),
-                                         "Rating Dialog Fragment");
+                this.startRatingDialog();
                 break;
 
             // WEBSITE
@@ -316,6 +314,39 @@ public class DetailsActivity extends BaseActivity implements AdapterListener,
                                      this.mPlaceIdOfRestaurant.equals(this.mCurrentUser.getPlaceIdOfRestaurant()) ?
                 R.drawable.ic_check :
                 R.drawable.ic_add));
+    }
+
+    // -- Dialog --
+
+    /**
+     * Starts the {@link RatingDialogFragment}
+     */
+    private void startRatingDialog() {
+        // User has not selected of restaurant yet
+        if (this.mCurrentUser.getPlaceIdOfRestaurant() == null) {
+            return;
+        }
+
+        try {
+            this.mViewModel.getLikeForUser(this.getCurrentUser(),
+                                           this.mCurrentUser.getPlaceIdOfRestaurant())
+                           .addOnSuccessListener( documentSnapshot -> {
+                               // Like
+                               final Like like = documentSnapshot.toObject(Like.class);
+
+                               // Rating
+                               double rating = (like != null) ? like.getRatingOfRestaurant() :
+                                                                3.0;
+
+                               // Dialog
+                               RatingDialogFragment.newInstance(rating)
+                                                   .show(this.getSupportFragmentManager(),
+                                                        "Rating Dialog Fragment");
+                           });
+        }
+        catch (Exception e) {
+            Log.e(TAG, "startRatingDialog: " + e.getMessage());
+        }
     }
 
     // -- FAB --

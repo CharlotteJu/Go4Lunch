@@ -563,7 +563,7 @@ public class Go4LunchViewModel extends ViewModel {
      * Creates the like into Firebase Firestore
      * @param currentUser           a {@link FirebaseUser} that contains the data of the last authenticated
      * @param placeIdOfRestaurant   a {@link String} that contains the place_id of the restaurant
-     * @param rating                an integer that contains the user's rating of the restaurant
+     * @param rating                a double that contains the user's rating of the restaurant
      * @throws Exception if the {@link FirebaseUser} is null
      */
     public void createLike(@Nullable final FirebaseUser currentUser,
@@ -581,6 +581,26 @@ public class Go4LunchViewModel extends ViewModel {
                             .addOnFailureListener( e ->
                                 Log.e(TAG, "--> createLike (onFailure): " + e.getMessage())
                             );
+    }
+
+    // -- Read (Like) --
+
+    /**
+     * Reads the like of the restaurant for the current user (authenticated) of Firebase Firestore
+     * @param currentUser           a {@link FirebaseUser} that contains the data of the last authenticated
+     * @param placeIdOfRestaurant   a {@link String} that contains the place_id of the restaurant
+     * @throws Exception if the {@link FirebaseUser} is null
+     */
+    @NonNull
+    public Task<DocumentSnapshot> getLikeForUser(@Nullable final FirebaseUser currentUser,
+                                                 @NonNull final String placeIdOfRestaurant) throws Exception {
+        // FirebaseUser must not be null to read an user
+        if (currentUser == null) throw new Exception("FirebaseUser is null");
+
+        return this.mLikeRepository.getLikeForUser(currentUser.getUid(), placeIdOfRestaurant)
+                   .addOnFailureListener( e ->
+                       Log.e(TAG, "--> getLikeForUser (onFailure): " + e.getMessage())
+                   );
     }
 
     // -- Create (Message) --

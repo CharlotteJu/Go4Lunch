@@ -33,6 +33,8 @@ public class RatingDialogFragment extends DialogFragment {
     @Nullable
     private DialogListener mCallback;
 
+    private static final String BUNDLE_RATING = "BUNDLE_RATING";
+
     // METHODS -------------------------------------------------------------------------------------
 
     // -- DialogFragment --
@@ -61,6 +63,9 @@ public class RatingDialogFragment extends DialogFragment {
         // Using the ButterKnife library
         ButterKnife.bind(this, view);
 
+        // Arguments
+        this.fetchDataFromArguments();
+
         return new AlertDialog.Builder(this.getActivity())
                               .setView(view)
                               .setTitle(this.getString(R.string.title_alertdialog_details))
@@ -81,10 +86,34 @@ public class RatingDialogFragment extends DialogFragment {
 
     /**
      * Gets a new instance of {@link RatingDialogFragment}
+     * @param newRating a double that contains the user's rating of the restaurant
      * @return a {@link RatingDialogFragment}
      */
     @NonNull
-    public static RatingDialogFragment newInstance() {
-        return new RatingDialogFragment();
+    public static RatingDialogFragment newInstance(final double newRating) {
+        final RatingDialogFragment dialogFragment = new RatingDialogFragment();
+
+        // Bundle
+        final Bundle bundle = new Bundle();
+        bundle.putDouble(BUNDLE_RATING, newRating);
+
+        // Arguments
+        dialogFragment.setArguments(bundle);
+
+        return dialogFragment;
+    }
+
+    // -- Intent --
+
+    /**
+     * Fetches data from the arguments
+     */
+    private void fetchDataFromArguments() {
+        // Bundle
+        final Bundle bundle = this.getArguments();
+
+        if (bundle != null) {
+            this.mRatingBar.setRating((float) bundle.getDouble(BUNDLE_RATING, 0.0));
+        }
     }
 }

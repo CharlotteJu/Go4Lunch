@@ -27,6 +27,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -76,8 +77,6 @@ public class MainActivity extends BaseActivity implements FragmentListener {
     public static final String INTENT_CURRENT_USER = "INTENT_CURRENT_USER";
 
     public static final int REQUEST_CODE_AUTOCOMPLETE = 2020;
-
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -179,12 +178,17 @@ public class MainActivity extends BaseActivity implements FragmentListener {
                         break;
 
                     default:
-                        Log.e(TAG, "onActivityResult: The Id of the current destination is not good.");
+                        Crashlytics.log(Log.ERROR,
+                                        MainActivity.class.getSimpleName(),
+                                       "onActivityResult: The Id of the current destination is not good.");
                 }
             }
             else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 final Status status = Autocomplete.getStatusFromIntent(data);
-                Log.e(TAG, status.getStatusMessage());
+
+                Crashlytics.log(Log.ERROR,
+                                MainActivity.class.getSimpleName(),
+                               "onActivityResult: " + status.getStatusMessage());
             }
             else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
@@ -228,7 +232,9 @@ public class MainActivity extends BaseActivity implements FragmentListener {
                            });
         }
         catch (Exception e) {
-            Log.e(TAG, "getUser: " + e.getMessage());
+            Crashlytics.log(Log.ERROR,
+                            MainActivity.class.getSimpleName(),
+                           "onSelectedRestaurant: " + e.getMessage());
         }
     }
 
@@ -410,7 +416,9 @@ public class MainActivity extends BaseActivity implements FragmentListener {
                               break;
 
                           default:
-                              Log.e(TAG, "addOnDestinationChangedListener: The Id of the current destination is not good.");
+                              Crashlytics.log(Log.ERROR,
+                                              MainActivity.class.getSimpleName(),
+                                             "addOnDestinationChangedListener: The Id of the current destination is not good.");
                       }
                   }));
     }
@@ -445,7 +453,9 @@ public class MainActivity extends BaseActivity implements FragmentListener {
             this.mViewModel.createUser(this.getCurrentUser());
         }
         catch (Exception e) {
-            Log.e(TAG, "createUser: " + e.getMessage());
+            Crashlytics.log(Log.ERROR,
+                            MainActivity.class.getSimpleName(),
+                           "createUser: " + e.getMessage());
         }
     }
 
@@ -482,7 +492,9 @@ public class MainActivity extends BaseActivity implements FragmentListener {
                            });
         }
         catch (Exception e) {
-            Log.e(TAG, "getUser: " + e.getMessage());
+            Crashlytics.log(Log.ERROR,
+                            MainActivity.class.getSimpleName(),
+                           "startDetailsOfLunch: " + e.getMessage());
         }
     }
 

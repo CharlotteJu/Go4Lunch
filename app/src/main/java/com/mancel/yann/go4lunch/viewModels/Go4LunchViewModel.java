@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -130,8 +131,6 @@ public class Go4LunchViewModel extends ViewModel {
 
     @Nullable
     private RestaurantsWithUsersLiveData mRestaurantsWithUsersLiveData = null;
-
-    private static final String TAG = Go4LunchViewModel.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -459,12 +458,16 @@ public class Go4LunchViewModel extends ViewModel {
                                                             // Do nothing because user is created
                                                         })
                                                         .addOnFailureListener( e ->
-                                                            Log.d(TAG, "--> createUser (onFailure): " + e.getMessage())
+                                                            Crashlytics.log(Log.ERROR,
+                                                                            Go4LunchViewModel.class.getSimpleName(),
+                                                                           "createUser (onFailure): " + e.getMessage())
                                                         );
                                 }
                             })
                             .addOnFailureListener( e ->
-                                Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
+                                Crashlytics.log(Log.ERROR,
+                                                Go4LunchViewModel.class.getSimpleName(),
+                                               "getUser (onFailure): " + e.getMessage())
                             );
     }
 
@@ -483,7 +486,9 @@ public class Go4LunchViewModel extends ViewModel {
 
         return this.mUserRepository.getUser(currentUser.getUid())
                                    .addOnFailureListener( e ->
-                                       Log.e(TAG, "--> getUser (onFailure): " + e.getMessage())
+                                       Crashlytics.log(Log.ERROR,
+                                                       Go4LunchViewModel.class.getSimpleName(),
+                                                      "getUser (onFailure): " + e.getMessage())
                                    );
     }
 
@@ -505,7 +510,9 @@ public class Go4LunchViewModel extends ViewModel {
                                 // Do nothing because username is updated
                             })
                             .addOnFailureListener( e ->
-                                Log.e(TAG, "--> updateUsername (onFailure): " + e.getMessage())
+                                Crashlytics.log(Log.ERROR,
+                                                Go4LunchViewModel.class.getSimpleName(),
+                                               "updateUsername (onFailure): " + e.getMessage())
                             );
     }
 
@@ -532,7 +539,9 @@ public class Go4LunchViewModel extends ViewModel {
                                 // Do nothing because restaurant is updated
                             })
                             .addOnFailureListener( e ->
-                                Log.e(TAG, "--> updateRestaurant (onFailure): " + e.getMessage())
+                                Crashlytics.log(Log.ERROR,
+                                                Go4LunchViewModel.class.getSimpleName(),
+                                               "updateRestaurant (onFailure): " + e.getMessage())
                             );
     }
 
@@ -553,7 +562,9 @@ public class Go4LunchViewModel extends ViewModel {
                                 // Do nothing because user is deleted
                             })
                             .addOnFailureListener( e ->
-                                Log.e(TAG, "--> deleteUser (onFailure): " + e.getMessage())
+                                Crashlytics.log(Log.ERROR,
+                                                Go4LunchViewModel.class.getSimpleName(),
+                                               "deleteUser (onFailure): " + e.getMessage())
                             );
     }
 
@@ -579,7 +590,9 @@ public class Go4LunchViewModel extends ViewModel {
                                 // Do nothing because the like is created
                             })
                             .addOnFailureListener( e ->
-                                Log.e(TAG, "--> createLike (onFailure): " + e.getMessage())
+                                Crashlytics.log(Log.ERROR,
+                                                Go4LunchViewModel.class.getSimpleName(),
+                                               "createLike (onFailure): " + e.getMessage())
                             );
     }
 
@@ -599,7 +612,9 @@ public class Go4LunchViewModel extends ViewModel {
 
         return this.mLikeRepository.getLikeForUser(currentUser.getUid(), placeIdOfRestaurant)
                    .addOnFailureListener( e ->
-                       Log.e(TAG, "--> getLikeForUser (onFailure): " + e.getMessage())
+                       Crashlytics.log(Log.ERROR,
+                                       Go4LunchViewModel.class.getSimpleName(),
+                                      "getLikeForUser (onFailure): " + e.getMessage())
                    );
     }
 
@@ -614,10 +629,12 @@ public class Go4LunchViewModel extends ViewModel {
                               @NonNull final User user) {
         this.mMessageRepository.createMessage(message, user)
                 .addOnSuccessListener( aVoid -> {
-                    // Do nothing because user is created
+                    // Do nothing because message is created
                 })
                 .addOnFailureListener( e ->
-                    Log.e(TAG, "--> createMessage (onFailure): " + e.getMessage())
+                    Crashlytics.log(Log.ERROR,
+                                    Go4LunchViewModel.class.getSimpleName(),
+                                   "createMessage (onFailure): " + e.getMessage())
                 );
     }
 }

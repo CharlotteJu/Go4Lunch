@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.Message;
@@ -49,8 +50,6 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
     @SuppressWarnings("NullableProblems")
     @NonNull
     private MessageAdapter mAdapter;
-
-    private static final String TAG = ChatActivity.class.getSimpleName();
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -193,7 +192,9 @@ public class ChatActivity extends BaseActivity implements AdapterListener {
                            });
         }
         catch (Exception e) {
-            Log.e(TAG, "getUser: " + e.getMessage());
+            Crashlytics.log(Log.ERROR,
+                            ChatActivity.class.getSimpleName(),
+                           "sendMessage: " + e.getMessage());
         }
     }
 }

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,7 +114,7 @@ public abstract class BaseFragment extends Fragment {
         if (requestCode == REQUEST_CODE_PERMISSION_LOCATION) {
             // No permission
             if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Log.e(TAG, "No permission to access fine location");
+                // Log.d(TAG, "No permission to access fine location");
             }
 
             this.mViewModel.startLocationUpdate();

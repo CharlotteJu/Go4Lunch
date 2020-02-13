@@ -31,6 +31,7 @@
 * [Firebase](https://firebase.google.com/)
     * [Authentication](https://firebase.google.com/docs/auth)
     * [Firestore](https://firebase.google.com/docs/firestore)
+    * [Crashlytics](https://firebase.google.com/docs/crashlytics)
     
 * [Google Maps](hhttps://cloud.google.com/maps-platform/)
     * [Maps](https://developers.google.com/maps/documentation/android-sdk/intro)

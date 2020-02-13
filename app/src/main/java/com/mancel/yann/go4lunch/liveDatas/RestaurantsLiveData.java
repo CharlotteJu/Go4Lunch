@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
+import com.crashlytics.android.Crashlytics;
 import com.mancel.yann.go4lunch.models.Restaurant;
 
 import java.util.List;
@@ -27,8 +28,6 @@ public class RestaurantsLiveData extends LiveData<List<Restaurant>> {
 
     @Nullable
     private Disposable mDisposable = null;
-
-    private static final String TAG = RestaurantsLiveData.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -73,7 +72,9 @@ public class RestaurantsLiveData extends LiveData<List<Restaurant>> {
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: " + e.getMessage());
+                Crashlytics.log(Log.ERROR,
+                                RestaurantsLiveData.class.getSimpleName(),
+                               "onError: " + e.getMessage());
             }
 
             @Override

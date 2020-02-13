@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseUser;
 import com.mancel.yann.go4lunch.R;
@@ -96,8 +97,6 @@ public class DetailsActivity extends BaseActivity implements AdapterListener,
     @NonNull
     private WorkmateAdapter mAdapter;
 
-    private static final String TAG = DetailsActivity.class.getSimpleName();
-
     // METHODS -------------------------------------------------------------------------------------
 
     // -- BaseActivity --
@@ -155,7 +154,9 @@ public class DetailsActivity extends BaseActivity implements AdapterListener,
                                        this.mCurrentUser.getPlaceIdOfRestaurant(),
                                        newRating);
         } catch (Exception e) {
-            Log.e(TAG, "selectRating: " + e.getMessage());
+            Crashlytics.log(Log.ERROR,
+                            DetailsActivity.class.getSimpleName(),
+                           "onClickOnPositiveButton: " + e.getMessage());
         }
     }
 
@@ -289,9 +290,6 @@ public class DetailsActivity extends BaseActivity implements AdapterListener,
         }
         else {
             float floatValue = RestaurantUtils.calculateRating(details.getResult().getRating().floatValue());
-
-            // TODO: 22/01/2020 Change the number stars of RatingBar
-            //this.mRatingBar.setNumStars((int) floatValue);
             this.mRatingBar.setRating(floatValue);
         }
 
@@ -345,7 +343,9 @@ public class DetailsActivity extends BaseActivity implements AdapterListener,
                            });
         }
         catch (Exception e) {
-            Log.e(TAG, "startRatingDialog: " + e.getMessage());
+            Crashlytics.log(Log.ERROR,
+                            DetailsActivity.class.getSimpleName(),
+                           "startRatingDialog: " + e.getMessage());
         }
     }
 
@@ -410,7 +410,9 @@ public class DetailsActivity extends BaseActivity implements AdapterListener,
                                              foodTypeOfRestaurant);
         }
         catch (Exception e) {
-            Log.e(TAG, "updateRestaurant: " + e.getMessage());
+            Crashlytics.log(Log.ERROR,
+                            DetailsActivity.class.getSimpleName(),
+                           "updateUserAndFAB: " + e.getMessage());
         }
 
         // Activity: Updates restaurant data on current user

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
+import com.crashlytics.android.Crashlytics;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.apis.GoogleMapsService;
 import com.mancel.yann.go4lunch.models.Details;
@@ -148,8 +149,6 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.LunchViewHol
         @NonNull
         private WeakReference<AdapterListener> mCallbackWeakReference;
 
-        private static final String TAG = LunchViewHolder.class.getSimpleName();
-
         // CONSTRUCTORS ----------------------------------------------------------------------------
 
         /**
@@ -267,7 +266,9 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.LunchViewHol
                     break;
 
                 default:
-                    Log.e(TAG, "Error to get the day of the week");
+                    Crashlytics.log(Log.ERROR,
+                                    LunchViewHolder.class.getSimpleName(),
+                                   "Error to get the day of the week");
             }
 
             // weekday_text
@@ -311,9 +312,6 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.LunchViewHol
             }
 
             float floatValue = RestaurantUtils.calculateRating(googleMapsRating.floatValue());
-
-            // TODO: 06/01/2020 Change the number stars of RatingBar
-            //this.mRatingBar.setNumStars((int) floatValue);
             this.mRatingBar.setRating(floatValue);
         }
 

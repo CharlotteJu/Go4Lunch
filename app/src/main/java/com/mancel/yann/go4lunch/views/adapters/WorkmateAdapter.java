@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
+import com.crashlytics.android.Crashlytics;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.utils.UserDiffCallback;
@@ -133,8 +134,6 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
         @BindView(R.id.item_workmate_text)
         TextView mText;
 
-        private static final String TAG = WorkmateViewHolder.class.getSimpleName();
-
         // CONSTRUCTORS ----------------------------------------------------------------------------
 
         /**
@@ -206,7 +205,9 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
                     break;
 
                 default:
-                    Log.e(TAG, "updateWorkmate: Error with AdapterMode");
+                    Crashlytics.log(Log.ERROR,
+                                    WorkmateViewHolder.class.getSimpleName(),
+                                   "updateWorkmate: Error with AdapterMode");
                     text = "Name";
             }
 

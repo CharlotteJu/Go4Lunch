@@ -1,6 +1,5 @@
 package com.mancel.yann.go4lunch.views.fragments;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -77,7 +76,7 @@ public class LunchListFragment extends BaseFragment implements AdapterListener {
 
     @Override
     public void onSuccessOfAutocomplete(@NonNull final Place place) {
-        Log.d("LunchListFragment", "onAutocompleteListener: " + place.getId() );
+        this.mCallbackFromFragmentToActivity.onSelectedRestaurant(place.getId());
     }
 
     // -- AdapterListener interface --

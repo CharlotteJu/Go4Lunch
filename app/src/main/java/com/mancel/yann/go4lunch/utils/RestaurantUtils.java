@@ -24,7 +24,7 @@ public abstract class RestaurantUtils {
      * @param googleMapsRating a float that contains the google maps rating (value on 5 stars)
      * @return a float that corresponds to the rating on 3 stars
      */
-    public static float calculateRating(float googleMapsRating) {
+    public static float calculateRating(final float googleMapsRating) {
         // Rating of Google Maps is on 5 stars
 
         //               4.6 on 5.0
@@ -44,7 +44,8 @@ public abstract class RestaurantUtils {
      * @return a {@link String} that displays if the restaurant is open and for how long
      */
     @NonNull
-    public static String analyseOpeningHours(@NonNull final List<String> weekdayText, int dayOfWeek) {
+    public static String analyseOpeningHours(@NonNull final List<String> weekdayText,
+                                             final int dayOfWeek) {
         /*
             "weekday_text": [
                             "Monday: 12:00 – 1:30 PM",
@@ -72,8 +73,8 @@ public abstract class RestaurantUtils {
      * @return a {@link List<Restaurant>} that contains the couple {@link Restaurant} and the number of {@link User}
      */
     @NonNull
-    public static synchronized List<Restaurant> updateRestaurantsWithUsers(@NonNull List<Restaurant> restaurants,
-                                                                           @NonNull List<User> users) {
+    public static synchronized List<Restaurant> updateRestaurantsWithUsers(@NonNull final List<Restaurant> restaurants,
+                                                                           @NonNull final List<User> users) {
         final Iterator<Restaurant> iterator = restaurants.iterator();
 
         while (iterator.hasNext()) {

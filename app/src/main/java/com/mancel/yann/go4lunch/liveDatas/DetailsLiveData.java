@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
+import com.crashlytics.android.Crashlytics;
 import com.mancel.yann.go4lunch.models.Details;
 
 import io.reactivex.Observable;
@@ -25,8 +26,6 @@ public class DetailsLiveData extends LiveData<Details> {
 
     @Nullable
     private Disposable mDisposable = null;
-
-    private static final String TAG = DetailsLiveData.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -71,7 +70,9 @@ public class DetailsLiveData extends LiveData<Details> {
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: " + e.getMessage());
+                Crashlytics.log(Log.ERROR,
+                                DetailsLiveData.class.getSimpleName(),
+                               "onError: " + e.getMessage());
             }
 
             @Override

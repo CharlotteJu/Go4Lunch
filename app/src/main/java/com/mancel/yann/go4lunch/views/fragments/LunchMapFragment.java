@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -69,8 +70,6 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     private static final float DEFAULT_ZOOM = 17F;
     private static final double NEARBY_SEARCH_RADIUS = 200.0;
 
-    private static final String TAG = LunchMapFragment.class.getSimpleName();
-
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
@@ -99,7 +98,7 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
 
     @Override
     public void onSuccessOfAutocomplete(@NonNull final Place place) {
-        Log.d(TAG, "onAutocompleteListener: " + place.getLatLng() );
+        this.mCallbackFromFragmentToActivity.onSelectedRestaurant(place.getId());
     }
 
     // -- Fragment --
@@ -258,7 +257,6 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
         // InfoWindow
         marker.hideInfoWindow();
 
-        Log.d(TAG, "onClickOnWayButton: WAY");
         // TODO: 23/01/2020 Pass by Road API
     }
 
@@ -304,10 +302,14 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
                                                                                                R.raw.google_maps_style_json));
 
             if (!success) {
-                Log.e(TAG, "configureGoogleMapStyle: Style parsing failed.");
+                Crashlytics.log(Log.ERROR,
+                                LunchMapFragment.class.getSimpleName(),
+                               "configureGoogleMapStyle: Style parsing failed.");
             }
         } catch (Resources.NotFoundException e) {
-            Log.e(TAG, "configureGoogleMapStyle: Can't find style. Error: ", e);
+            Crashlytics.log(Log.ERROR,
+                            LunchMapFragment.class.getSimpleName(),
+                           "configureGoogleMapStyle: Can't find style. Error: " + e.getMessage());
         }
 
         // GESTURES

@@ -49,8 +49,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @NonNull
     protected FirebaseAuth mFirebaseAuth;
 
-    private static final String TAG = BaseActivity.class.getSimpleName();
-
     // METHODS -------------------------------------------------------------------------------------
 
     /**
@@ -173,7 +171,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                     googleSignInClient.signOut()
                                       .addOnCompleteListener(this,
-                                                             (task) -> Log.d(TAG, "signOutCurrentUser: google.com"));
+                                                             (task) -> {
+                                                                // Do nothing
+                                                             });
                 }
 
                 if (providerId.equals("facebook.com")) {
@@ -209,11 +209,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                     googleSignInClient.revokeAccess()
                                       .addOnCompleteListener(this,
-                                                             (task) -> Log.e(TAG, "deleteCurrentUserAccount: Disconnect Google account"));
+                                                             (task) -> {
+                                                                // Do nothing
+                                                             });
                 }
 
                 if (providerId.equals("facebook.com")) {
-                    Log.e(TAG, "deleteCurrentUserAccount: facebook.com");
                     LoginManager.getInstance().logOut();
                 }
             }
@@ -222,7 +223,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         this.getCurrentUser().delete()
                              .addOnCompleteListener((task) -> {
                                  if (task.isSuccessful()) {
-                                     Log.e(TAG, "deleteCurrentUserAccount: delete current user");
+                                     // Do nothing
                                  }
                              });
     }

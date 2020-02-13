@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -32,8 +33,6 @@ public class FirestoreQueryLiveData<T> extends LiveData<List<T>> {
     @SuppressWarnings("NullableProblems")
     @NonNull
     private ListenerRegistration mListenerRegistration;
-
-    private static final String TAG = FirestoreQueryLiveData.class.getSimpleName();
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
@@ -75,7 +74,9 @@ public class FirestoreQueryLiveData<T> extends LiveData<List<T>> {
         // ListenerRegistration: SnapshotListener of Query
         this.mListenerRegistration = this.mQuery.addSnapshotListener( (queryDocumentSnapshots, e) -> {
             if (e != null) {
-                Log.e(TAG, "When addSnapshotListener to query: Listen failed.", e);
+                Crashlytics.log(Log.ERROR,
+                                FirestoreQueryLiveData.class.getSimpleName(),
+                               "When addSnapshotListener to query: Listen failed." + e.getMessage());
                 return;
             }
 

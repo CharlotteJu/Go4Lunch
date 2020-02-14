@@ -40,6 +40,8 @@
     
 * [Multidex](https://developer.android.com/studio/build/multidex.html)
 
+* [Library Dagger 2](https://github.com/google/dagger)
+
 * [Library ButterKnife](https://github.com/JakeWharton/butterknife)
 * [Library Gson](https://github.com/google/gson)
 * [Library Glide](https://github.com/bumptech/glide)

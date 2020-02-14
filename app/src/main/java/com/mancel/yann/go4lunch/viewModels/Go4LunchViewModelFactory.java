@@ -9,6 +9,8 @@ import com.mancel.yann.go4lunch.repositories.MessageRepository;
 import com.mancel.yann.go4lunch.repositories.PlaceRepository;
 import com.mancel.yann.go4lunch.repositories.UserRepository;
 
+import javax.inject.Inject;
+
 /**
  * Created by Yann MANCEL on 23/12/2019.
  * Name of the project: Go4Lunch
@@ -20,36 +22,25 @@ public class Go4LunchViewModelFactory implements ViewModelProvider.Factory {
 
     // FIELDS --------------------------------------------------------------------------------------
 
-    @NonNull
-    private final UserRepository mUserRepository;
+    @Inject
+    UserRepository mUserRepository;
 
-    @NonNull
-    private final LikeRepository mLikeRepository;
+    @Inject
+    LikeRepository mLikeRepository;
 
-    @NonNull
-    private final MessageRepository mMessageRepository;
+    @Inject
+    MessageRepository mMessageRepository;
 
-    @NonNull
-    private final PlaceRepository mPlaceRepository;
+    @Inject
+    PlaceRepository mPlaceRepository;
 
     // CONSTRUCTORS --------------------------------------------------------------------------------
 
     /**
-     * Constructor with 4 repositories
-     * @param userRepository    a {@link UserRepository} for data from Firebase Firestore
-     * @param likeRepository    a {@link LikeRepository} for data from Firebase Firestore
-     * @param messageRepository a {@link MessageRepository} for data from Firebase Firestore
-     * @param placeRepository   a {@link PlaceRepository} for data from Google Maps
+     * Constructor with 4 repositories thanks to Dagger 2
      */
-    public Go4LunchViewModelFactory(@NonNull final UserRepository userRepository,
-                                    @NonNull final LikeRepository likeRepository,
-                                    @NonNull final MessageRepository messageRepository,
-                                    @NonNull final PlaceRepository placeRepository) {
-        this.mUserRepository = userRepository;
-        this.mLikeRepository = likeRepository;
-        this.mMessageRepository = messageRepository;
-        this.mPlaceRepository = placeRepository;
-    }
+    @Inject
+    public Go4LunchViewModelFactory() {}
 
     // METHODS -------------------------------------------------------------------------------------
 

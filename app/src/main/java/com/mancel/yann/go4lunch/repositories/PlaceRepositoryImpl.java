@@ -11,6 +11,8 @@ import com.mancel.yann.go4lunch.models.Restaurant;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -29,6 +31,14 @@ public class PlaceRepositoryImpl implements PlaceRepository {
     @NonNull
     private GoogleMapsService mGoogleMapsService = GoogleMapsService.retrofit
                                                                     .create(GoogleMapsService.class);
+
+    // CONSTRUCTORS --------------------------------------------------------------------------------
+
+    /**
+     * Constructor for Dagger 2
+     */
+    @Inject
+    public PlaceRepositoryImpl() {}
 
     // METHODS -------------------------------------------------------------------------------------
 

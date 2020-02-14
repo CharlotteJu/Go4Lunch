@@ -56,6 +56,11 @@ dependencies {
     def concurrent_version = "1.0.0"
     implementation "androidx.concurrent:concurrent-futures:$concurrent_version"
 
+    // DAGGER 2
+    def dagger_version = "2.26"
+    implementation "com.google.dagger:dagger:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+
     // GSON
     def gson_version = "2.8.6"
     implementation "com.google.code.gson:gson:$gson_version"

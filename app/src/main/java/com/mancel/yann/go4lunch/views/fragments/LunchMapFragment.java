@@ -55,9 +55,8 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
     @BindView(R.id.fragment_lunch_map_RelativeLayout)
     CustomRelativeLayout mRelativeLayout;
 
-    @SuppressWarnings("NullableProblems")
-    @NonNull
-    private GoogleMap mGoogleMap;
+    @Nullable
+    private GoogleMap mGoogleMap = null;
 
     @SuppressWarnings("NullableProblems")
     @NonNull
@@ -413,6 +412,11 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
             return;
         }
 
+        // To avoid the NullPointerException during the rotation screen for example
+        if (this.mGoogleMap == null) {
+            return;
+        }
+
         // Focus on the current location of user
         if (this.mIsLocatedOnUser) {
             // First Location
@@ -452,6 +456,11 @@ public class LunchMapFragment extends BaseFragment implements OnMapReadyCallback
      * @param poiList a {@link List<POI>}
      */
     private void onChangedPOIsData(@NonNull final List<POI> poiList) {
+        // To avoid the NullPointerException during the rotation screen for example
+        if (this.mGoogleMap == null) {
+            return;
+        }
+
         // Remove Markers
         this.mGoogleMap.clear();
 

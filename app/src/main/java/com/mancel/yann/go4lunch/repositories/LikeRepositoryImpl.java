@@ -10,6 +10,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.SetOptions;
 import com.mancel.yann.go4lunch.models.Like;
 
+import javax.inject.Inject;
+
 /**
  * Created by Yann MANCEL on 27/01/2020.
  * Name of the project: Go4Lunch
@@ -46,6 +48,14 @@ public class LikeRepositoryImpl implements LikeRepository {
 
     private static final String COLLECTION_USERS = "users";
     private static final String COLLECTION_LIKES = "likes";
+
+    // CONSTRUCTORS --------------------------------------------------------------------------------
+
+    /**
+     * Constructor for Dagger 2
+     */
+    @Inject
+    public LikeRepositoryImpl() {}
 
     // METHODS -------------------------------------------------------------------------------------
 

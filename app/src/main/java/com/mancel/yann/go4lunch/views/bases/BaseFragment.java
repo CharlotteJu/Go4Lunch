@@ -18,10 +18,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.libraries.places.api.model.Place;
-import com.mancel.yann.go4lunch.repositories.LikeRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.MessageRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.PlaceRepositoryImpl;
-import com.mancel.yann.go4lunch.repositories.UserRepositoryImpl;
+import com.mancel.yann.go4lunch.dagger.components.DaggerGo4LunchComponent;
+import com.mancel.yann.go4lunch.dagger.components.Go4LunchComponent;
 import com.mancel.yann.go4lunch.viewModels.Go4LunchViewModel;
 import com.mancel.yann.go4lunch.viewModels.Go4LunchViewModelFactory;
 import com.mancel.yann.go4lunch.views.fragments.FragmentListener;
@@ -51,8 +49,6 @@ public abstract class BaseFragment extends Fragment {
 
     private static final int REQUEST_CODE_PERMISSION_LOCATION = 1000;
     private static final int REQUEST_CODE_CHECK_SETTINGS_TO_LOCATION = 2000;
-
-    private static final String TAG = BaseFragment.class.getSimpleName();
 
     // METHODS -------------------------------------------------------------------------------------
 
@@ -137,11 +133,11 @@ public abstract class BaseFragment extends Fragment {
      * Configures the {@link Go4LunchViewModel}
      */
     private void configureViewModel() {
-        // TODO: 07/02/2020 Repositories must be removed thanks to Dagger 2
-        final Go4LunchViewModelFactory factory = new Go4LunchViewModelFactory(new UserRepositoryImpl(),
-                                                                              new LikeRepositoryImpl(),
-                                                                              new MessageRepositoryImpl(),
-                                                                              new PlaceRepositoryImpl());
+        // Component
+        final Go4LunchComponent component = DaggerGo4LunchComponent.create();
+
+        // ViewModelFactory
+        final Go4LunchViewModelFactory factory = component.getViewModelFactory();
 
         this.mViewModel = new ViewModelProvider(this, factory).get(Go4LunchViewModel.class);
     }

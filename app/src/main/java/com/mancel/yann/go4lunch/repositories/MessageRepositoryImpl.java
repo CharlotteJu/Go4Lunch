@@ -10,6 +10,8 @@ import com.google.firebase.firestore.SetOptions;
 import com.mancel.yann.go4lunch.models.Message;
 import com.mancel.yann.go4lunch.models.User;
 
+import javax.inject.Inject;
+
 /**
  * Created by Yann MANCEL on 27/01/2020.
  * Name of the project: Go4Lunch
@@ -47,6 +49,14 @@ public class MessageRepositoryImpl implements MessageRepository {
     private static final String COLLECTION_CHATS = "chats";
     private static final String DOCUMENT_GENERAL_CHAT = "general_chat";
     private static final String COLLECTION_MESSAGES = "messages";
+
+    // CONSTRUCTORS --------------------------------------------------------------------------------
+
+    /**
+     * Constructor for Dagger 2
+     */
+    @Inject
+    public MessageRepositoryImpl() {}
 
     // METHODS -------------------------------------------------------------------------------------
 

@@ -11,6 +11,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.SetOptions;
 import com.mancel.yann.go4lunch.models.User;
 
+import javax.inject.Inject;
+
 /**
  * Created by Yann MANCEL on 12/12/2019.
  * Name of the project: Go4Lunch
@@ -38,6 +40,14 @@ public class UserRepositoryImpl implements UserRepository {
     // FIELDS --------------------------------------------------------------------------------------
 
     private static final String COLLECTION_USERS = "users";
+
+    // CONSTRUCTORS --------------------------------------------------------------------------------
+
+    /**
+     * Constructor for Dagger 2
+     */
+    @Inject
+    public UserRepositoryImpl() {}
 
     // METHODS -------------------------------------------------------------------------------------
 

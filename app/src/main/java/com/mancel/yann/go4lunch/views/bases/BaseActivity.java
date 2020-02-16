@@ -155,7 +155,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (user != null) {
             for (UserInfo profile : user.getProviderData()) {
                 // Id of the provider (ex: google.com or facebook.com)
-                String providerId = profile.getProviderId();
+                final String providerId = profile.getProviderId();
 
                 if (providerId.equals("google.com")) {
                     // Google sign out

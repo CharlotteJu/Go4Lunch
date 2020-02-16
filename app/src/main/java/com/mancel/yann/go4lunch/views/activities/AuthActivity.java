@@ -189,15 +189,13 @@ public class AuthActivity extends BaseActivity {
      * Handles the Google Sign In result
      * @param data an {@link Intent}
      */
-    private void handleSignInResultWithGoogle(@Nullable Intent data) {
+    private void handleSignInResultWithGoogle(@Nullable final Intent data) {
         final Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
 
         try {
             final GoogleSignInAccount account = task.getResult(ApiException.class);
 
-            if (account != null) {
-                this.retrieveFirebaseAuthWithGoogle(account);
-            }
+            this.retrieveFirebaseAuthWithGoogle(account);
         }
         catch (ApiException e) {
             // Google Sign In failed
@@ -210,7 +208,7 @@ public class AuthActivity extends BaseActivity {
      * Retrieves the credential og Google authentication
      * @param account a {@link GoogleSignInAccount}
      */
-    private void retrieveFirebaseAuthWithGoogle(GoogleSignInAccount account) {
+    private void retrieveFirebaseAuthWithGoogle(@Nullable final GoogleSignInAccount account) {
         // The action can take a long time
         this.mProgressBar.show();
 
@@ -276,7 +274,7 @@ public class AuthActivity extends BaseActivity {
      * Handles the Facebook access token
      * @param accessToken a {@link AccessToken}
      */
-    private void handleFacebookAccessToken(AccessToken accessToken) {
+    private void handleFacebookAccessToken(final AccessToken accessToken) {
         // The action can take a long time
         this.mProgressBar.show();
 

@@ -14,7 +14,7 @@
         android:id="@+id/dialog_rating_question"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_normal"
+        android:layout_marginBottom="@dimen/margin_normal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/dialog_rating_bar"
         app:layout_constraintStart_toStartOf="parent"

@@ -52,6 +52,7 @@
     <string name="negative_button_alertdialog">No</string>
     <string name="title_alertdialog_details">Rating</string>
     <string name="question_alertdialog_rating">Rating this restaurant:</string>
+    <string name="title_alertdialog_settings">Settings</string>
 
     <!-- marker_info_window.xml -->
     <string name="details_info_window">Details</string>

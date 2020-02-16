@@ -61,5 +61,6 @@
     <string name="workmate_toolbar">Collègues disponibles</string>
     <string name="write_your_message_here">Ecrire un message</string>
     <string name="only_one_user_notification">Tu es le seul qui as choisi %s.\nSon adresse est %s.</string>
+    <string name="title_alertdialog_settings">Réglages</string>
 
 </resources>

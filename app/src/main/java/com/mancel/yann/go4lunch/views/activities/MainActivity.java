@@ -41,9 +41,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.mancel.yann.go4lunch.R;
 import com.mancel.yann.go4lunch.models.User;
 import com.mancel.yann.go4lunch.utils.BlurTransformation;
+import com.mancel.yann.go4lunch.utils.SaveUtils;
 import com.mancel.yann.go4lunch.utils.ShowMessage;
 import com.mancel.yann.go4lunch.views.bases.BaseActivity;
 import com.mancel.yann.go4lunch.views.bases.BaseFragment;
+import com.mancel.yann.go4lunch.views.dialogs.DialogListener;
+import com.mancel.yann.go4lunch.views.dialogs.SettingsDialogFragment;
 import com.mancel.yann.go4lunch.views.fragments.FragmentListener;
 import com.mancel.yann.go4lunch.workers.WorkerController;
 
@@ -56,9 +59,11 @@ import butterknife.BindView;
  * Name of the project: Go4Lunch
  * Name of the package: com.mancel.yann.go4lunch.views.activities
  *
- * A {@link BaseActivity} subclass which implements {@link FragmentListener}.
+ * A {@link BaseActivity} subclass which implements {@link FragmentListener} and
+ * {@link DialogListener}.
  */
-public class MainActivity extends BaseActivity implements FragmentListener {
+public class MainActivity extends BaseActivity implements FragmentListener,
+                                                          DialogListener {
 
     // FIELDS --------------------------------------------------------------------------------------
 
@@ -107,8 +112,7 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         this.configureFragmentNavigation();
 
         // WorkManager
-        WorkerController.startWorkRequestIntoWorkManager(this.getApplicationContext(),
-                                                         this.getCurrentUser().getUid());
+        this.configureWorkManager();
     }
 
     // -- Activity --
@@ -238,6 +242,25 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         }
     }
 
+    // -- DialogListener interface --
+
+    @Override
+    public void onClickOnPositiveButton(final float newRating) {
+        // Do nothing
+    }
+
+    @Override
+    public void onClickOnPositiveButton(final boolean isChecked) {
+        // From SettingsDialogFragment
+        if (isChecked) {
+            WorkerController.startWorkRequestIntoWorkManager(this.getApplicationContext(),
+                                                             this.getCurrentUser().getUid());
+        }
+        else {
+            WorkerController.stopWorkRequestIntoWorkManager(this.getApplicationContext());
+        }
+    }
+
     // -- Actions --
 
     /**
@@ -257,9 +280,9 @@ public class MainActivity extends BaseActivity implements FragmentListener {
 
             // Setting
             case R.id.menu_drawer_setting:
-                Log.e(this.getClass().getSimpleName(), "Setting ");
-                // TODO: 31/01/2020 Remove the method below
-                WorkerController.stopWorkRequestIntoWorkManager(this.getApplicationContext());
+                SettingsDialogFragment.newInstance()
+                                      .show(this.getSupportFragmentManager(),
+                                           "Settings Dialog Fragment");
                 break;
 
             // Chat
@@ -441,6 +464,19 @@ public class MainActivity extends BaseActivity implements FragmentListener {
         ShowMessage.showMessageWithSnackbar(this.mCoordinatorLayout,
                                             this.getString(R.string.validated_search,
                                                            place.getName()));
+    }
+
+    // -- WorkManager --
+
+    /**
+     * Configures the {@link androidx.work.WorkManager}
+     */
+    private void configureWorkManager() {
+        if (SaveUtils.loadBooleanFromSharedPreferences(this.getApplicationContext(),
+                                                       SettingsDialogFragment.BUNDLE_SWITCH_NOTIFICATION)) {
+            WorkerController.startWorkRequestIntoWorkManager(this.getApplicationContext(),
+                                                             this.getCurrentUser().getUid());
+        }
     }
 
     // -- User --

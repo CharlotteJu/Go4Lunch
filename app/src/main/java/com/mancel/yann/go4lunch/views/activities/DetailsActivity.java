@@ -144,6 +144,8 @@ public class DetailsActivity extends BaseActivity implements AdapterListener,
 
     @Override
     public void onClickOnPositiveButton(final float newRating) {
+        // From RatingDialogFragment
+
         // User has not selected of restaurant yet
         if (this.mCurrentUser.getPlaceIdOfRestaurant() == null) {
             return;
@@ -158,6 +160,11 @@ public class DetailsActivity extends BaseActivity implements AdapterListener,
                             DetailsActivity.class.getSimpleName(),
                            "onClickOnPositiveButton: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void onClickOnPositiveButton(final boolean isChecked) {
+        // Do nothing
     }
 
     // -- Actions --

@@ -46,6 +46,7 @@ public class Go4LunchViewModelFactory implements ViewModelProvider.Factory {
 
     // ViewModelProvider.Factory interface --
 
+    @SuppressWarnings("unchecked")
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {

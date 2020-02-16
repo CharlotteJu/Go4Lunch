@@ -9,12 +9,25 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/padding_normal">
 
+    <!-- TextView: Question -->
+    <TextView
+        android:id="@+id/dialog_rating_question"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_normal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dialog_rating_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/question_alertdialog_rating"
+        style="@style/TextViewStyle1"/>
+
     <!-- RatingBar: Stars -->
     <RatingBar
         android:id="@+id/dialog_rating_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dialog_rating_question"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

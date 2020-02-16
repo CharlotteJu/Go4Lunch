@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- NavigationView Header height -->
+    <dimen name="navigation_header_height">180dp</dimen>
+
+    <!-- ImageView Size -->
+    <dimen name="image_view_header_size">50dp</dimen>
+    <dimen name="image_view_menu_size">0dp</dimen>
+
+    <!-- AppBarLayout Size -->
+    <dimen name="app_bar_layout_height">150dp</dimen>
+
+</resources>

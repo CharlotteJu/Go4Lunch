@@ -18,12 +18,12 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <!-- Guideline: horizontal -->
+        <!-- Guideline: vertical -->
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_horizontal"
+            android:id="@+id/guideline_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             app:layout_constraintGuide_percent="0.6"/>
 
         <!-- ImageView: Image in background -->
@@ -57,8 +57,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/activity_auth_title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintEnd_toEndOf="@id/guideline_vertical"
+            app:layout_constraintVertical_chainStyle="packed"
             android:contentDescription="@null"
             android:src="@drawable/ic_go4lunch_white"/>
 
@@ -67,9 +67,11 @@
             android:id="@+id/activity_auth_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/activity_auth_logo"
             app:layout_constraintBottom_toTopOf="@id/activity_auth_subtitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline_vertical"
+            app:layout_constraintVertical_chainStyle="packed"
             android:layout_marginStart="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_normal"
             android:text="@string/app_name"
@@ -80,9 +82,11 @@
             android:id="@+id/activity_auth_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/guideline_horizontal"
+            app:layout_constraintTop_toBottomOf="@id/activity_auth_title"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline_vertical"
+            app:layout_constraintVertical_chainStyle="packed"
             android:layout_marginStart="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_normal"
             android:text="@string/subtitle_authentication"
@@ -95,9 +99,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_normal"
-            app:layout_constraintTop_toBottomOf="@id/guideline_horizontal"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/activity_auth_Button_Facebook"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             android:text="@string/google_sign_in"
@@ -112,7 +116,7 @@
             android:layout_marginEnd="@dimen/margin_normal"
             app:layout_constraintTop_toBottomOf="@id/activity_auth_Button_Google"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             android:text="@string/facebook_sign_in"

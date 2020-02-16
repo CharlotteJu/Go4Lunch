@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <string name="app_name">Go4Lunch</string>
+    <string name="Details">Détails</string>
+    <string name="bottom_navigation_menu_list">Vue Liste</string>
+    <string name="bottom_navigation_menu_map">Vue Carte</string>
+    <string name="bottom_navigation_menu_workmate">Collègues</string>
+    <string name="call">APPEL</string>
+    <string name="cancelled_search">Recherche annulée</string>
+    <string name="currently_open">Ouvert actuellement (Aucun heure d\'ouverture)</string>
+    <string name="details_info_window">Détails</string>
+    <string name="error_message">Le champ ne peut être vide</string>
+    <string name="facebook_sign_in">Se connecter avec Facebook</string>
+    <string name="facebook_sign_in_cancelled">Connexion Facebook annulée</string>
+    <string name="facebook_sign_in_error">Connexion Facebook erronée</string>
+    <string name="facebook_sign_in_failed">Connexion Facebook échouée</string>
+    <string name="facebook_sign_in_success">Connexion Facebook validée</string>
+    <string name="google_sign_in">Se connecter avec Google</string>
+    <string name="google_sign_in_failed">Connexion Google échouée</string>
+    <string name="google_sign_in_success">Connexion Google validée</string>
+    <string name="hungry_toolbar">J\'ai faim !</string>
+    <string name="info_no_email_found">Aucun email trouvé</string>
+    <string name="info_no_username_found">Aucun nom trouvé</string>
+    <string name="menu_drawer_chat">DISCUSSION</string>
+    <string name="menu_drawer_logout">DECONNEXION</string>
+    <string name="like">AIMER</string>
+    <string name="menu_drawer_settings">REGLAGES</string>
+    <string name="menu_drawer_your_lunch">TON RESTAURANT</string>
+    <string name="message_alertdialog">Es-tu sur de vouloir te déconnecter ?</string>
+    <string name="message_if_no_message">Aucun message !</string>
+    <string name="message_if_no_restaurant">Aucun restaurant dans la zone !</string>
+    <string name="message_if_no_workmate">Aucun collègue !</string>
+    <string name="negative_button_alertdialog">Non</string>
+    <string name="no_address">Aucune adresse</string>
+    <string name="no_data_on_the_opening_hours">Aucune donnée sur les heures d\'ouverture</string>
+    <string name="no_restaurant_notification">Tu n\'as pas sélectionné de restaurant</string>
+    <string name="no_specific_address">Aucune adresse</string>
+    <string name="not_alone_notification">Tu n\'es pas seul(e) à aller à %s.\nSon adresse est %s.\nTu peux aller au restaurant avec %s</string>
+    <string name="not_currently_open">Pas ouvert actuelle</string>
+    <string name="notification_channel_name">Notification pour Go4Lunch</string>
+    <string name="notification_content_title">Notification Go4Lunch</string>
+    <string name="notification_channel_description">Cette chaine est la chaine de Go4Lunch</string>
+    <string name="positive_button_alertdialog">Oui</string>
+    <string name="question_alertdialog_rating">Notes ce restaurant :</string>
+    <string name="restaurant_selected">Restaurant choisit</string>
+    <string name="restaurant_no_selected">Restaurant non choisit</string>
+    <string name="subtitle_authentication">Cherches un bon restaurant et invites tes collègues !</string>
+    <string name="text_item_workmate_choice">%s mange à %s</string>
+    <string name="text_item_workmate_details">%s s\'est joint à ce restaurant !</string>
+    <string name="text_item_workmate_no_choice">%s n\'a pas encore décidé</string>
+    <string name="text_toolbar_chat">Discussion</string>
+    <string name="title_alertdialog">Déconnexion</string>
+    <string name="title_alertdialog_details">Note</string>
+    <string name="toolbar_menu_search">Recherche</string>
+    <string name="undo">Annuler</string>
+    <string name="validated_search">Recherche : %s</string>
+    <string name="way_info_window">Chemin</string>
+    <string name="website">WEB</string>
+    <string name="workmate_toolbar">Collègues disponibles</string>
+    <string name="write_your_message_here">Ecrire un message</string>
+    <string name="only_one_user_notification">Tu es le seul qui as choisi %s.\nSon adresse est %s.</string>
+
+</resources>

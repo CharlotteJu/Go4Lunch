@@ -19,7 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@null"
-        tools:background="@drawable/button_go4lunch"
+        tools:srcCompat="@tools:sample/backgrounds/scenic"
         style="@style/ImageViewStyle"/>
 
     <!-- TextView: Name of restaurant -->

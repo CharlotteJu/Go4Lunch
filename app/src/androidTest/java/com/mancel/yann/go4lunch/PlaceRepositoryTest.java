@@ -70,7 +70,6 @@ public class PlaceRepositoryTest {
         // TEST: results[0]
         assertEquals("results[0] > [place_id]", nearbySearch.getResults().get(0).getPlaceId(), "ChIJn_OajiGF9EcRQFJ9o2prZ3w");
         assertEquals("results[0] > [name]", nearbySearch.getResults().get(0).getName(), "Charcutier Traiteur Vigne");
-        assertTrue("results[0] > [rating]", nearbySearch.getResults().get(0).getRating() == 4.0);
         assertEquals("results[0] > [vicinity]", nearbySearch.getResults().get(0).getVicinity(), "269 Rue nationale, Villefranche-sur-Saône");
         assertTrue("results[0] > geometry > location > [lat]", nearbySearch.getResults().get(0).getGeometry().getLocation().getLat() == 45.992902);
         assertTrue("results[0] > geometry > location > [lng]", nearbySearch.getResults().get(0).getGeometry().getLocation().getLng() == 4.718997);
@@ -107,15 +106,6 @@ public class PlaceRepositoryTest {
         // TEST: results > address_components[0 & 1] > [short_name]
         assertEquals("results > address_components[0] > [short_name]", details.getResult().getAddressComponents().get(0).getShortName(), "166");
         assertEquals("results > address_components[1] > [short_name]", details.getResult().getAddressComponents().get(1).getShortName(), "Rue Dechavanne");
-
-        // TEST: results > [international_phone_number]
-        assertEquals("results > [international_phone_number]", details.getResult().getInternationalPhoneNumber(), "+33 4 74 65 38 74");
-
-        // TEST: results > opening_hours > periods[0] > open > [time]
-        assertEquals("results > periods[0] > open > [time]", details.getResult().getOpeningHours().getPeriods().get(0).getOpen().getTime(), "1200");
-
-        // TEST: results > [rating]
-        assertTrue("results > [rating]", details.getResult().getRating() == 4.6);
 
         // TEST: results > [website]
         assertEquals("results > [website]", details.getResult().getWebsite(), "http://pizzeria-villefranche-sur-saone.fr/");

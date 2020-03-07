@@ -157,6 +157,14 @@ public class MainActivity extends BaseActivity implements FragmentListener,
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Call the onActivityResult method of current Fragment
+        this.getSupportFragmentManager()
+            .findFragmentById(R.id.activity_main_nav_host_fragment)
+            .getChildFragmentManager()
+            .getFragments()
+            .get(0)
+            .onActivityResult(requestCode, resultCode, data);
+
         // AUTOCOMPLETE
         if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
             if (resultCode == RESULT_OK) {

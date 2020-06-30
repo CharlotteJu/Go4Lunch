@@ -1,7 +1,21 @@
-# OpenClassrooms - Project 7
+# Go4Lunch
 
-**Goal**: Create a collaborative application used by all employees. Its name is **Go4Lunch**. It allows you to search for a restaurant in the area, then select the one of your choice by sharing it with your colleagues.
+**Goal**: Create a collaborative application used by all employees. It allows you to search for a restaurant in the area, then select the one of your choice by sharing it with your colleagues.
 
+
+## Phone display
+<p align="middle">
+     <img src="./screenshots/record.gif" width="30%" height="30%">
+</p>
+<p align="middle">
+     <img src="./screenshots/phone_1.png" width="30%" height="30%"> <img src="./screenshots/phone_2.png" width="30%"   height="30%"> <img src="./screenshots/phone_3.png" width="30%"   height="30%">
+</p>
+<p align="middle">
+     <img src="./screenshots/phone_4.png" width="30%" height="30%"> <img src="./screenshots/phone_5.png" width="30%"   height="30%"> <img src="./screenshots/phone_6.png" width="30%"   height="30%">
+</p>
+<p align="middle">
+     <img src="./screenshots/phone_7.png" width="30%" height="30%">
+</p>
 
 ## Requirements
 * Computer (Windows, Mac or Linux)
@@ -22,34 +36,37 @@
 
 
 ## Wiki
-* [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/)
+* [Android Jetpack](https://developer.android.com/jetpack)
+  * [Architecture Components](https://developer.android.com/topic/libraries/architecture/)
     * [LiveData](https://developer.android.com/topic/libraries/architecture/livedata)
     * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel)
     * [Navigation](https://developer.android.com/guide/navigation/)
     * [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
-
+  * [Foundation Multidex](https://developer.android.com/studio/build/multidex.html)
+  
 * [Firebase](https://firebase.google.com/)
-    * [Authentication](https://firebase.google.com/docs/auth)
-    * [Firestore](https://firebase.google.com/docs/firestore)
-    * [Crashlytics](https://firebase.google.com/docs/crashlytics)
+  * [Authentication](https://firebase.google.com/docs/auth)
+  * [Firestore](https://firebase.google.com/docs/firestore)
+  * [Crashlytics](https://firebase.google.com/docs/crashlytics)
     
 * [Google Maps](hhttps://cloud.google.com/maps-platform/)
-    * [Maps](https://developers.google.com/maps/documentation/android-sdk/intro)
-    * [Places](https://developers.google.com/places/web-service/intro)
-    * [Distance Matrix](https://developers.google.com/maps/documentation/distance-matrix/start)
-    
-* [Multidex](https://developer.android.com/studio/build/multidex.html)
+  * [Maps](https://developers.google.com/maps/documentation/android-sdk/intro)
+  * [Places](https://developers.google.com/places/web-service/intro)
+  * [Distance Matrix](https://developers.google.com/maps/documentation/distance-matrix/start)
+
+* [Library Retrofit](https://github.com/square/retrofit)
+  * [Converter Gson](https://github.com/square/retrofit/tree/master/retrofit-converters/gson)
+  * [Adapter RxJava2](https://github.com/square/retrofit/tree/master/retrofit-adapters/rxjava2)
+  
+* [Reactive programming](http://reactivex.io/)
+  * [Library RxAndroid](https://github.com/ReactiveX/RxAndroid)
+  * [Library RxJava](https://github.com/ReactiveX/RxJava)
 
 * [Library Dagger 2](https://github.com/google/dagger)
 
 * [Library ButterKnife](https://github.com/JakeWharton/butterknife)
 * [Library Gson](https://github.com/google/gson)
 * [Library Glide](https://github.com/bumptech/glide)
-
-* [Library Retrofit](https://github.com/square/retrofit)
-* [Library RxJava2 Adapter](https://github.com/square/retrofit/tree/master/retrofit-adapters/rxjava2)
-* [Library RxJava](https://github.com/ReactiveX/RxJava)
-* [Library RxAndroid](https://github.com/ReactiveX/RxAndroid)
 
 * [Library Java Hamcrest](https://github.com/hamcrest/JavaHamcrest)
 
